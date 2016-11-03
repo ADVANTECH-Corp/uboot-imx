@@ -762,7 +762,11 @@ struct cspi_regs {
 #define MXC_CSPICTRL_TC		(1 << 7)
 #define MXC_CSPICTRL_RXOVF	(1 << 6)
 #define MXC_CSPIPERIOD_32KHZ	(1 << 15)
+#ifdef CONFIG_ADVANTECH
+#define MAX_SPI_BYTES   (64 * 4)
+#else
 #define MAX_SPI_BYTES	32
+#endif
 #if defined(CONFIG_MX6DL) || defined(CONFIG_MX6UL) || defined(CONFIG_MX6ULL) ||\
 	defined(CONFIG_MX6SLL) || defined(CONFIG_MX6SL)
 #define SPI_MAX_NUM	3
