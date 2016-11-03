@@ -191,28 +191,28 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 		printf("BOOT_DEVICE_AUTO\n");
 #ifdef CONFIG_SPL_MMC_SUPPORT
 		/* 1. SD card */
-		if (!spl_mmc_load_image(0)) {
+		if (!spl_mmc_load_image(CONFIG_SD_DEV_NUM)) {
 			printf("booting from SD\n");
 			*(int *)0x22200000 = 0x01;
 		} else
 #endif
-#ifdef CONFIG_TWO_SD_BOOT
+#ifdef CONFIG_CARRIERSD_DEV_NUM
 		/* 5. Carrier SD card for ROM-7421 */
-		if (!spl_mmc_load_image(2)) {
+		if (!spl_mmc_load_image(CONFIG_CARRIERSD_DEV_NUM)) {
 			printf("booting from Carrier SD\n");
 			*(int *)0x22200000 = 0x05;
 		} else
 #endif
 #ifdef CONFIG_SPL_SATA_SUPPORT
 		/* 2. SATA disk */
-		if (!spl_sata_load_image(0)) {
+		if (!spl_sata_load_image(CONFIG_SATA_DEV_NUM)) {
 			printf("booting from SATA\n");
 			*(int *)0x22200000 = 0x02;
 		} else
 #endif
 #ifdef CONFIG_SPL_MMC_SUPPORT
 		/* 3. eMMC flash */
-		if(!spl_mmc_load_image(1)) {
+		if(!spl_mmc_load_image(CONFIG_EMMC_DEV_NUM)) {
 			printf("booting from iNAND\n");
 			*(int *)0x22200000 = 0x03;
 		} else
