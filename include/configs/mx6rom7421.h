@@ -23,6 +23,9 @@
 #undef CONFIG_DEFAULT_FDT_FILE
 #endif
 
+/* support SATA boot */
+#define CONFIG_SATA_BOOT
+#define CONFIG_SATA_GEN2        0x0593e4c4
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rom7421-a1.dtb"
 #define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
@@ -63,6 +66,12 @@
 #define CONFIG_SF_DEFAULT_CS   1
 #endif
 
+#ifdef CONFIG_CMD_SF
+#ifdef CONFIG_SPI_FLASH_CS
+#undef CONFIG_SPI_FLASH_CS
+#define CONFIG_SPI_FLASH_CS	1
+#endif
+#endif
 /*
  * imx6 q/dl/solo pcie would be failed to work properly in kernel, if
  * the pcie module is iniialized/enumerated both in uboot and linux
@@ -122,11 +131,11 @@
 #define LCD_VDD_EN 		IMX_GPIO_NR(6, 7)	
 #endif
 
-#define SPI1_CS0                IMX_GPIO_NR(2,30)
+#define SPI1_CS0                IMX_GPIO_NR(3,19)
 #define IOMUX_SPI_SCLK          MX6_PAD_EIM_D16__ECSPI1_SCLK
 #define IOMUX_SPI_MISO          MX6_PAD_EIM_D17__ECSPI1_MISO
 #define IOMUX_SPI_MOSI          MX6_PAD_EIM_D18__ECSPI1_MOSI
-#define IOMUX_SPI_CS0           MX6_PAD_EIM_EB2__ECSPI1_SS0
+#define IOMUX_SPI_CS0           MX6_PAD_EIM_D19__ECSPI1_SS1
 
 #define USDHC2_CD_GPIO          IMX_GPIO_NR(2, 2)
 #define USDHC3_CD_GPIO          IMX_GPIO_NR(2, 0)
