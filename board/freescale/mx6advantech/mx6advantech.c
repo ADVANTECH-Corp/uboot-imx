@@ -998,6 +998,14 @@ void setup_lvds_init(void)
 	gpio_direction_output(LCD_VDD_EN, 0);
 }
 
+void setup_lvds_poweron(void)
+{
+	//LCD_BKLT_EN
+	gpio_direction_output(LCD_BKLT_EN, 1);
+
+	//LCD_VDD_EN
+	gpio_direction_output(LCD_VDD_EN, 1);
+}
 #endif
 int board_init(void)
 {
@@ -1005,6 +1013,7 @@ int board_init(void)
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 #if defined (CONFIG_ADVANTECH) && defined(CONFIG_SUPPORT_LVDS)
        setup_lvds_init();
+       setup_lvds_poweron();
 #endif
 #ifdef CONFIG_MXC_SPI
 	setup_spi();
