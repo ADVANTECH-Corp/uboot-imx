@@ -73,8 +73,13 @@ int android_image_get_kernel(const struct andr_img_hdr *hdr, int verify,
 	if (*hdr->cmdline) {
 		len += strlen(hdr->cmdline);
 	}
-
+#ifdef CONFIG_ANDROID_SUPPORT
 	char *bootargs = getenv("bootargs");
+    char *adv_cmd_line = getenv("bootargs_adv");
+	sprintf(bootargs, "%s %s", bootargs, adv_cmd_line);
+#else
+	char *bootargs = getenv("bootargs");
+#endif
 	if (bootargs)
 		len += strlen(bootargs);
 
