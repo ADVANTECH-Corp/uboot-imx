@@ -682,8 +682,11 @@ int fsl_esdhc_initialize(bd_t *bis, struct fsl_esdhc_cfg *cfg)
 #endif
 
 	cfg->cfg.f_min = 400000;
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_MMC_CLOCK_DOWNGRADE)
+	cfg->cfg.f_max = min(cfg->sdhc_clk, (u32)25000000);
+#else
 	cfg->cfg.f_max = min(cfg->sdhc_clk, (u32)52000000);
-
+#endif
 	cfg->cfg.b_max = CONFIG_SYS_MMC_MAX_BLK_COUNT;
 
 	mmc = mmc_create(&cfg->cfg, cfg);
