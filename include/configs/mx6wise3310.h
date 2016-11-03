@@ -12,7 +12,7 @@
 #ifdef CONFIG_SPL
 #define CONFIG_SPL_LIBCOMMON_SUPPORT
 #define CONFIG_SPL_MMC_SUPPORT
-#include "imx6_spl.h"
+#include "imx6_spl_advantech.h"
 #endif
 
 #define CONFIG_MACH_TYPE	3980
