@@ -52,7 +52,11 @@ void spl_onenand_load_image(void);
 void spl_nor_load_image(void);
 
 /* MMC SPL functions */
+#ifdef CONFIG_ADVANTECH
+int spl_mmc_load_image(unsigned int dev);
+#else
 void spl_mmc_load_image(void);
+#endif
 
 /* YMODEM SPL functions */
 void spl_ymodem_load_image(void);
