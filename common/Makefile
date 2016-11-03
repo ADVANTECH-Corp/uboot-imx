@@ -224,6 +224,7 @@ obj-$(CONFIG_USB_STORAGE) += usb_storage.o
 endif
 ifdef CONFIG_SPL_SATA_SUPPORT
 obj-$(CONFIG_CMD_SCSI) += cmd_scsi.o
+obj-$(CONFIG_CMD_SATA) += cmd_sata.o
 endif
 # environment
 ifdef CONFIG_SPL_ENV_SUPPORT
