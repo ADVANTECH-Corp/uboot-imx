@@ -22,8 +22,13 @@
 
 #if defined(CONFIG_MX6)
 #define TEMPERATURE_MIN		-40
+#ifdef CONFIG_ADVANTECH
+#define TEMPERATURE_HOT         195
+#define TEMPERATURE_MAX         200
+#else
 #define TEMPERATURE_HOT		80
 #define TEMPERATURE_MAX		125
+#endif
 #define FACTOR0			10000000
 #define FACTOR1			15423
 #define FACTOR2			4148468
