@@ -75,6 +75,18 @@ DECLARE_GLOBAL_DATA_PTR;
 	PAD_CTL_PUS_47K_UP  | PAD_CTL_SPEED_LOW |		\
 	PAD_CTL_DSE_80ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
 
+#ifdef CONFIG_ADVANTECH
+int enable_AXI_cache(void)
+{
+	struct iomuxc_base_regs *const iomuxc_regs
+		= (struct iomuxc_base_regs *) IOMUXC_BASE_ADDR;
+
+	writel(0xF00000CF, &iomuxc_regs->gpr[4]);
+	writel(0x007F007F, &iomuxc_regs->gpr[6]);
+	writel(0x007F007F, &iomuxc_regs->gpr[7]);
+	return 0;
+}
+#endif
 
 #define I2C_PMIC	1
 
@@ -925,6 +937,9 @@ int board_early_init_f(void)
 	setup_display();
 #endif
 
+#ifdef CONFIG_ADVANTECH
+	enable_AXI_cache();
+#endif
 	return 0;
 }
 
