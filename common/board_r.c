@@ -855,6 +855,15 @@ int board_set_boot_device(void)
 			if(emmc_exist) 	env_set("mmcdev", "1");
 			break;
 #endif
+#ifdef CONFIG_TWO_SD_BOOT
+		case 5:
+			/* booting from Carrier SD*/
+			printf("booting from Carrier SD\n");
+			setenv("mmcdev", "2");
+			sprintf(buf, "/dev/mmcblk2p2 rootwait rw");
+			setenv("mmcroot",buf);
+                        break;
+#endif
 	}
 
 	/*record ddr bit, 32 or 64 bit*/
