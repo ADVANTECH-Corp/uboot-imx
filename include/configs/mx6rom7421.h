@@ -24,9 +24,6 @@
 #define CONFIG_SATA_BOOT
 #define CONFIG_SATA_GEN2        0x0593e4c4
 
-/* support two sd card boot*/
-#define CONFIG_TWO_SD_BOOT
-
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rom7421-a1.dtb"
 #define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
