@@ -50,12 +50,10 @@
 #endif
 
 #ifdef CONFIG_CMD_SF
-	#ifdef CONFIG_ROM7420
-		#ifdef CONFIG_SPI_FLASH_CS
-			#undef CONFIG_SPI_FLASH_CS
-			#define CONFIG_SPI_FLASH_CS	1
-		#endif
-	#endif
+#ifdef CONFIG_SPI_FLASH_CS
+#undef CONFIG_SPI_FLASH_CS
+#define CONFIG_SPI_FLASH_CS	1
+#endif
 #endif
 /*
  * imx6 q/dl/solo pcie would be failed to work properly in kernel, if
