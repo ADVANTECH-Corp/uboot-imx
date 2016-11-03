@@ -431,8 +431,14 @@ int board_mmc_init(bd_t *bis)
 			       i + 1, CONFIG_SYS_FSL_USDHC_NUM);
 			return -EINVAL;
 		}
-
+#ifdef CONFIG_ADVANTECH
+		/* We use index 1 for SD card and index 3 for eMMC */
+		if (i != 1) {
+			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
+			}
+#else
 		ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
+#endif
 		if (ret)
 			return ret;
 	}
