@@ -13,7 +13,10 @@
 #include <asm/imx-common/gpio.h>
 
 #ifdef CONFIG_SPL
+#define CONFIG_SATA_BOOT
 #define CONFIG_SPL_LIBCOMMON_SUPPORT
+#define CONFIG_SPL_LIBGENERIC_SUPPORT
+#define CONFIG_SPL_LIBDISK_SUPPORT
 #define CONFIG_SPL_MMC_SUPPORT
 #include "imx6_spl_advantech.h"
 #endif

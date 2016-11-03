@@ -13,7 +13,10 @@
 #include <asm/imx-common/gpio.h>
 
 #ifdef CONFIG_SPL
+#define CONFIG_SATA_BOOT
 #define CONFIG_SPL_LIBCOMMON_SUPPORT
+#define CONFIG_SPL_LIBGENERIC_SUPPORT
+#define CONFIG_SPL_LIBDISK_SUPPORT
 #define CONFIG_SPL_MMC_SUPPORT
 #include "imx6_spl_advantech.h"
 #endif
@@ -25,7 +28,7 @@
 
 /* support SATA boot */
 #define CONFIG_SATA_BOOT
-#define CONFIG_SATA_GEN2        0x059180e6
+#define CONFIG_SATA_GEN2        0x05919552
 #if defined(CONFIG_TARGET_MX6ROM5420A1_1G) || defined(CONFIG_TARGET_MX6ROM5420A1_2G)
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rom5420-a1.dtb"
