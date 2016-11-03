@@ -196,6 +196,13 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 			*(int *)0x22200000 = 0x01;
 		} else
 #endif
+#ifdef CONFIG_TWO_SD_BOOT
+		/* 5. Carrier SD card for ROM-7421 */
+		if (!spl_mmc_load_image(2)) {
+			printf("booting from Carrier SD\n");
+			*(int *)0x22200000 = 0x05;
+		} else
+#endif
 #ifdef CONFIG_SPL_SATA_SUPPORT
 		/* 2. SATA disk */
 		if (!spl_sata_load_image(0)) {
