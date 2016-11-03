@@ -1034,7 +1034,7 @@ int board_init(void)
 
 	return 0;
 }
-
+#ifndef CONFIG_ADVANTECH
 static struct pmic *pfuze;
 int power_init_board(void)
 {
@@ -1116,7 +1116,7 @@ int power_init_board(void)
 
 	return 0;
 }
-
+#endif
 #ifdef CONFIG_LDO_BYPASS_CHECK
 void ldo_mode_set(int ldo_bypass)
 {

@@ -35,10 +35,11 @@
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-ubc220-a1.dtb"
 #define PHYS_SDRAM_SIZE		(512u * 1024 * 1024)
 #endif
+
+#include "mx6advantech_common.h"
 #define CONFIG_MMC_CLOCK_DOWNGRADE
 /* don't use pmic */
 #undef CONFIG_LDO_BYPASS_CHECK
-#include "mx6advantech_common.h"
 
 #define CONFIG_SYS_FSL_USDHC_NUM	3
 #define CONFIG_SYS_MMC_ENV_DEV		1	/* SDHC3 */
@@ -73,11 +74,6 @@
 #define CONFIG_PCIE_IMX_POWER_GPIO	IMX_GPIO_NR(3, 19)
 #endif
 
-/* PMIC */
-#define CONFIG_POWER
-#define CONFIG_POWER_I2C
-#define CONFIG_POWER_PFUZE100
-#define CONFIG_POWER_PFUZE100_I2C_ADDR	0x08
 
 /* USB Configs */
 #define CONFIG_CMD_USB
