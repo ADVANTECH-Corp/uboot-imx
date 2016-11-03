@@ -855,7 +855,7 @@ int board_set_boot_device(void)
 			if(emmc_exist) 	env_set("mmcdev", "1");
 			break;
 #endif
-#ifdef CONFIG_TWO_SD_BOOT
+#if defined(USDHC2_CD_GPIO) && defined(USDHC3_CD_GPIO)
 		case 5:
 			/* booting from Carrier SD*/
 			printf("booting from Carrier SD\n");
