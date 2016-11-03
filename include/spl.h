@@ -71,7 +71,7 @@ void spl_net_load_image(const char *device);
 void spl_usb_load_image(void);
 
 /* SATA SPL functions */
-void spl_sata_load_image(void);
+int spl_sata_load_image(unsigned int dev);
 
 /* SPL FAT image functions */
 int spl_load_image_fat(block_dev_desc_t *block_dev, int partition, const char *filename);
