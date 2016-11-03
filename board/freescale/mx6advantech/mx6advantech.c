@@ -181,7 +181,7 @@ static iomux_v3_cfg_t const usdhc3_pads[] = {
 	IOMUX_PADS(PAD_SD3_DAT6__SD3_DATA6 | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
 	IOMUX_PADS(PAD_SD3_DAT7__SD3_DATA7 | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
 	IOMUX_PADS(PAD_NANDF_D0__GPIO2_IO00    | MUX_PAD_CTRL(NO_PAD_CTRL)), /* CD */
-#ifdef CONFIG_TWO_SD_BOOT
+#ifdef USDHC3_PWREN_GPIO
 	IOMUX_PADS(PAD_NANDF_D2__GPIO2_IO02    | MUX_PAD_CTRL(NO_PAD_CTRL)), /* PWREN */
 #endif
 };
@@ -369,15 +369,9 @@ static iomux_v3_cfg_t const epdc_disable_pads[] = {
 
 #ifdef CONFIG_FSL_ESDHC
 struct fsl_esdhc_cfg usdhc_cfg[3] = {
-#ifndef CONFIG_TWO_SD_BOOT 
 	{USDHC2_BASE_ADDR},
 	{USDHC3_BASE_ADDR},
 	{USDHC4_BASE_ADDR},
-#else
-	{USDHC2_BASE_ADDR},
-	{USDHC4_BASE_ADDR},
-	{USDHC3_BASE_ADDR},
-#endif
 };
 
 int board_mmc_get_env_dev(int devno)
@@ -396,12 +390,16 @@ int board_mmc_getcd(struct mmc *mmc)
 	int ret = 0;
 
 	switch (cfg->esdhc_base) {
+#ifdef USDHC2_CD_GPIO
 	case USDHC2_BASE_ADDR:
 		ret = !gpio_get_value(USDHC2_CD_GPIO);
 		break;
+#endif
+#ifdef USDHC3_CD_GPIO
 	case USDHC3_BASE_ADDR:
 		ret = !gpio_get_value(USDHC3_CD_GPIO);
 		break;
+#endif
 	case USDHC4_BASE_ADDR:
 		ret = 1; /* eMMC/uSDHC4 is always present */
 		break;
@@ -424,51 +422,33 @@ int board_mmc_init(bd_t *bis)
 	 */
 	for (i = 0; i < CONFIG_SYS_FSL_USDHC_NUM; i++) {
 		switch (i) {
+#ifdef USDHC2_CD_GPIO
 		case 0:
 			SETUP_IOMUX_PADS(usdhc2_pads);
 			gpio_request(USDHC2_CD_GPIO, "USDHC2 CD");
 			gpio_direction_input(USDHC2_CD_GPIO);
-			usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
+			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
+			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
 			break;
+#endif
+#ifdef USDHC3_CD_GPIO
 		case 1:
-#ifndef	CONFIG_TWO_SD_BOOT
 			SETUP_IOMUX_PADS(usdhc3_pads);
 			gpio_request(USDHC3_CD_GPIO, "USDHC3 CD");
 			gpio_direction_input(USDHC3_CD_GPIO);
-			usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
-#else
-			SETUP_IOMUX_PADS(usdhc4_pads);
-			usdhc_cfg[1].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
-#endif
-			break;
-		case 2:
-#ifndef	CONFIG_TWO_SD_BOOT
-			SETUP_IOMUX_PADS(usdhc4_pads);
-			usdhc_cfg[2].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
-#else
-			SETUP_IOMUX_PADS(usdhc3_pads);
-			gpio_request(USDHC3_CD_GPIO, "USDHC3 CD");
+#ifdef USDHC3_PWREN_GPIO
 			gpio_direction_output(USDHC3_PWREN_GPIO, 0);
-			gpio_direction_input(USDHC3_CD_GPIO);
-			usdhc_cfg[2].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
 #endif
+			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
+			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
 			break;
-		default:
-			printf("Warning: you configured more USDHC controllers"
-			       "(%d) then supported by the board (%d)\n",
-			       i + 1, CONFIG_SYS_FSL_USDHC_NUM);
-			return -EINVAL;
-		}
-#ifndef CONFIG_TWO_SD_BOOT
-		/* We use index 1 for SD card and index 3 for eMMC */
-		if (i != 1) {
-		ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
-			}
-#else
-		/* ROM-7421: We use index 1 for Micro SD card,  index 3 for eMMC and index 5 for carrier SD card */
-		/* Others: We use index 1 for SD card,  index 3 for eMMC */
-		ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
 #endif
+		case 2:
+			SETUP_IOMUX_PADS(usdhc4_pads);
+			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
+			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
+			break;
+		}
 		if (ret)
 			return ret;
 	}
