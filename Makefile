@@ -766,7 +766,7 @@ DO_STATIC_RELA =
 endif
 
 # Always append ALL so that arch config.mk's can add custom ones
-ALL-y += u-boot.srec u-boot.bin u-boot.sym System.map binary_size_check
+ALL-y += u-boot.srec u-boot.bin u-boot_crc.bin u-boot.sym System.map u-boot.cfg binary_size_check
 
 ALL-$(CONFIG_ONENAND_U_BOOT) += u-boot-onenand.bin
 ifeq ($(CONFIG_SPL_FSL_PBL),y)
@@ -985,6 +985,12 @@ u-boot-nodtb.bin: u-boot FORCE
 	$(call if_changed,objcopy)
 	$(call DO_STATIC_RELA,$<,$@,$(CONFIG_SYS_TEXT_BASE))
 	$(BOARD_SIZE_CHECK)
+
+u-boot_crc.bin:	u-boot.bin
+		@cp tools/mk_uboot_crc .
+		@./mk_uboot_crc
+		@crc32 ./u-boot_crc.bin > ./u-boot_crc.bin.crc
+		@rm -f ./mk_uboot_crc
 
 u-boot.ldr:	u-boot
 		$(CREATE_LDR_ENV)
