@@ -27,8 +27,13 @@
 #define OFFSET			3580661
 #define MEASURE_FREQ		327
 #define TEMPERATURE_MIN         -40
-#define TEMPERATURE_HOT         85
-#define TEMPERATURE_MAX         125
+#ifdef CONFIG_ADVANTECH
+#define TEMPERATURE_HOT         195
+#define TEMPERATURE_MAX         200
+#else
+#define TEMPERATURE_HOT		80
+#define TEMPERATURE_MAX		125
+#endif
 
 #define TEMPSENSE0_TEMP_CNT_SHIFT	8
 #define TEMPSENSE0_TEMP_CNT_MASK	(0xfff << TEMPSENSE0_TEMP_CNT_SHIFT)
