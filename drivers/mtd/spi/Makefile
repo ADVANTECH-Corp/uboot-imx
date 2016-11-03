@@ -19,3 +19,4 @@ obj-$(CONFIG_CMD_SF) += sf.o
 obj-$(CONFIG_SPI_FLASH) += sf_ops.o sf_params.o
 obj-$(CONFIG_SPI_FLASH_SANDBOX) += sandbox.o
 obj-$(CONFIG_SPI_M95XXX) += eeprom_m95xxx.o
+obj-$(CONFIG_SPI_FLASH_IMX_M25PXX) += imx_spi_nor_m25pxx.o
