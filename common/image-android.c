@@ -48,13 +48,7 @@ int android_image_get_kernel(const struct andr_img_hdr *hdr, int verify,
 	if (*hdr->cmdline) {
 		len += strlen(hdr->cmdline);
 	}
-#ifdef CONFIG_ANDROID_SUPPORT
 	char *bootargs = getenv("bootargs");
-    char *adv_cmd_line = getenv("bootargs_adv");
-	sprintf(bootargs, "%s %s", bootargs, adv_cmd_line);
-#else
-	char *bootargs = getenv("bootargs");
-#endif
 	if (bootargs)
 		len += strlen(bootargs);
 
@@ -76,10 +70,17 @@ int android_image_get_kernel(const struct andr_img_hdr *hdr, int verify,
 	struct tag_serialnr serialnr;
 	char commandline[ANDR_BOOT_ARGS_SIZE];
 	get_board_serial(&serialnr);
-
+#ifdef CONFIG_ANDROID_SUPPORT
+	char *adv_cmd_line = getenv("bootargs_adv");
+#endif
 	sprintf(commandline,
-					"%s androidboot.serialno=%08x%08x",
-					newbootargs,
+#ifdef CONFIG_ANDROID_SUPPORT
+					"%s %s androidboot.serialno=%08x%08x",
+					newbootargs,adv_cmd_line,
+#else
+                                        "%s androidboot.serialno=%08x%08x",
+                                        newbootargs,
+#endif
 					serialnr.high,
 					serialnr.low);
 #endif
