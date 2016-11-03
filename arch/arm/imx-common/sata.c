@@ -21,7 +21,11 @@ int setup_sata(void)
 	ret = enable_sata_clock();
 	if (ret)
 		return ret;
-
+#ifdef CONFIG_SATA_GEN2
+	clrsetbits_le32(&iomuxc_regs->gpr[13],
+			IOMUXC_GPR13_SATA_MASK,
+			CONFIG_SATA_GEN2);
+#else
 	clrsetbits_le32(&iomuxc_regs->gpr[13],
 			IOMUXC_GPR13_SATA_MASK,
 			IOMUXC_GPR13_SATA_PHY_8_RXEQ_3P0DB
@@ -33,6 +37,6 @@ int setup_sata(void)
 			|IOMUXC_GPR13_SATA_PHY_3_TXBOOST_0P00_DB
 			|IOMUXC_GPR13_SATA_PHY_2_TX_1P104V
 			|IOMUXC_GPR13_SATA_PHY_1_SLOW);
-
+#endif
 	return 0;
 }
