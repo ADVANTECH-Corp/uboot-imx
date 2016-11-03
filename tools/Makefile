@@ -59,6 +59,7 @@ hostprogs-$(CONFIG_FIT_SIGNATURE) += fit_info fit_check_sign
 
 hostprogs-$(CONFIG_CMD_BOOTEFI_SELFTEST) += file2include
 
+hostprogs-y += mk_uboot_crc
 FIT_SIG_OBJS-$(CONFIG_FIT_SIGNATURE) := common/image-sig.o
 
 # The following files are synced with upstream DTC.
@@ -121,6 +122,7 @@ mkimage-objs   := $(dumpimage-mkimage-objs) mkimage.o
 fit_info-objs   := $(dumpimage-mkimage-objs) fit_info.o
 fit_check_sign-objs   := $(dumpimage-mkimage-objs) fit_check_sign.o
 file2include-objs := file2include.o
+mk_uboot_crc-objs := mk_uboot_crc.o
 
 ifneq ($(CONFIG_MX23)$(CONFIG_MX28),)
 # Add CONFIG_MXS into host CFLAGS, so we can check whether or not register
