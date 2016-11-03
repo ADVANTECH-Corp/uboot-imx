@@ -258,6 +258,28 @@
 #define CONFIG_SYS_NOSMP
 #endif
 
+#ifdef CONFIG_ADVANTECH
+/* Monitor at beginning of flash */
+/* #define CONFIG_FSL_ENV_IN_MMC */
+/* #define CONFIG_FSL_ENV_IN_NAND */
+/* #define CONFIG_FSL_ENV_IN_SATA */
+#define CONFIG_FSL_ENV_IN_SF
+
+#if defined(CONFIG_FSL_ENV_IN_NAND)
+	#define CONFIG_ENV_IS_IN_NAND 1
+#elif defined(CONFIG_FSL_ENV_IN_MMC)
+	#define CONFIG_ENV_IS_IN_MMC	1
+#elif defined(CONFIG_FSL_ENV_IN_SF)
+	#define CONFIG_ENV_IS_IN_SPI_FLASH	1
+#else
+	#define CONFIG_ENV_IS_NOWHERE	1
+#endif
+
+#ifdef CONFIG_SATA_BOOT
+#define CONFIG_CMD_SATA
+#endif
+
+#else
 #if defined CONFIG_SYS_BOOT_SPINOR
 #define CONFIG_SYS_USE_SPINOR
 #define CONFIG_ENV_IS_IN_SPI_FLASH
@@ -273,6 +295,7 @@
 #else
 #define CONFIG_ENV_IS_IN_MMC
 #endif
+#endif /* CONFIG_ADVANTECH */
 
 #ifdef CONFIG_CMD_SATA
 #define CONFIG_DWC_AHSATA
@@ -285,13 +308,30 @@
 
 #ifdef CONFIG_SYS_USE_SPINOR
 #define CONFIG_CMD_SF
+
+#ifndef CONFIG_ADVANTECH
 #define CONFIG_SPI_FLASH
 #define CONFIG_SPI_FLASH_STMICRO
 #define CONFIG_MXC_SPI
+#endif  /* CONFIG_ADVANTECH */
+
 #define CONFIG_SF_DEFAULT_BUS  0
 #define CONFIG_SF_DEFAULT_SPEED 20000000
 #define CONFIG_SF_DEFAULT_MODE (SPI_MODE_0)
 #endif
+
+#ifdef CONFIG_ADVANTECH
+/*
+ * SPI Configs
+ */
+#ifdef CONFIG_CMD_SF
+	#define CONFIG_FSL_SF		1
+	#define CONFIG_SPI_FLASH_IMX_M25PXX	1
+	#define CONFIG_SPI_FLASH_CS	0
+	#define IMX_CSPI_VER_2_3	1
+	#define CONFIG_IMX_ECSPI
+#endif
+#endif /* CONFIG_ADVANTECH */
 
 #ifdef CONFIG_SYS_USE_EIMNOR
 #undef CONFIG_SYS_NO_FLASH
