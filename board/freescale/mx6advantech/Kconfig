@@ -16,6 +16,12 @@ config SYS_CONFIG_NAME
 	default "mx6rsb4410"
 
 endif
+if TARGET_MX6RSB4411A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6rsb4411"
+
+endif
 if TARGET_MX6UBCDS31A1_1G
 
 config SYS_CONFIG_NAME
