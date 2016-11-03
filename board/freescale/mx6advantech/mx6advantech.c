@@ -1275,6 +1275,40 @@ int check_recovery_cmd_file(void)
 
 void board_recovery_setup(void)
 {
+#ifdef CONFIG_ANDROID_SUPPORT
+	int bootdev = (*(int *)0x22200000);
+
+	switch (bootdev) {
+	case 1:
+	default:
+		/* booting from SD*/
+		printf("booting from SD\n");
+		if (!getenv("bootcmd_android_recovery"))
+			setenv("bootcmd_android_recovery",
+				"boota mmc0 recovery");
+		break;
+	case 2:
+		/* booting from SATA*/
+		printf("booting from SATA\n");
+		if (!getenv("bootcmd_android_recovery"))
+			setenv("bootcmd_android_recovery",
+				"boota sata recovery");
+		break;
+	case 3:
+		/* booting from iNAND*/
+		printf("booting from iNAND\n");
+		if (!getenv("bootcmd_android_recovery"))
+			setenv("bootcmd_android_recovery",
+				"boota mmc1 recovery");
+		break;
+#ifdef CONFIG_SPI_BOOT
+	case 4:
+		/* booting from SPI*/
+		printf("Not support recovery for booting from SPI\n");
+		break;
+#endif
+	}
+#else
 	int bootdev = get_boot_device();
 
 	switch (bootdev) {
@@ -1309,7 +1343,7 @@ void board_recovery_setup(void)
 			bootdev);
 		return;
 	}
-
+#endif /*CONFIG_ANDROID_SUPPORT*/
 	printf("setup env for recovery..\n");
 	setenv("bootcmd", "run bootcmd_android_recovery");
 }
