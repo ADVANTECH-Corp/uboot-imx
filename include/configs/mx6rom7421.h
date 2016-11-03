@@ -136,4 +136,7 @@
 #define USDHC2_CD_GPIO		IMX_GPIO_NR(2, 0)
 #define USDHC3_CD_GPIO		IMX_GPIO_NR(2, 1)
 #define USDHC3_PWREN_GPIO	IMX_GPIO_NR(2, 2)
+#undef	CONFIG_EMMC_DEV_NUM 
+#define	CONFIG_EMMC_DEV_NUM		2	/* USDHC4 */
+#define	CONFIG_CARRIERSD_DEV_NUM	1	/* USDHC3 */		
 #endif                         /* __MX6QSABRESD_CONFIG_H */
