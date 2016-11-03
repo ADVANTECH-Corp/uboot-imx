@@ -168,5 +168,4 @@
 #define IOMUX_SPI_CS0           MX6_PAD_EIM_D19__ECSPI1_SS1
 
 #define USDHC2_CD_GPIO          IMX_GPIO_NR(2, 2)
-#define USDHC3_CD_GPIO          IMX_GPIO_NR(2, 0)
 #endif                         /* __MX6QSABRESD_CONFIG_H */

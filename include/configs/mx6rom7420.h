@@ -148,7 +148,6 @@
 #define IOMUX_SPI_CS0           MX6_PAD_EIM_D19__ECSPI1_SS1
 
 #define USDHC2_CD_GPIO          IMX_GPIO_NR(2, 2)
-#define USDHC3_CD_GPIO          IMX_GPIO_NR(2, 0)
 
 #define CONFIG_PCIE_RESET
 #define IOMUX_PCIE_RESET        MX6_PAD_GPIO_17__GPIO7_IO12    //PCIE_RST_B

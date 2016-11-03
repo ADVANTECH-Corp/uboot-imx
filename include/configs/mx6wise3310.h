@@ -134,5 +134,4 @@
 #define IOMUX_SPI_CS0           MX6_PAD_EIM_EB2__ECSPI1_SS0
 
 #define USDHC2_CD_GPIO          IMX_GPIO_NR(2, 2)
-#define USDHC3_CD_GPIO          IMX_GPIO_NR(2, 0)
 #endif                         /* __MX6SABRESD_CONFIG_H */
