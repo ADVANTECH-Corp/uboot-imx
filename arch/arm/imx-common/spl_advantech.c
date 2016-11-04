@@ -141,7 +141,7 @@ void spl_board_init(void)
 	}
 
 	/* forword memory size to uboot */
-	//*(unsigned int *)0x22400000 = PHYS_SDRAM_1_SIZE;
+	*(unsigned int *)0x22400000 = PHYS_SDRAM_SIZE;
 
 	/* record ddr bit, 32 or 64 bit */
 #ifdef CONFIG_DDR_32BIT 
