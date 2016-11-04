@@ -43,6 +43,54 @@ static int spi_load_image_os(struct spi_flash *flash,
 }
 #endif
 
+#ifdef CONFIG_SPI_BOOT
+static int spl_spi_check_crc(struct spi_flash *flash)
+{
+        /* read crc file */
+        char tag[512];
+        char crc[512];
+
+        if(spi_flash_read(flash, 2*512, 512, (void *) 0x22100000) == 0)
+        {
+                //printf("SPI Read success!\n");
+        }
+        else
+        {
+                printf("SPI Read fail!!\n");
+                return 1;
+        }
+
+        memcpy(tag, (void *) 0x22100000, 512);
+        //tag[9] = '\0';
+        //printf("crc file %s\n", tag);
+
+        /* make uboot crc */
+        if(spi_flash_read(flash, 3*512, 0x96000, (void *) 0x22000000) == 0)
+        {
+                //printf("SPI Read success!\n");
+        }
+        else
+        {
+                printf("SPI Read fail!!\n");
+                return 1;
+        }
+
+        *(int *)0x21f00000 = crc32 (0, (const uchar *) 0x22000000, 0x96000);
+        sprintf(crc, "%08x", *(int *)0x21f00000);
+        //crc[9] = '\0';
+        //printf("uboot crc %s\n", crc);
+
+        /* verrify crc */
+        if(memcmp(tag, crc, 8))
+        {
+                printf("spl: spi dev - crc error\n");
+                return 1;
+        }
+
+        return 0;
+}
+#endif
+
 /*
  * The main entry for SPI booting. It's necessary that SDRAM is already
  * configured and available since this code loads the main U-Boot image
@@ -57,14 +105,19 @@ void spl_spi_load_image(void)
 	 * Load U-Boot image from SPI flash into RAM
 	 */
 
-	flash = spi_flash_probe(CONFIG_SF_DEFAULT_BUS,
-				CONFIG_SF_DEFAULT_CS,
-				CONFIG_SF_DEFAULT_SPEED,
-				CONFIG_SF_DEFAULT_MODE);
+	flash = spi_flash_probe(CONFIG_SPL_SPI_BUS, CONFIG_SPL_SPI_CS,
+                                CONFIG_SF_DEFAULT_SPEED, SPI_MODE_3);
 	if (!flash) {
 		puts("SPI probe failed.\n");
 		hang();
 	}
+
+#ifdef CONFIG_SPI_BOOT
+        int err = spl_spi_check_crc(flash);
+        if (err) {
+                return;
+        }
+#endif
 
 	/* use CONFIG_SYS_TEXT_BASE as temporary storage area */
 	header = (struct image_header *)(CONFIG_SYS_TEXT_BASE);
@@ -80,4 +133,6 @@ void spl_spi_load_image(void)
 		spi_flash_read(flash, CONFIG_SYS_SPI_U_BOOT_OFFS,
 			       spl_image.size, (void *)spl_image.load_addr);
 	}
+	printf("SPI read: dev %d:%d, size %d ... \n"
+                , CONFIG_SPL_SPI_BUS, CONFIG_SPL_SPI_CS, spl_image.size);
 }
