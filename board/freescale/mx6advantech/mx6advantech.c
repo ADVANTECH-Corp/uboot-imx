@@ -197,7 +197,7 @@ static iomux_v3_cfg_t const usdhc4_pads[] = {
 	IOMUX_PADS(PAD_SD4_DAT7__SD4_DATA7 | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
 };
 
-#ifdef CONFIG_MXC_SPI
+#ifdef CONFIG_SYS_USE_SPINOR
 static iomux_v3_cfg_t const ecspi1_pads[] = {
 	IOMUX_PADS(PAD_EIM_D16__ECSPI1_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL)),
 	IOMUX_PADS(PAD_EIM_D17__ECSPI1_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL)),
@@ -205,7 +205,7 @@ static iomux_v3_cfg_t const ecspi1_pads[] = {
 	IOMUX_PADS(PAD_EIM_EB2__ECSPI1_SS0 | MUX_PAD_CTRL(NO_PAD_CTRL)),
 };
 
-static void setup_spi(void)
+static void setup_spinor(void)
 {
 	SETUP_IOMUX_PADS(ecspi1_pads);
 	gpio_request(IMX_GPIO_NR(4, 9), "ECSPI1 CS");
@@ -217,10 +217,6 @@ static void setup_spi(void)
 #endif
 }
 
-int board_spi_cs_gpio(unsigned bus, unsigned cs)
-{
-	return (bus == 0 && cs == 0) ? (IMX_GPIO_NR(4, 9)) : -1;
-}
 #endif
 
 static iomux_v3_cfg_t const rgb_pads[] = {
@@ -926,6 +922,9 @@ int board_early_init_f(void)
 
 #ifdef CONFIG_ADVANTECH
 	enable_AXI_cache();
+#endif
+#ifdef CONFIG_SYS_USE_SPINOR
+        setup_spinor();
 #endif
 
 #ifdef CONFIG_CMD_SATA
