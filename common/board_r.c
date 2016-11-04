@@ -895,20 +895,20 @@ int board_set_boot_device(void)
 		case 3:
 			/* booting from iNAND*/
 			printf("booting from iNAND\n");
-			setenv("mmcdev", "1");
+			setenv("mmcdev", MK_STR(CONFIG_EMMC_DEV_NUM));
 			break;
 #ifdef CONFIG_SPI_BOOT
 		case 4:
 			/* booting from SPI*/
 			printf("booting from SPI -> kernel boot form EMMC\n");
-			if(emmc_exist) 	setenv("mmcdev", "1");
+			if(emmc_exist) 	setenv("mmcdev", MK_STR(CONFIG_EMMC_DEV_NUM));
 			break;
 #endif
 #if defined(USDHC2_CD_GPIO) && defined(USDHC3_CD_GPIO)
 		case 5:
 			/* booting from Carrier SD*/
 			printf("booting from Carrier SD\n");
-			setenv("mmcdev", "2");
+			setenv("mmcdev", MK_STR(CONFIG_CARRIERSD_DEV_NUM));
 			sprintf(buf, "/dev/mmcblk2p2 rootwait rw");
 			setenv("mmcroot",buf);
                         break;
