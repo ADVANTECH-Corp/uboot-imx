@@ -25,7 +25,7 @@
 
 /* support SATA boot */
 #define CONFIG_SATA_BOOT
-#define CONFIG_SATA_GEN2        0x0593e4c4
+#define CONFIG_SATA_GEN2        0x059194f6
 
 #if defined(CONFIG_TARGET_MX6ROM7421A1_512M)
 #define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)

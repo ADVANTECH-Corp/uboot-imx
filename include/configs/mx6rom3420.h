@@ -25,7 +25,7 @@
 #define CONFIG_MMCROOT			"/dev/mmcblk0p2"  /* SDHC3 */
 /* support SATA boot */
 #define CONFIG_SATA_BOOT
-#define CONFIG_SATA_GEN2	0x059195fe
+#define CONFIG_SATA_GEN2	0x05918732
 
 #if defined(CONFIG_TARGET_MX6ROM3420A1_512M)
 #define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
