@@ -771,7 +771,7 @@ static int initr_tee_setup(void)
 #ifdef CONFIG_ADVANTECH
 int check_emmc_exist(void)
 {
-        struct mmc *mmc = find_mmc_device(1);
+        struct mmc *mmc = find_mmc_device(CONFIG_EMMC_DEV_NUM);
         int result=0;
         if (mmc) {
                 result = mmc_init(mmc);
