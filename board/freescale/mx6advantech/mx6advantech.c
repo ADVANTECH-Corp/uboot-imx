@@ -108,7 +108,18 @@ int enable_AXI_cache(void)
 
 int dram_init(void)
 {
+#ifdef CONFIG_ADVANTECH
+	/* Read memory size sent from Adv-Boot */
+	gd->ram_size = (*(unsigned int *)0x22400000);
+	if (gd->ram_size != (2u * 1024 * 1024 * 1024) &&
+		gd->ram_size != (1u * 1024 * 1024 * 1024) &&
+		gd->ram_size != (512 * 1024 * 1024))
+	{
+		gd->ram_size = PHYS_SDRAM_SIZE;
+	}
+#else
 	gd->ram_size = imx_ddr_size();
+#endif
 	return 0;
 }
 
