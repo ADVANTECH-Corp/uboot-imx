@@ -26,18 +26,23 @@
 /* support SATA boot */
 #define CONFIG_SATA_BOOT
 #define CONFIG_SATA_GEN2        0x0593e4c4
+
+#if defined(CONFIG_TARGET_MX6ROM7420A1_512M)
+#define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6ROM7420A1_1G)
+#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6ROM7420A1_2G)
+#define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
+#endif
+
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rom7420-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_MX6Q)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6q-rom7420-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_MX6DL)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rom7420-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_MX6SOLO)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rom7420-a1.dtb"
-#define PHYS_SDRAM_SIZE		(512u * 1024 * 1024)
 #endif
 
 #include "mx6advantech_common.h"
