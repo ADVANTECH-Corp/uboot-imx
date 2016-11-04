@@ -1547,7 +1547,11 @@ void board_init_f(ulong dummy)
 	preloader_console_init();
 
 	/* DDR initialization */
+#if defined (CONFIG_ADVANTECH)	
+	//spl_dram_init();
+#else
 	spl_dram_init();
+#endif
 
 	/* Clear the BSS. */
 	memset(__bss_start, 0, __bss_end - __bss_start);
