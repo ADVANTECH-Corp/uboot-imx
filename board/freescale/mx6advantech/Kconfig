@@ -1,0 +1,84 @@
+config SYS_BOARD
+	default "mx6advantech"
+
+config SYS_VENDOR
+	default "freescale"
+
+if TARGET_MX6RSB4410A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6rsb4410"
+
+endif
+if TARGET_MX6RSB4410A2_1G
+
+config SYS_CONFIG_NAME
+	default "mx6rsb4410"
+
+endif
+if TARGET_MX6UBCDS31A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6ubcds31"
+
+endif
+if TARGET_MX6UBC220A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6ubc220"
+
+endif
+if TARGET_MX6ROM3420A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6rom3420"
+
+endif
+if TARGET_MX6ROM3420A1_2G
+
+config SYS_CONFIG_NAME
+	default "mx6rom3420"
+
+endif
+if TARGET_MX6ROM5420A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6rom5420"
+
+endif
+if TARGET_MX6ROM5420A1_2G
+
+config SYS_CONFIG_NAME
+	default "mx6rom5420"
+
+endif
+if TARGET_MX6ROM5420B1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6rom5420"
+
+endif
+if TARGET_MX6ROM5420B1_2G
+
+config SYS_CONFIG_NAME
+	default "mx6rom5420"
+
+endif
+if TARGET_MX6ROM7420A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6rom7420"
+
+endif
+if TARGET_MX6ROM7421A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6rom7421"
+
+endif
+if TARGET_MX6WISE3310A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6wise3310"
+
+endif
