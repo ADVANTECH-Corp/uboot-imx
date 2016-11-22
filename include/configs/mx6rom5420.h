@@ -52,6 +52,7 @@
 #define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
 #endif
 #endif
+#include "mx6advantech_common.h"
 /* don't use pmic */
 #undef CONFIG_LDO_BYPASS_CHECK
 
@@ -66,7 +67,6 @@
 #ifdef CONFIG_SPL_BUILD
 #define CONFIG_BOOT_SELECT
 #endif
-#include "mx6advantech_common.h"
 
 #define CONFIG_SYS_FSL_USDHC_NUM	3
 #define CONFIG_SYS_MMC_ENV_DEV		1	/* SDHC3 */
