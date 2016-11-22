@@ -990,7 +990,7 @@ int board_init(void)
 
 	return 0;
 }
-#if 0
+#ifndef CONFIG_ADVANTECH
 int power_init_board(void)
 {
 	struct pmic *pfuze;

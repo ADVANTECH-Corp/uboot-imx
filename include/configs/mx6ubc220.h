@@ -33,9 +33,9 @@
 #define PHYS_SDRAM_SIZE		(512u * 1024 * 1024)
 #endif
 #define CONFIG_MMC_CLOCK_DOWNGRADE
+#include "mx6advantech_common.h"
 /* don't use pmic */
 #undef CONFIG_LDO_BYPASS_CHECK
-#include "mx6advantech_common.h"
 
 #define CONFIG_SYS_FSL_USDHC_NUM	3
 #define CONFIG_SYS_MMC_ENV_DEV		1	/* SDHC3 */
