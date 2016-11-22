@@ -48,6 +48,11 @@
 #endif
 #endif /*CONFIG_FSL_FASTBOOT*/
 
+#ifdef CONFIG_IMX_ECSPI
+#include <imx_spi.h>
+#endif
+
+
 DECLARE_GLOBAL_DATA_PTR;
 
 #define UART_PAD_CTRL  (PAD_CTL_PUS_100K_UP |			\
@@ -196,6 +201,12 @@ static void setup_spi(void)
 {
 	SETUP_IOMUX_PADS(ecspi1_pads);
 	gpio_request(IMX_GPIO_NR(4, 9), "ECSPI1 CS");
+#ifdef SPI1_CS0
+	gpio_direction_output(SPI1_CS0, 0);
+#endif
+#ifdef SPI1_CS1
+	gpio_direction_output(SPI1_CS1, 0);
+#endif
 }
 
 int board_spi_cs_gpio(unsigned bus, unsigned cs)
@@ -352,9 +363,6 @@ struct fsl_esdhc_cfg usdhc_cfg[3] = {
 	{USDHC3_BASE_ADDR},
 	{USDHC4_BASE_ADDR},
 };
-
-#define USDHC2_CD_GPIO	IMX_GPIO_NR(2, 2)
-#define USDHC3_CD_GPIO	IMX_GPIO_NR(2, 0)
 
 int board_mmc_get_env_dev(int devno)
 {
@@ -1761,3 +1769,104 @@ void reset_cpu(ulong addr)
 {
 }
 #endif
+#ifdef CONFIG_IMX_ECSPI
+s32 spi_get_cfg(struct imx_spi_dev_t *dev)
+{
+        switch (dev->slave.cs) {
+        case 0:
+                /* SPI-NOR */
+#ifdef CONFIG_SPI_BOOT
+                if(dev->slave.bus ==0) dev->base = ECSPI1_BASE_ADDR;
+                else if(dev->slave.bus ==4) dev->base = ECSPI5_BASE_ADDR;
+#else
+                dev->base = ECSPI1_BASE_ADDR;
+#endif
+                dev->freq = 25000000;
+                dev->ss_pol = IMX_SPI_ACTIVE_LOW;
+                dev->ss = 0;
+                dev->fifo_sz = 64 * 4;
+                dev->us_delay = 0;
+                break;
+        case 1:
+                /* SPI-NOR */
+#ifdef CONFIG_SPI_BOOT
+                if(dev->slave.bus ==0) dev->base = ECSPI1_BASE_ADDR;
+                else if(dev->slave.bus ==4) dev->base = ECSPI5_BASE_ADDR;
+#else
+                dev->base = ECSPI1_BASE_ADDR;
+#endif
+                dev->freq = 25000000;
+                dev->ss_pol = IMX_SPI_ACTIVE_LOW;
+                dev->ss = 1;
+                dev->fifo_sz = 64 * 4;
+                dev->us_delay = 0;
+                break;
+        default:
+                printf("Invalid Bus ID!\n");
+        }
+
+        return 0;
+}
+
+void spi_io_init(struct imx_spi_dev_t *dev)
+{
+        unsigned int reg;
+        struct mxc_ccm_reg *ccm_regs = (struct mxc_ccm_reg *)CCM_BASE_ADDR;
+
+        switch (dev->base) {
+        case ECSPI1_BASE_ADDR:
+                /* Enable clock */
+                reg = readl(&ccm_regs->CCGR1);
+                reg |= 0x3;
+                writel(reg, &ccm_regs->CCGR1);
+#if defined (CONFIG_ADVANTECH)
+                imx_iomux_v3_setup_pad(IOMUX_SPI_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL));
+                imx_iomux_v3_setup_pad(IOMUX_SPI_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL));
+                imx_iomux_v3_setup_pad(IOMUX_SPI_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL));
+                imx_iomux_v3_setup_pad(IOMUX_SPI_CS0  | MUX_PAD_CTRL(NO_PAD_CTRL));
+#ifdef IOMUX_SPI_CS1
+                imx_iomux_v3_setup_pad(IOMUX_SPI_CS1  | MUX_PAD_CTRL(NO_PAD_CTRL));
+#endif
+#else
+                /* SCLK */
+                imx_iomux_v3_setup_pad(MX6_PAD_KEY_COL0__ECSPI1_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL));
+
+                /* MISO */
+                imx_iomux_v3_setup_pad(MX6_PAD_KEY_COL1__ECSPI1_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL));
+
+                /* MOSI */
+                imx_iomux_v3_setup_pad(MX6_PAD_KEY_ROW0__ECSPI1_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL));
+
+                imx_iomux_v3_setup_pad(MX6_PAD_KEY_ROW1__GPIO4_IO09    | MUX_PAD_CTRL(NO_PAD_CTRL));
+#endif
+                break;
+        case ECSPI2_BASE_ADDR:
+        case ECSPI3_BASE_ADDR:
+                /* ecspi2-3 fall through */
+                break;
+#ifdef CONFIG_ADVANTECH
+#ifdef CONFIG_SPI_BOOT
+        case ECSPI5_BASE_ADDR:
+                reg = readl(&ccm_regs->CCGR1);
+                reg |= 0x300;
+                writel(reg, &ccm_regs->CCGR1);
+                imx_iomux_v3_setup_pad(IOMUX_SPI5_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL));
+                imx_iomux_v3_setup_pad(IOMUX_SPI5_MISO | MUX_PAD_CTRL(SPI_PAD_CTRL));
+                imx_iomux_v3_setup_pad(IOMUX_SPI5_MOSI | MUX_PAD_CTRL(SPI_PAD_CTRL));
+                imx_iomux_v3_setup_pad(IOMUX_SPI5_CS0  | MUX_PAD_CTRL(NO_PAD_CTRL));
+#ifdef IOMUX_SPI5_CS1
+                imx_iomux_v3_setup_pad(IOMUX_SPI5_CS1  | MUX_PAD_CTRL(NO_PAD_CTRL));
+#endif
+#ifdef IOMUX_SPI5_CS2
+                imx_iomux_v3_setup_pad(IOMUX_SPI5_CS2  | MUX_PAD_CTRL(NO_PAD_CTRL));
+#endif
+                break;
+#endif
+#endif
+        default:
+                break;
+        }
+}
+
+#endif
+
