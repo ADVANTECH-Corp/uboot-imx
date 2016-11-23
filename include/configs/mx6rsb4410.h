@@ -23,6 +23,7 @@
 #undef CONFIG_DEFAULT_FDT_FILE
 #endif
 
+#if defined(CONFIG_TARGET_MX6RSB4410A1_1G)
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rsb4410-a1.dtb"
 #define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
@@ -35,6 +36,21 @@
 #elif defined(CONFIG_MX6SOLO)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb4410-a1.dtb"
 #define PHYS_SDRAM_SIZE		(512u * 1024 * 1024)
+#endif
+#elif defined(CONFIG_TARGET_MX6RSB4410A2_1G)
+#if defined(CONFIG_MX6QP)
+#define CONFIG_DEFAULT_FDT_FILE "imx6qp-rsb4410-a2.dtb"
+#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
+#elif defined(CONFIG_MX6Q)
+#define CONFIG_DEFAULT_FDT_FILE "imx6q-rsb4410-a2.dtb"
+#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
+#elif defined(CONFIG_MX6DL)
+#define CONFIG_DEFAULT_FDT_FILE "imx6dl-rsb4410-a2.dtb"
+#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
+#elif defined(CONFIG_MX6SOLO)
+#define CONFIG_DEFAULT_FDT_FILE "imx6dl-rsb4410-a2.dtb"
+#define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
+#endif
 #endif
 
 #include "mx6advantech_common.h"
