@@ -54,7 +54,11 @@ int spl_onenand_load_image(void);
 int spl_nor_load_image(void);
 
 /* MMC SPL functions */
+#ifdef CONFIG_ADVANTECH
+int spl_mmc_load_image(unsigned int dev);
+#else
 int spl_mmc_load_image(u32 boot_device);
+#endif
 
 /* YMODEM SPL functions */
 int spl_ymodem_load_image(void);
