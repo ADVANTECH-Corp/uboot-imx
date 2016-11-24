@@ -19,7 +19,11 @@ obj-y  += timer.o
 endif
 ifeq ($(SOC),$(filter $(SOC),mx7 mx6 mxs))
 obj-y	+= misc.o
+ifdef CONFIG_ADVANTECH
+obj-$(CONFIG_SPL_BUILD)	+= spl_advantech.o
+else
 obj-$(CONFIG_SPL_BUILD)	+= spl.o
+endif
 endif
 ifeq ($(SOC),$(filter $(SOC),mx7))
 obj-y 	+= cpu.o
