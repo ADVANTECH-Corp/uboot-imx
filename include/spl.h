@@ -73,7 +73,11 @@ int spl_net_load_image(const char *device);
 int spl_usb_load_image(void);
 
 /* SATA SPL functions */
+#ifdef CONFIG_ADVANTECH
+int spl_sata_load_image(unsigned int dev);
+#else
 int spl_sata_load_image(void);
+#endif
 
 /* SPL FAT image functions */
 int spl_load_image_fat(block_dev_desc_t *block_dev, int partition, const char *filename);
