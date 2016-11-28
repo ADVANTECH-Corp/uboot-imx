@@ -34,7 +34,11 @@ obj-$(CONFIG_$(SPL_TPL_)ATF) += spl_atf.o
 obj-$(CONFIG_$(SPL_TPL_)USB_SUPPORT) += spl_usb.o
 obj-$(CONFIG_$(SPL_TPL_)FAT_SUPPORT) += spl_fat.o
 obj-$(CONFIG_$(SPL_TPL_)EXT_SUPPORT) += spl_ext.o
+ifdef CONFIG_ADVANTECH
+obj-$(CONFIG_$(SPL_TPL_)SATA_SUPPORT) += spl_sata_advantech.o
+else
 obj-$(CONFIG_$(SPL_TPL_)SATA_SUPPORT) += spl_sata.o
+endif
 obj-$(CONFIG_$(SPL_TPL_)DFU_SUPPORT) += spl_dfu.o
 obj-$(CONFIG_$(SPL_TPL_)SPI_LOAD) += spl_spi.o
 obj-$(CONFIG_$(SPL_TPL_)RAM_SUPPORT) += spl_ram.o
