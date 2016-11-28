@@ -27,5 +27,9 @@ endif
 obj-$(CONFIG_SPL_USB_SUPPORT) += spl_usb.o
 obj-$(CONFIG_SPL_FAT_SUPPORT) += spl_fat.o
 obj-$(CONFIG_SPL_EXT_SUPPORT) += spl_ext.o
+ifdef CONFIG_ADVANTECH
+obj-$(CONFIG_SPL_SATA_SUPPORT) += spl_sata_advantech.o
+else
 obj-$(CONFIG_SPL_SATA_SUPPORT) += spl_sata.o
+endif
 endif
