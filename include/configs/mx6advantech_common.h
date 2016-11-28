@@ -275,8 +275,17 @@
 	#define CONFIG_ENV_IS_NOWHERE	1
 #endif
 
+/* SATA CONFIG */
 #ifdef CONFIG_SATA_BOOT
 #define CONFIG_CMD_SATA
+#endif
+#ifdef CONFIG_CMD_SATA
+#define CONFIG_DWC_AHSATA
+#define CONFIG_SYS_SATA_MAX_DEVICE      1
+#define CONFIG_DWC_AHSATA_PORT_ID       0
+#define CONFIG_DWC_AHSATA_BASE_ADDR     SATA_ARB_BASE_ADDR
+#define CONFIG_LBA48
+#define CONFIG_LIBATA
 #endif
 
 #else
