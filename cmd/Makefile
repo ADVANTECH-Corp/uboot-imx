@@ -156,6 +156,7 @@ endif # !CONFIG_SPL_BUILD
 ifdef CONFIG_SPL_BUILD
 ifdef CONFIG_SPL_SATA_SUPPORT
 obj-$(CONFIG_CMD_SCSI) += scsi.o
+obj-$(CONFIG_CMD_SATA) += sata.o
 endif
 endif # CONFIG_SPL_BUILD
 
