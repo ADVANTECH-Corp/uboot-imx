@@ -895,6 +895,11 @@ int board_early_init_f(void)
 #ifdef CONFIG_ADVANTECH
 	enable_AXI_cache();
 #endif
+
+#ifdef CONFIG_CMD_SATA
+        setup_sata();
+#endif
+
 	return 0;
 }
 
@@ -936,9 +941,6 @@ int board_init(void)
 	setup_epdc();
 #endif
 
-#ifdef CONFIG_CMD_SATA
-	setup_sata();
-#endif
 
 #ifdef CONFIG_FEC_MXC
 	setup_fec();
