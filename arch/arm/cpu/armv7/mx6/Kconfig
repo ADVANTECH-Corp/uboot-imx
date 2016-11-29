@@ -155,6 +155,13 @@ config TARGET_MX6ROM5420A1_2G
 	select DM
 	select DM_THERMAL
 
+config TARGET_MX6ROM5420B1_512M
+	bool "Support mx6rom5420b1 512M"
+	select CPU_V7
+	select SUPPORT_SPL
+	select DM
+	select DM_THERMAL
+
 config TARGET_MX6ROM5420B1_1G
 	bool "Support mx6rom5420b1 1G"
 	select CPU_V7
