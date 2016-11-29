@@ -57,11 +57,13 @@
 
 /* SPI support */
 #ifdef CONFIG_SPI_BOOT
+#ifdef CONFIG_MX6Q
 #define CONFIG_SPL_SPI_SUPPORT
 #define CONFIG_SPL_SPI_FLASH_SUPPORT
 #define CONFIG_SPL_SPI_LOAD
 #define CONFIG_SYS_SPI_U_BOOT_OFFS      (512*3)
 /* Need to define CONFIG_SPL_SPI_BUS & CONFIG_SPL_SPI_CS in project H file */
+#endif
 #endif
 
 #if defined(CONFIG_MX6SX)
