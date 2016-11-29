@@ -55,6 +55,15 @@
 #define CONFIG_SPL_SATA_SUPPORT
 #endif
 
+/* SPI support */
+#ifdef CONFIG_SPI_BOOT
+#define CONFIG_SPL_SPI_SUPPORT
+#define CONFIG_SPL_SPI_FLASH_SUPPORT
+#define CONFIG_SPL_SPI_LOAD
+#define CONFIG_SYS_SPI_U_BOOT_OFFS      (512*3)
+/* Need to define CONFIG_SPL_SPI_BUS & CONFIG_SPL_SPI_CS in project H file */
+#endif
+
 #if defined(CONFIG_MX6SX)
 #define CONFIG_SPL_BSS_START_ADDR      0x88200000
 #define CONFIG_SPL_BSS_MAX_SIZE        0x100000        /* 1 MB */
