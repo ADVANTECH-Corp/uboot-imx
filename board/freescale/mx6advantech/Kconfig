@@ -58,6 +58,12 @@ config SYS_CONFIG_NAME
 	default "mx6rom5420"
 
 endif
+if TARGET_MX6ROM5420B1_512M
+
+config SYS_CONFIG_NAME
+	default "mx6rom5420"
+
+endif
 if TARGET_MX6ROM5420B1_1G
 
 config SYS_CONFIG_NAME
