@@ -1281,12 +1281,12 @@ int check_recovery_cmd_file(void)
 			ARRAY_SIZE(recovery_key_pads));
 
     gpio_direction_input(GPIO_VOL_DN_KEY);
-
-    if (gpio_get_value(GPIO_VOL_DN_KEY) == 0) { /* VOL_DN key is low assert */
+/*
+    if (gpio_get_value(GPIO_VOL_DN_KEY) == 0) { // VOL_DN key is low assert //
 		button_pressed = 1;
 		printf("Recovery key pressed\n");
     }
-
+*/
     return recovery_mode || button_pressed;
 }
 
