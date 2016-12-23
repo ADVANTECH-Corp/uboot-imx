@@ -481,6 +481,9 @@
 
 #if defined(CONFIG_ANDROID_SUPPORT)
 #include "mx6sabreandroid_common.h"
+#ifdef CONFIG_CMD_SATA
+#define CONFIG_FASTBOOT_SATA_NO          0
+#endif
 #endif
 
 
