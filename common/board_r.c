@@ -849,8 +849,8 @@ int board_set_boot_device(void)
 			printf("booting from iNAND\n");
 			sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=emmc", getenv("bootargs_adv"));
 			setenv("bootargs_adv", buf);
-			setenv("fastboot_dev", "mmc1");
-			setenv("bootcmd", "boota mmc1");
+			setenv("fastboot_dev", "mmc"MK_STR(CONFIG_EMMC_DEV_NUM)"");
+			setenv("bootcmd", "boota mmc"MK_STR(CONFIG_EMMC_DEV_NUM)"");
 			break;
 #ifdef CONFIG_SPI_BOOT_SUPPORT
 		case 4:
@@ -863,6 +863,16 @@ int board_set_boot_device(void)
 				setenv("bootcmd", "boota mmc1");
 			}
 			break;
+#endif
+#if defined(USDHC2_CD_GPIO) && defined(USDHC3_CD_GPIO)
+		case 5:
+			/* booting from Carrier SD*/
+			printf("booting from Carrier SD\n");
+                        sprintf(buf, "%s androidboot.selinux=disabled", getenv("bootargs_adv"));
+                        setenv("bootargs_adv", buf);
+                        setenv("fastboot_dev", "mmc"MK_STR(CONFIG_CARRIERSD_DEV_NUM)"");
+                        setenv("bootcmd", "boota mmc"MK_STR(CONFIG_CARRIERSD_DEV_NUM)"");
+                        break;
 #endif
 #else
 	/* Linux */
