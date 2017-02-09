@@ -1290,6 +1290,9 @@ int check_recovery_cmd_file(void)
     return recovery_mode || button_pressed;
 }
 
+#define XMK_STR(x)	#x
+#define MK_STR(x) XMK_STR(x)
+
 void board_recovery_setup(void)
 {
 #ifdef CONFIG_ANDROID_SUPPORT
@@ -1316,12 +1319,21 @@ void board_recovery_setup(void)
 		printf("booting from iNAND\n");
 		if (!getenv("bootcmd_android_recovery"))
 			setenv("bootcmd_android_recovery",
-				"boota mmc1 recovery");
+				"boota mmc"MK_STR(CONFIG_EMMC_DEV_NUM)" recovery");
 		break;
 #ifdef CONFIG_SPI_BOOT
 	case 4:
 		/* booting from SPI*/
 		printf("Not support recovery for booting from SPI\n");
+		break;
+#endif
+#if defined(USDHC2_CD_GPIO) && defined(USDHC3_CD_GPIO)
+	case 5:
+		/* booting from Carrier SD*/
+		printf("booting from Carrier SD\n");
+		if (!getenv("bootcmd_android_recovery"))
+                        setenv("bootcmd_android_recovery",
+                                "boota mmc1 recovery");
 		break;
 #endif
 	}
