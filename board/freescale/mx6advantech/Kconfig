@@ -100,3 +100,17 @@ config SYS_CONFIG_NAME
 	default "mx6wise3310"
 
 endif
+
+if TARGET_MX6RSB6410A1_1G
+
+config SYS_CONFIG_NAME
+         default "mx6rsb6410"
+
+endif
+
+if TARGET_MX6RSB6410A1_2G
+
+config SYS_CONFIG_NAME
+         default "mx6rsb6410"
+
+endif
