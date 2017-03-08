@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2012-2014 Freescale Semiconductor, Inc.
+ * Copyright (C) 2012-2016 Freescale Semiconductor, Inc.
  *
  * Configuration settings for the Freescale i.MX6Q SabreSD board.
  *
@@ -12,6 +12,15 @@
 #include <asm/arch/imx-regs.h>
 #include <asm/imx-common/gpio.h>
 
+#ifdef CONFIG_SPL
+#define CONFIG_SATA_BOOT
+#define CONFIG_SPL_LIBCOMMON_SUPPORT
+#define CONFIG_SPL_LIBGENERIC_SUPPORT
+#define CONFIG_SPL_LIBDISK_SUPPORT
+#define CONFIG_SPL_MMC_SUPPORT
+#include "imx6_spl_advantech.h"
+#endif
+
 #define CONFIG_MACH_TYPE	3980
 #define CONFIG_MXC_UART_BASE	UART1_BASE
 #define CONFIG_CONSOLE_DEV		"ttymxc0"
@@ -19,47 +28,43 @@
 
 /* support SATA boot */
 #define CONFIG_SATA_BOOT
+#define CONFIG_SATA_GEN2        0x0593e4c4
 
-#include "mx6advantech_common.h"
-
-#ifdef CONFIG_ADVANTECH
-#define CONFIG_ROM7420
-
-/* don't use pmic */
-#undef CONFIG_LDO_BYPASS_CHECK
+#if defined(CONFIG_TARGET_MX6RSB6410A1_512M)
+#define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6RSB6410A1_1G)
+#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6RSB6410A1_2G)
+#define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
 #endif
 
-/* USB Configs */
-#define CONFIG_CMD_USB
-#define CONFIG_USB_EHCI
-#define CONFIG_USB_EHCI_MX6
-#define CONFIG_USB_STORAGE
-#define CONFIG_EHCI_HCD_INIT_AFTER_RESET
-#define CONFIG_USB_HOST_ETHER
-#define CONFIG_USB_ETHER_ASIX
-#define CONFIG_MXC_USB_PORTSC  (PORT_PTS_UTMI | PORT_PTS_PTW)
-#define CONFIG_MXC_USB_FLAGS   0
-#define CONFIG_USB_MAX_CONTROLLER_COUNT 1 /* Enabled USB controller number */
+#if defined(CONFIG_MX6QP)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rsb6410-a1.dtb"
+#elif defined(CONFIG_MX6Q)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6q-rsb6410-a1.dtb"
+#elif defined(CONFIG_MX6DL)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb6410-a1.dtb"
+#elif defined(CONFIG_MX6SOLO)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb6410-a1.dtb"
+#endif
+
+#include "mx6advantech_common.h"
+/* don't use pmic */
+#undef CONFIG_LDO_BYPASS_CHECK
 
 #define CONFIG_SYS_FSL_USDHC_NUM	3
 #define CONFIG_SYS_MMC_ENV_DEV		1	/* SDHC3 */
 #define CONFIG_SYS_MMC_ENV_PART                0       /* user partition */
 
 #ifdef CONFIG_SYS_USE_SPINOR
-#ifdef CONFIG_ADVANTECH
-#define CONFIG_SF_DEFAULT_CS    1
-#else
-#define CONFIG_SF_DEFAULT_CS   (0|(IMX_GPIO_NR(4, 9)<<8))
-#endif
+#define CONFIG_SF_DEFAULT_CS   1
 #endif
 
 #ifdef CONFIG_CMD_SF
-	#ifdef CONFIG_ROM7420
-		#ifdef CONFIG_SPI_FLASH_CS
-			#undef CONFIG_SPI_FLASH_CS
-			#define CONFIG_SPI_FLASH_CS	1
-		#endif
-	#endif
+#ifdef CONFIG_SPI_FLASH_CS
+#undef CONFIG_SPI_FLASH_CS
+#define CONFIG_SPI_FLASH_CS	1
+#endif
 #endif
 /*
  * imx6 q/dl/solo pcie would be failed to work properly in kernel, if
@@ -82,6 +87,20 @@
 #define CONFIG_PCIE_IMX_POWER_GPIO	IMX_GPIO_NR(3, 19)
 #endif
 
+/* USB Configs */
+#define CONFIG_CMD_USB
+#ifdef CONFIG_CMD_USB
+#define CONFIG_USB_EHCI
+#define CONFIG_USB_EHCI_MX6
+#define CONFIG_USB_STORAGE
+#define CONFIG_EHCI_HCD_INIT_AFTER_RESET
+#define CONFIG_USB_HOST_ETHER
+#define CONFIG_USB_ETHER_ASIX
+#define CONFIG_MXC_USB_PORTSC		(PORT_PTS_UTMI | PORT_PTS_PTW)
+#define CONFIG_MXC_USB_FLAGS		0
+#define CONFIG_USB_MAX_CONTROLLER_COUNT	1 /* Enabled USB controller number */
+#endif
+
 /*#define CONFIG_SPLASH_SCREEN*/
 /*#define CONFIG_MXC_EPDC*/
 
@@ -95,23 +114,13 @@
 	 */
 	#define CONFIG_CMD_BMP
 	#define CONFIG_LCD
-	#define CONFIG_FB_BASE				(CONFIG_SYS_TEXT_BASE + 0x300000)
 	#define CONFIG_SYS_CONSOLE_IS_IN_ENV
 	#undef LCD_TEST_PATTERN
 	/* #define CONFIG_SPLASH_IS_IN_MMC			1 */
 	#define LCD_BPP					LCD_MONOCHROME
 	/* #define CONFIG_SPLASH_SCREEN_ALIGN		1 */
 
-	#define CONFIG_WORKING_BUF_ADDR			(CONFIG_SYS_TEXT_BASE + 0x100000)
-	#define CONFIG_WAVEFORM_BUF_ADDR		(CONFIG_SYS_TEXT_BASE + 0x200000)
-	#define CONFIG_WAVEFORM_FILE_OFFSET		0x600000
-	#define CONFIG_WAVEFORM_FILE_SIZE		0xF0A00
-	#define CONFIG_WAVEFORM_FILE_IN_MMC
-
-#ifdef CONFIG_SPLASH_IS_IN_MMC
-	#define CONFIG_SPLASH_IMG_OFFSET		0x4c000
-	#define CONFIG_SPLASH_IMG_SIZE			0x19000
-#endif
+	#define CONFIG_WAVEFORM_BUF_SIZE		0x200000
 #endif /* CONFIG_SPLASH_SCREEN && CONFIG_MXC_EPDC */
 #endif
 
@@ -125,14 +134,13 @@
 #define LCD_VDD_EN 		IMX_GPIO_NR(6, 7)	
 #endif
 
-#ifdef CONFIG_ADVANTECH
-	#define WD_ENABLE_ADV IMX_GPIO_NR(1,26)
-	#define POWER_ENABLE_ADV	IMX_GPIO_NR(1,30)
-	#define WIFI_ENABLE_ADV	IMX_GPIO_NR(7,2)
 
-#define IOMUX_PCIE_DIS_B 	MX6Q_PAD_KEY_COL4__GPIO_4_14
-#define IOMUX_M2_W_DISABLE	MX6Q_PAD_SD3_CMD__GPIO_7_2
-#define PCIE_DIS_B 		IMX_GPIO_NR(4, 14)
-#define M2_W_DISABLE 		IMX_GPIO_NR(7, 2)
-#endif
+
+#define SPI1_CS0                IMX_GPIO_NR(3,19)
+#define IOMUX_SPI_SCLK          MX6_PAD_EIM_D16__ECSPI1_SCLK
+#define IOMUX_SPI_MISO          MX6_PAD_EIM_D17__ECSPI1_MISO
+#define IOMUX_SPI_MOSI          MX6_PAD_EIM_D18__ECSPI1_MOSI
+#define IOMUX_SPI_CS0           MX6_PAD_EIM_D19__ECSPI1_SS1
+
+#define USDHC2_CD_GPIO          IMX_GPIO_NR(2, 2)
 #endif                         /* __MX6QSABRESD_CONFIG_H */
