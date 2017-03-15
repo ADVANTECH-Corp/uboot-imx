@@ -868,7 +868,7 @@ int board_set_boot_device(void)
 		case 5:
 			/* booting from Carrier SD*/
 			printf("booting from Carrier SD\n");
-                        sprintf(buf, "%s androidboot.selinux=disabled", getenv("bootargs_adv"));
+                        sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=sd2", getenv("bootargs_adv"));
                         setenv("bootargs_adv", buf);
                         setenv("fastboot_dev", "mmc"MK_STR(CONFIG_CARRIERSD_DEV_NUM)"");
                         setenv("bootcmd", "boota mmc"MK_STR(CONFIG_CARRIERSD_DEV_NUM)"");
