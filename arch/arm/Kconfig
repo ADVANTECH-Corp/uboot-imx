@@ -588,6 +588,11 @@ config TARGET_MX6ROM7420A1_1G
 	select CPU_V7
 	select SUPPORT_SPL
 
+config TARGET_MX6ROM7420A1_2G
+	bool "Support mx6rom7420a1 2G"
+	select CPU_V7
+	select SUPPORT_SPL
+
 config TARGET_MX6ROM7421A1_1G
 	bool "Support mx6rom7421a1 1G"
 	select CPU_V7
