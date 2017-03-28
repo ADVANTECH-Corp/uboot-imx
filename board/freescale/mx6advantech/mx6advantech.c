@@ -133,16 +133,45 @@ void tune_ddr(void)
 int dram_init(void)
 {
 #ifdef CONFIG_ADVANTECH
+	char *under_line_1, *under_line_2, *under_line_3;
+	char memory_size[30];
+	char advboot_version[128];
+
 	/* Read memory size sent from Adv-Boot */
 	gd->ram_size = (*(unsigned int *)0x22400000);
 	if (gd->ram_size != (2u * 1024 * 1024 * 1024) &&
 		gd->ram_size != (1u * 1024 * 1024 * 1024) &&
 		gd->ram_size != (512 * 1024 * 1024))
 	{
-		gd->ram_size = PHYS_SDRAM_SIZE;
+		strncpy(advboot_version, (void *)0x22300000, 128);
+	
+		under_line_1 = strchr(advboot_version,'_');
+		under_line_2 = strchr(under_line_1+1,'_');
+		under_line_3 = strchr(under_line_2+1,'_');
+		
+		strncpy(memory_size, under_line_2+1, under_line_3-under_line_2-1);
+		memory_size[under_line_3-under_line_2]='\0';		
+
+		if (0 == strcmp(memory_size, "2G"))
+		{
+			gd->ram_size = (2u * 1024 * 1024 * 1024);
+		}
+		else if (0 == strcmp(memory_size, "1G"))
+		{
+			gd->ram_size = (1u * 1024 * 1024 * 1024);
+		}
+		else if (0 == strcmp(memory_size, "512M"))
+		{
+			gd->ram_size = (512 * 1024 * 1024);
+		}
+		else
+		{		
+			gd->ram_size = PHYS_SDRAM_SIZE;
+		}
 	}
+
   
-  tune_ddr();	
+  tune_ddr();
 #else
 	gd->ram_size = imx_ddr_size();
 #endif
