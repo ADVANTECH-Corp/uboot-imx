@@ -109,15 +109,23 @@ int enable_AXI_cache(void)
 #ifdef CONFIG_ADVANTECH
 void tune_ddr(void)
 {
-#if defined(CONFIG_TARGET_MX6ROM7420A1_2G)
+#if defined(CONFIG_TARGET_MX6ROM7420A1_2G) || defined(CONFIG_TARGET_MX6ROM7420A1_1G)
   /* add for ROM-7420 Quar Core 2G booted failed from advload V2.330 */
   unsigned int *ADD_MMDC_P1_MPWLDECTRL0;
   unsigned int *ADD_MMDC_P1_MPWLDECTRL1;
+  char advboot_version[128];
+  char* pch = NULL;
   ADD_MMDC_P1_MPWLDECTRL0 = (unsigned int *)MX6_MMDC_P1_MPWLDECTRL0;
   ADD_MMDC_P1_MPWLDECTRL1 = (unsigned int *)MX6_MMDC_P1_MPWLDECTRL1; 
 
-  *ADD_MMDC_P1_MPWLDECTRL0 = 0x001F001F;
-  *ADD_MMDC_P1_MPWLDECTRL1 = 0x001F001F;
+	strncpy(advboot_version, (void *)0x22300000, 128);
+	pch = strstr (advboot_version, "rom7420_2G");
+	
+	if (pch != NULL || gd->ram_size == (2u * 1024 * 1024 * 1024))
+	{
+	  *ADD_MMDC_P1_MPWLDECTRL0 = 0x001F001F;
+	  *ADD_MMDC_P1_MPWLDECTRL1 = 0x001F001F;
+	}
 #endif
 }
 #endif  
