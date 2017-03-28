@@ -608,6 +608,16 @@ config TARGET_MX6WISE3310A1_1G
 	select CPU_V7
 	select SUPPORT_SPL
 
+config TARGET_MX6RSB6410A1_1G
+        bool "Support mx6rsb6410a1 1G"
+        select CPU_V7
+        select SUPPORT_SPL
+
+config TARGET_MX6RSB6410A1_2G
+        bool "Support mx6rsb6410a1 2G"
+        select CPU_V7
+        select SUPPORT_SPL
+
 config TARGET_MX6SLEVK
 	bool "Support mx6slevk"
 	select CPU_V7
