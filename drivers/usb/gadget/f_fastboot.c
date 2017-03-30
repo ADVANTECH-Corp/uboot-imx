@@ -23,6 +23,7 @@
 #include <linux/compiler.h>
 #include <version.h>
 #include <g_dnl.h>
+#include <sata.h>
 #ifdef CONFIG_FASTBOOT_FLASH_MMC_DEV
 #include <fb_mmc.h>
 #endif
@@ -44,6 +45,9 @@
 #endif
 #endif
 
+#ifdef CONFIG_BCB_SUPPORT
+#include "bcb.h"
+#endif
 #define FASTBOOT_VERSION		"0.4"
 
 #define FASTBOOT_INTERFACE_CLASS	0xff
@@ -1118,7 +1122,7 @@ static void process_flash_mmc(const char *cmdbuf, char *response)
 
 #endif
 
-
+#if CONFIG_FASTBOOT_FLASH
 static int rx_process_erase(const char *cmdbuf, char *response)
 {
 #if defined(CONFIG_FASTBOOT_STORAGE_NAND)
@@ -1183,7 +1187,9 @@ static int rx_process_erase(const char *cmdbuf, char *response)
 #endif
 
 }
+#endif
 
+#if CONFIG_FASTBOOT_FLASH
 static void rx_process_flash(const char *cmdbuf, char *response)
 {
 	switch (fastboot_devinfo.type) {
@@ -1210,7 +1216,7 @@ static void rx_process_flash(const char *cmdbuf, char *response)
 		break;
 	}
 }
-
+#endif
 
 static void parameters_setup(void)
 {
@@ -1264,6 +1270,9 @@ static int _fastboot_setup_dev(void)
 		} else if (!strncmp(fastboot_env, "mmc", 3)) {
 			fastboot_devinfo.type = DEV_MMC;
 			fastboot_devinfo.dev_id = _fastboot_get_mmc_no(fastboot_env);
+#ifdef CONFIG_BCB_SUPPORT
+			set_mmc_id(fastboot_devinfo.dev_id);
+#endif
 		}
 	} else {
 		return 1;
@@ -1313,7 +1322,7 @@ static int _fastboot_parts_load_from_ptable(void)
 	/* mmc boot partition: -1 means no partition, 0 user part., 1 boot part.
 	 * default is no partition, for emmc default user part, except emmc*/
 	int boot_partition = FASTBOOT_MMC_NONE_PARTITION_ID;
-    int user_partition = FASTBOOT_MMC_NONE_PARTITION_ID;
+	int user_partition = FASTBOOT_MMC_NONE_PARTITION_ID;
 
 	struct mmc *mmc;
 	block_dev_desc_t *dev_desc;
@@ -1386,6 +1395,7 @@ static int _fastboot_parts_load_from_ptable(void)
 				   CONFIG_ANDROID_RECOVERY_PARTITION_MMC,
 				   user_partition,
 				   FASTBOOT_PARTITION_RECOVERY, dev_desc, ptable);
+#ifndef CONFIG_ADV_OTA_SUPPORT 
 	_fastboot_parts_add_ptable_entry(PTN_SYSTEM_INDEX,
 				   CONFIG_ANDROID_SYSTEM_PARTITION_MMC,
 				   user_partition,
@@ -1394,7 +1404,7 @@ static int _fastboot_parts_load_from_ptable(void)
 				   CONFIG_ANDROID_DATA_PARTITION_MMC,
 				   user_partition,
 				   FASTBOOT_PARTITION_DATA, dev_desc, ptable);
-
+#endif
 	for (i = 0; i <= PTN_DATA_INDEX; i++)
 		fastboot_flash_add_ptn(&ptable[i]);
 
@@ -1655,7 +1665,7 @@ void fastboot_setup(void)
 
 	/*check if we need to setup recovery*/
 #ifdef CONFIG_ANDROID_RECOVERY
-    check_recovery_mode();
+	check_recovery_mode();
 #endif
 
 	/*load partitions information for the fastboot dev*/
