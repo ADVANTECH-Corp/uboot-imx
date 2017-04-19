@@ -977,10 +977,18 @@ void setup_lvds_init(void)
 	gpio_direction_output(LCD_BKLT_PWM, 0);
 
 	/* LCD_BKLT_EN - disable backlight */
+#ifdef LCD_BKLT_EN_VALUE
+	gpio_direction_output(LCD_BKLT_EN, LCD_BKLT_EN_VALUE);
+#else
 	gpio_direction_output(LCD_BKLT_EN, 0);
+#endif
 
 	/* LCD_VDD_EN - disable VDD */
+#ifdef LCD_VDD_EN_VALUE
+		gpio_direction_output(LCD_VDD_EN, LCD_VDD_EN_VALUE);
+#else
 	gpio_direction_output(LCD_VDD_EN, 0);
+#endif
 }
 
 #endif
