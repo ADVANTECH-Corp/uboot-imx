@@ -28,7 +28,7 @@
 
 /* support SATA boot */
 #define CONFIG_SATA_BOOT
-#define CONFIG_SATA_GEN2        0x0593e4c4
+#define CONFIG_SATA_GEN2        0x05919452
 
 #if defined(CONFIG_TARGET_MX6RSB6410A1_1G)
 #define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
