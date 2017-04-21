@@ -11,6 +11,8 @@
 
 #include "mx6_common.h"
 #define CONFIG_ADVANTECH
+/* OTA support */
+#define CONFIG_ADV_OTA_SUPPORT
 /* uncomment for PLUGIN mode support */
 /* #define CONFIG_USE_PLUGIN */
 
@@ -411,7 +413,7 @@
 #include "mx6sabreandroid_common.h"
 #else
 
-/* #ifndef CONFIG_SPL */
+#if defined(CONFIG_ADV_OTA_SUPPORT) || !defined(CONFIG_SPL) 
 #define CONFIG_CI_UDC
 #define CONFIG_USBD_HS
 #define CONFIG_USB_GADGET_DUALSPEED
@@ -434,7 +436,7 @@
 #define CONFIG_DFU_SF
 #endif
 
-/* #endif */ /* CONFIG_SPL */ 
+#endif  /* CONFIG_SPL */ 
 #endif /* CONFIG_ANDROID_SUPPORT */
 
 
@@ -444,8 +446,6 @@
 #define	CONFIG_SD_DEV_NUM	0
 #define	CONFIG_SATA_DEV_NUM	0
 
-/* OTA support */
-#define CONFIG_ADV_OTA_SUPPORT
 
 #ifdef CONFIG_ADV_OTA_SUPPORT
 #define CONFIG_FASTBOOT_BUF_ADDR   CONFIG_SYS_LOAD_ADDR
