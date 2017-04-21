@@ -931,6 +931,9 @@ int board_set_boot_device(void)
 			/* booting from SD*/
 			printf("booting from SD\n");
 			setenv("mmcdev", "0");
+#ifdef CONFIG_ADV_OTA_SUPPORT
+			setenv("fastboot_dev", "mmc0");
+#endif
 			if(emmc_exist) {
 				sprintf(buf, "/dev/mmcblk1p2 rootwait rw");
 				setenv("mmcroot",buf);
@@ -950,11 +953,17 @@ int board_set_boot_device(void)
 			sprintf(buf, "setenv bootargs console=${console},${baudrate} ${smp} root=${sataroot} ${bootargs}");
 			setenv("sataargs", buf);
 			sprintf(buf, "dcache off; sata init; run loadimage; run loadbootscript; run sataargs; run loadfdt; bootz ${loadaddr} - ${fdt_addr}");
+#ifdef CONFIG_ADV_OTA_SUPPORT
+			setenv("fastboot_dev", "sata");
+#endif
 			setenv("bootcmd", buf);
 			break;
 		case 3:
 			/* booting from iNAND*/
 			printf("booting from iNAND\n");
+#ifdef CONFIG_ADV_OTA_SUPPORT
+			setenv("fastboot_dev", "mmc1");
+#endif
 			setenv("mmcdev", MK_STR(CONFIG_EMMC_DEV_NUM));
 			break;
 #ifdef CONFIG_SPI_BOOT

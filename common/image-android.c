@@ -89,7 +89,6 @@ int android_image_get_kernel(const struct andr_img_hdr *hdr, int verify,
 	} else if (*hdr->cmdline) {
 		strcat(newbootargs, hdr->cmdline);
 	}
-
 	printf("Kernel command line: %s\n", newbootargs);
 #ifdef CONFIG_SERIAL_TAG
 	struct tag_serialnr serialnr;
@@ -103,11 +102,17 @@ int android_image_get_kernel(const struct andr_img_hdr *hdr, int verify,
 					"%s %s androidboot.serialno=%08x%08x",
 					newbootargs,adv_cmd_line,
 #else
+#ifdef CONFIG_ADV_OTA_SUPPORT
+                                        "%s console=%s,%s androidboot.serialno=%08x%08x",
+                                        newbootargs, getenv("console"),getenv("baudrate"),
+#else
                                         "%s androidboot.serialno=%08x%08x",
                                         newbootargs,
 #endif
+#endif
 					serialnr.high,
 					serialnr.low);
+	
 	setenv("bootargs", commandline);
 #else
 	setenv("bootargs", newbootargs);

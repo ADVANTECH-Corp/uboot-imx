@@ -69,9 +69,16 @@ void check_recovery_mode(void)
 	if (check_key_pressing()) {
 		puts("Fastboot: Recovery key pressing got!\n");
 		setup_recovery_env();
+#ifndef CONFIG_ADV_OTA_SUPPORT //disable this function
 	} else if (check_recovery_cmd_file()) {
 		puts("Fastboot: Recovery command file found!\n");
 		setup_recovery_env();
+#endif
+#ifdef CONFIG_BCB_SUPPORT
+	} else if (recovery_check_and_clean_command()) {
+		puts("Fastboot: BCB command found\n");
+		setup_recovery_env();
+#endif
 	} else {
 		puts("Fastboot: Normal\n");
 	}

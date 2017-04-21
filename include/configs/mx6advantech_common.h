@@ -11,6 +11,8 @@
 
 #include "mx6_common.h"
 #define CONFIG_ADVANTECH
+/* OTA support */
+#define CONFIG_ADV_OTA_SUPPORT
 /* uncomment for PLUGIN mode support */
 /* #define CONFIG_USE_PLUGIN */
 
@@ -411,7 +413,7 @@
 #include "mx6sabreandroid_common.h"
 #else
 
-#ifndef CONFIG_SPL
+#if defined(CONFIG_ADV_OTA_SUPPORT) || !defined(CONFIG_SPL) 
 #define CONFIG_CI_UDC
 #define CONFIG_USBD_HS
 #define CONFIG_USB_GADGET_DUALSPEED
@@ -433,8 +435,8 @@
 #if defined(CONFIG_SYS_USE_SPINOR)
 #define CONFIG_DFU_SF
 #endif
-#endif
 
+#endif  /* CONFIG_SPL */ 
 #endif /* CONFIG_ANDROID_SUPPORT */
 
 
@@ -443,5 +445,25 @@
 #define	CONFIG_EMMC_DEV_NUM	1
 #define	CONFIG_SD_DEV_NUM	0
 #define	CONFIG_SATA_DEV_NUM	0
+
+
+#ifdef CONFIG_ADV_OTA_SUPPORT
+#define CONFIG_FASTBOOT_BUF_ADDR   CONFIG_SYS_LOAD_ADDR
+#define CONFIG_FASTBOOT_BUF_SIZE   0x19000000
+#define	CONFIG_FASTBOOT_STORAGE_MMC
+#define CONFIG_ANDROID_BOOT_PARTITION_MMC	1
+#define CONFIG_ANDROID_RECOVERY_PARTITION_MMC	3
+#define CONFIG_ANDROID_MISC_PARTITION_MMC	5
+#define CONFIG_FASTBOOT_SATA_NO	8
+#define	CONFIG_ANDROID_BOOT_IMAGE
+#define	CONFIG_CMD_READ
+#define CONFIG_CMD_FASTBOOT
+#define	CONFIG_CMD_BOOTA
+#define CONFIG_SERIAL_TAG
+#define	CONFIG_BCB_SUPPORT
+#define	CONFIG_FSL_FASTBOOT
+#define CONFIG_USB_FUNCTION_FASTBOOT
+#define	CONFIG_ANDROID_RECOVERY
+#endif /* CONFIG_ADV_OTA_SUPPORT */
 
 #endif                         /* __MX6QSABRE_COMMON_CONFIG_H */
