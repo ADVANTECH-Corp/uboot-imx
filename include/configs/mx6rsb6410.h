@@ -37,13 +37,13 @@
 #endif
 
 #if defined(CONFIG_MX6QP)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rsb6410-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rsb6410-a2.dtb"
 #elif defined(CONFIG_MX6Q)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6q-rsb6410-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6q-rsb6410-a2.dtb"
 #elif defined(CONFIG_MX6DL)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb6410-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb6410-a2.dtb"
 #elif defined(CONFIG_MX6SOLO)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb6410-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb6410-a2.dtb"
 #endif
 
 #include "mx6advantech_common.h"
