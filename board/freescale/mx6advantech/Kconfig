@@ -118,3 +118,16 @@ config SYS_CONFIG_NAME
 	default "mx6rsb6410"
 
 endif
+if TARGET_MX6RSB6410A2_1G
+
+config SYS_CONFIG_NAME
+        default "mx6rsb6410"
+
+endif
+if TARGET_MX6RSB6410A2_2G
+
+config SYS_CONFIG_NAME
+        default "mx6rsb6410"
+
+endif
+
