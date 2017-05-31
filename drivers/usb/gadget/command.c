@@ -71,8 +71,10 @@ int recovery_check_and_clean_command(void)
 		return 0;
 	}
 	if (!strcmp(command, "boot-recovery")) {
+#ifndef CONFIG_ADV_OTA_SUPPORT //[ADVANTECH] disable clean command
 		memset(command, 0, 32);
 		write_command(command);
+#endif
 		return 1;
 	}
 	return 0;
