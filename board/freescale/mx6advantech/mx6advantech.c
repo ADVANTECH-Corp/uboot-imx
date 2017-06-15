@@ -358,8 +358,25 @@ static iomux_v3_cfg_t const epdc_disable_pads[] = {
 };
 #endif
 
+#ifdef CONFIG_SWITCH_DEBUG_PORT_TO_UART1
+iomux_v3_cfg_t const uart1_switch_pads[] = {
+	MX6_PAD_SD3_CLK__GPIO7_IO03 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+static unsigned int uart1_funtion = 1;
+#endif
+
 static void setup_iomux_uart(void)
 {
+#ifdef CONFIG_SWITCH_DEBUG_PORT_TO_UART1
+	imx_iomux_v3_setup_multiple_pads(uart1_switch_pads, ARRAY_SIZE(uart1_switch_pads));
+	gpio_request(IMX_GPIO_NR(7, 3), "UART1_SWITCH");
+	gpio_direction_input(IMX_GPIO_NR(7, 3));
+	uart1_funtion = gpio_get_value(IMX_GPIO_NR(7, 3));
+	gpio_free(IMX_GPIO_NR(7, 3));
+
+	if (uart1_funtion == 0)
+		gd->flags |= GD_FLG_SILENT;
+#endif
 	imx_iomux_v3_setup_multiple_pads(uart1_pads, ARRAY_SIZE(uart1_pads));
 }
 
@@ -1236,6 +1253,12 @@ int board_late_init(void)
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
 #endif
+
+#ifdef CONFIG_SWITCH_DEBUG_PORT_TO_UART1
+	if (uart1_funtion == 0)
+		setenv("console", "NULL");
+#endif
+
 	return 0;
 }
 
