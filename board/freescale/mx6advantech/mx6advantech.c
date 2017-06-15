@@ -1280,6 +1280,41 @@ int checkboard(void)
 
 void board_fastboot_setup(void)
 {
+#ifdef CONFIG_ADV_OTA_SUPPORT
+	int bootdev = (*(int *)0x22200000);
+        switch (bootdev) {
+                case 1:
+			if (!getenv("fastboot_dev"))
+				setenv("fastboot_dev", "mmc0");
+			if (!getenv("bootcmd"))
+				setenv("bootcmd", "boota mmc0");
+			break;
+#if defined(CONFIG_FASTBOOT_STORAGE_SATA)
+		case 2:
+			if (!getenv("fastboot_dev"))
+				setenv("fastboot_dev", "sata");
+			if (!getenv("bootcmd"))
+				setenv("bootcmd", "boota sata");
+			break;
+#endif /*CONFIG_FASTBOOT_STORAGE_SATA*/
+                case 3:
+			if (!getenv("fastboot_dev"))
+				setenv("fastboot_dev", "mmc1");
+			if (!getenv("bootcmd"))
+				setenv("bootcmd", "boota mmc1");
+			break;
+#ifdef CONFIG_SPI_BOOT
+                case 4:
+                        /* booting from SPI*/
+                        printf("Not support recovery for booting from SPI\n");
+                        break;
+#endif
+                default:
+			printf("unsupported boot devices\n");
+			break;
+        }
+
+#else
 	switch (get_boot_device()) {
 #if defined(CONFIG_FASTBOOT_STORAGE_SATA)
 	case SATA_BOOT:
@@ -1315,7 +1350,7 @@ void board_fastboot_setup(void)
 		printf("unsupported boot devices\n");
 		break;
 	}
-
+#endif /*CONFIG_ADV_OTA_SUPPORT*/
 }
 
 #ifdef CONFIG_ANDROID_RECOVERY
@@ -1383,7 +1418,6 @@ void board_recovery_setup(void)
 	}
 #elif defined(CONFIG_ADV_OTA_SUPPORT)
 	int bootdev = (*(int *)0x22200000);
-
         switch (bootdev) {
 		case 1:
 		default:
