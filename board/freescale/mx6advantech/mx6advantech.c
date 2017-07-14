@@ -1060,6 +1060,13 @@ int board_init(void)
 	setup_fec();
 #endif
 
+#ifdef CONFIG_ADVANTECH
+#ifndef CONFIG_MX6QP
+	writel(0x514201F0, 0x021B0400);
+	writel(0x514201F0, 0x021B4400);
+#endif
+#endif
+
 	return 0;
 }
 
