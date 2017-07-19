@@ -1316,6 +1316,12 @@ void board_fastboot_setup(void)
                         printf("Not support recovery for booting from SPI\n");
                         break;
 #endif
+                case 5:
+			if (!getenv("fastboot_dev"))
+				setenv("fastboot_dev", "mmc2");
+			if (!getenv("bootcmd"))
+				setenv("bootcmd", "boota mmc2");
+			break;
                 default:
 			printf("unsupported boot devices\n");
 			break;
