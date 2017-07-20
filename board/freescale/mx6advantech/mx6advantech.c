@@ -1289,26 +1289,23 @@ void board_fastboot_setup(void)
 {
 #ifdef CONFIG_ADV_OTA_SUPPORT
 	int bootdev = (*(int *)0x22200000);
+	char mmc_num[32];
         switch (bootdev) {
-                case 1:
+                case 1:	//SD
+			sprintf(mmc_num, "mmc%d", CONFIG_SD_DEV_NUM);
 			if (!getenv("fastboot_dev"))
-				setenv("fastboot_dev", "mmc0");
-			if (!getenv("bootcmd"))
-				setenv("bootcmd", "boota mmc0");
+				setenv("fastboot_dev", mmc_num);
 			break;
 #if defined(CONFIG_FASTBOOT_STORAGE_SATA)
 		case 2:
 			if (!getenv("fastboot_dev"))
 				setenv("fastboot_dev", "sata");
-			if (!getenv("bootcmd"))
-				setenv("bootcmd", "boota sata");
 			break;
 #endif /*CONFIG_FASTBOOT_STORAGE_SATA*/
-                case 3:
+                case 3: //EMMC
+			sprintf(mmc_num, "mmc%d", CONFIG_EMMC_DEV_NUM);
 			if (!getenv("fastboot_dev"))
-				setenv("fastboot_dev", "mmc1");
-			if (!getenv("bootcmd"))
-				setenv("bootcmd", "boota mmc1");
+				setenv("fastboot_dev", mmc_num);
 			break;
 #ifdef CONFIG_SPI_BOOT
                 case 4:
@@ -1316,12 +1313,13 @@ void board_fastboot_setup(void)
                         printf("Not support recovery for booting from SPI\n");
                         break;
 #endif
-                case 5:
+#ifdef CONFIG_CARRIERSD_DEV_NUM
+                case 5: //Carrier SD
+			sprintf(mmc_num, "mmc%d", CONFIG_CARRIERSD_DEV_NUM);
 			if (!getenv("fastboot_dev"))
-				setenv("fastboot_dev", "mmc2");
-			if (!getenv("bootcmd"))
-				setenv("bootcmd", "boota mmc2");
+				setenv("fastboot_dev", mmc_num);
 			break;
+#endif
                 default:
 			printf("unsupported boot devices\n");
 			break;
