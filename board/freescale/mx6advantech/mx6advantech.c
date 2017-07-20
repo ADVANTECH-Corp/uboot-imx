@@ -1429,14 +1429,14 @@ void board_recovery_setup(void)
 	}
 #elif defined(CONFIG_ADV_OTA_SUPPORT)
 	int bootdev = (*(int *)0x22200000);
+	char bootcmd_recovery[32];
         switch (bootdev) {
 		case 1:
-		default:
 			/* booting from SD*/
+			sprintf(bootcmd_recovery, "boota mmc%d recovery", CONFIG_SD_DEV_NUM);
 			printf("booting from SD\n");
 			if (!getenv("bootcmd_recovery"))
-				setenv("bootcmd_recovery",
-					"boota mmc0 recovery");
+				setenv("bootcmd_recovery",bootcmd_recovery);
 			break;
 		case 2:
 			/* booting from SATA*/
@@ -1447,10 +1447,10 @@ void board_recovery_setup(void)
 			break;
 		case 3:
 			/* booting from iNAND*/
+			sprintf(bootcmd_recovery, "boota mmc%d recovery", CONFIG_EMMC_DEV_NUM);
 			printf("booting from iNAND\n");
 			if (!getenv("bootcmd_recovery"))
-				setenv("bootcmd_recovery",
-                                "boota mmc1 recovery");
+				setenv("bootcmd_recovery",bootcmd_recovery);
 			break;
 #ifdef CONFIG_SPI_BOOT
 		case 4:
@@ -1458,6 +1458,18 @@ void board_recovery_setup(void)
 			printf("Not support recovery for booting from SPI\n");
 			break;
 #endif
+#ifdef CONFIG_CARRIERSD_DEV_NUM
+                case 5: 
+			/* booting from Carrier SD*/
+			sprintf(bootcmd_recovery, "boota mmc%d recovery", CONFIG_CARRIERSD_DEV_NUM);
+			if (!getenv("bootcmd_recovery"))
+				setenv("bootcmd_recovery",bootcmd_recovery);
+                        break;
+#endif
+		default:
+			printf("unsupported boot devices\n");
+			break;
+
         }
 
 #else
