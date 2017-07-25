@@ -798,7 +798,7 @@ int board_set_boot_device(void)
 	/* log uboot version */
 	strncpy(advboot_version, (void *)0x22300000, 128);
 
-	if (strstr(advboot_version,"advantech") == NULL)
+	if ((strstr(advboot_version,"advantech") == NULL) && (strstr(advboot_version,"LIV") == NULL))
 		strcpy(advboot_version, "");
 
 	pch=strchr(version_string,'2');
