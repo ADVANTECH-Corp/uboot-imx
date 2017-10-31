@@ -129,8 +129,13 @@ int do_bootm(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	}
 
 #ifdef CONFIG_SECURE_BOOT
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_MFG_IGNORE_CHECK_SECURE_BOOT)
+	/* printf("\n [do_bootm] Ignore to check authenticate_image()\n"); */
+#else
 	extern uint32_t authenticate_image(
 			uint32_t ddr_start, uint32_t image_size);
+
+	/* printf("\n [do_bootm] Check authenticate_image()\n"); */
 
 	switch (genimg_get_format((const void *)load_addr)) {
 #if defined(CONFIG_IMAGE_FORMAT_LEGACY)
@@ -151,7 +156,8 @@ int do_bootm(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 		printf("Not valid image format for Authentication, Please check\n");
 		return 1;
 	}
-#endif
+#endif /* CONFIG_SECURE_BOOT */
+#endif /* CONFIG_ADVANTECH && CONFIG_MFG_IGNORE_CHECK_SECURE_BOOT */
 
 	return do_bootm_states(cmdtp, flag, argc, argv, BOOTM_STATE_START |
 		BOOTM_STATE_FINDOS | BOOTM_STATE_FINDOTHER |
@@ -609,12 +615,19 @@ static int bootz_start(cmd_tbl_t *cmdtp, int flag, int argc,
 		return 1;
 
 #ifdef CONFIG_SECURE_BOOT
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_MFG_IGNORE_CHECK_SECURE_BOOT)
+	/* printf("\n [bootz_start] Ignore to check authenticate_image()\n"); */
+#else
 	extern uint32_t authenticate_image(
 			uint32_t ddr_start, uint32_t image_size);
+
+	/* printf("\n [bootz_start] check authenticate_image()\n"); */
+
 	if (authenticate_image(images->ep, zi_end - zi_start) == 0) {
 		printf("Authenticate zImage Fail, Please check\n");
 		return 1;
 	}
+#endif
 #endif
 	return 0;
 }

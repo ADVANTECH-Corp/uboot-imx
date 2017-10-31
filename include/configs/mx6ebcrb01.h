@@ -117,15 +117,16 @@
 #endif /* CONFIG_SPLASH_SCREEN && CONFIG_MXC_EPDC */
 #endif
 
-#define CONFIG_SUPPORT_LVDS
-#ifdef CONFIG_SUPPORT_LVDS
-#define IOMUX_LCD_BKLT_PWM 	MX6_PAD_GPIO_1__GPIO1_IO01
-#define IOMUX_LCD_BKLT_EN	MX6_PAD_KEY_COL0__GPIO4_IO06
-#define IOMUX_LCD_VDD_EN	MX6_PAD_KEY_ROW0__GPIO4_IO07
-#define LCD_BKLT_PWM 		IMX_GPIO_NR(1, 1)
-#define LCD_BKLT_EN 		IMX_GPIO_NR(4, 6)
-#define LCD_VDD_EN 		IMX_GPIO_NR(4, 7)	
+/* uncomment for SECURE mode support */
+#define CONFIG_SECURE_BOOT
+
+#ifdef CONFIG_SECURE_BOOT
+#ifndef CONFIG_CSF_SIZE
+#define CONFIG_CSF_SIZE 0x4000
 #endif
+#endif
+
+/* #define CONFIG_MFG_IGNORE_CHECK_SECURE_BOOT */
 
 #define SPI1_CS0                IMX_GPIO_NR(2,30)
 #define IOMUX_SPI_SCLK          MX6_PAD_EIM_D16__ECSPI1_SCLK
@@ -133,5 +134,4 @@
 #define IOMUX_SPI_MOSI          MX6_PAD_EIM_D18__ECSPI1_MOSI
 #define IOMUX_SPI_CS0           MX6_PAD_EIM_EB2__ECSPI1_SS0
 
-#define USDHC3_CD_GPIO          IMX_GPIO_NR(7, 1)
 #endif                         /* __MX6QSABRESD_CONFIG_H */

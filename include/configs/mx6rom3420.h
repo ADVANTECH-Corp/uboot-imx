@@ -135,6 +135,17 @@
 #endif /* CONFIG_SPLASH_SCREEN && CONFIG_MXC_EPDC */
 #endif
 
+/* uncomment for SECURE mode support */
+/* #define CONFIG_SECURE_BOOT */
+
+#ifdef CONFIG_SECURE_BOOT
+#ifndef CONFIG_CSF_SIZE
+#define CONFIG_CSF_SIZE 0x4000
+#endif
+#endif
+
+/* #define CONFIG_MFG_IGNORE_CHECK_SECURE_BOOT */
+
 #define CONFIG_SUPPORT_LVDS
 #ifdef CONFIG_SUPPORT_LVDS
 #define IOMUX_LCD_BKLT_PWM 	MX6_PAD_GPIO_9__GPIO1_IO09

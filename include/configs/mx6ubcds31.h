@@ -108,7 +108,16 @@
 #endif /* CONFIG_SPLASH_SCREEN && CONFIG_MXC_EPDC */
 #endif
 
+/* uncomment for SECURE mode support */
+/* #define CONFIG_SECURE_BOOT */
 
+#ifdef CONFIG_SECURE_BOOT
+#ifndef CONFIG_CSF_SIZE
+#define CONFIG_CSF_SIZE 0x4000
+#endif
+#endif
+
+/* #define CONFIG_MFG_IGNORE_CHECK_SECURE_BOOT */
 
 #define SPI1_CS0                IMX_GPIO_NR(2,30)
 #define IOMUX_SPI_SCLK          MX6_PAD_EIM_D16__ECSPI1_SCLK
