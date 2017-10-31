@@ -501,10 +501,21 @@ static void print_hdr_v2(struct imx_header *imx_hdr)
 		printf("Entry Point:  %08x\n", (uint32_t)fhdr_v2->entry);
 		if (fhdr_v2->csf && (imximage_ivt_offset != UNDEFINED) &&
 		    (imximage_csf_size != UNDEFINED)) {
+#ifdef CONFIG_ADVANTECH
+			uint16_t dcdlen;
+			int offs;
+
+			dcdlen = hdr_v2->data.dcd_table.header.length;
+			offs = (char *)&hdr_v2->data.dcd_table - (char *)hdr_v2;
+#endif
 			printf("HAB Blocks:   %08x %08x %08x\n",
 			       (uint32_t)fhdr_v2->self, 0,
 			       hdr_v2->boot_data.size - imximage_ivt_offset -
 			       imximage_csf_size);
+#ifdef CONFIG_ADVANTECH
+			printf("DCD Blocks:   00910000 %08x %08x\n",
+			       offs, be16_to_cpu(dcdlen));
+#endif
 		}
 	} else {
 		imx_header_v2_t *next_hdr_v2;
