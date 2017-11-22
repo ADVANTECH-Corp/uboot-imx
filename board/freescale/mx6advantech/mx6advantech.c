@@ -175,6 +175,13 @@ static iomux_v3_cfg_t const uart1_pads[] = {
 	MX6_PAD_CSI0_DAT10__UART1_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
 	MX6_PAD_CSI0_DAT11__UART1_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
 };
+#ifdef	ADV_ENABLE_UART2
+static iomux_v3_cfg_t const uart2_pads[] = {
+	MX6_PAD_EIM_D26__UART2_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
+	MX6_PAD_EIM_D27__UART2_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL),
+};
+#endif
+
 
 static iomux_v3_cfg_t const enet_pads[] = {
 	MX6_PAD_ENET_MDIO__ENET_MDIO		| MUX_PAD_CTRL(ENET_PAD_CTRL),
@@ -360,6 +367,9 @@ static void setup_iomux_uart(void)
 		gd->flags |= GD_FLG_SILENT;
 #endif
 	imx_iomux_v3_setup_multiple_pads(uart1_pads, ARRAY_SIZE(uart1_pads));
+#ifdef ADV_ENABLE_UART2
+	imx_iomux_v3_setup_multiple_pads(uart2_pads, ARRAY_SIZE(uart2_pads));
+#endif
 }
 
 #if defined(CONFIG_MX6DL) && defined(CONFIG_MXC_EPDC)
