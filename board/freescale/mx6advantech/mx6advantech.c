@@ -1300,12 +1300,15 @@ void board_fastboot_setup(void)
 #ifdef CONFIG_ADV_OTA_SUPPORT
 	int bootdev = (*(int *)0x22200000);
 	char mmc_num[32];
+
         switch (bootdev) {
-                case 1:	//SD
+#ifdef CONFIG_SD_DEV_NUM
+               case 1:	//SD
 			sprintf(mmc_num, "mmc%d", CONFIG_SD_DEV_NUM);
 			if (!getenv("fastboot_dev"))
 				setenv("fastboot_dev", mmc_num);
 			break;
+#endif /*CONFIG_SD_DEV_NUM*/
 #if defined(CONFIG_FASTBOOT_STORAGE_SATA)
 		case 2:
 			if (!getenv("fastboot_dev"))
@@ -1330,6 +1333,12 @@ void board_fastboot_setup(void)
 				setenv("fastboot_dev", mmc_num);
 			break;
 #endif
+#ifdef CONFIG_USB_BOOT
+		case 6:
+			if (!getenv("fastboot_dev"))
+				setenv("fastboot_dev", "usb");
+			break;
+#endif/*CONFIG_USB_BOOT*/
                 default:
 			printf("unsupported boot devices\n");
 			break;
@@ -1441,6 +1450,7 @@ void board_recovery_setup(void)
 	int bootdev = (*(int *)0x22200000);
 	char bootcmd_recovery[32];
         switch (bootdev) {
+#ifdef CONFIG_SD_DEV_NUM
 		case 1:
 			/* booting from SD*/
 			sprintf(bootcmd_recovery, "boota mmc%d recovery", CONFIG_SD_DEV_NUM);
@@ -1448,6 +1458,7 @@ void board_recovery_setup(void)
 			if (!getenv("bootcmd_recovery"))
 				setenv("bootcmd_recovery",bootcmd_recovery);
 			break;
+#endif /*CONFIG_SD_DEV_NUM*/
 		case 2:
 			/* booting from SATA*/
 			printf("booting from SATA\n");

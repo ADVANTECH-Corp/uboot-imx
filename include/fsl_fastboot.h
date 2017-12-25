@@ -42,7 +42,12 @@
 enum {
     DEV_SATA,
     DEV_MMC,
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_CMD_USB)
+    DEV_NAND,
+    DEV_USB
+#else
     DEV_NAND
+#endif
 };
 
 struct cmd_fastboot_interface {

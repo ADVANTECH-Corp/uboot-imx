@@ -189,13 +189,16 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 #if defined(CONFIG_ADVANTECH)
 	case BOOT_DEVICE_AUTO:
 		printf("BOOT_DEVICE_AUTO\n");
+		/* Index. Storage device --> Index will be used by board_set_boot_device() */ 
 #ifdef CONFIG_SPL_MMC_SUPPORT
+#ifdef CONFIG_SD_DEV_NUM
 		/* 1. SD card */
 		if (!spl_mmc_load_image(CONFIG_SD_DEV_NUM)) {
 			printf("booting from SD\n");
 			*(int *)0x22200000 = 0x01;
 		} else
-#endif
+#endif /*CONFIG_SD_DEV_NUM*/
+#endif /*CONFIG_SPL_MMC_SUPPORT*/
 #ifdef CONFIG_CARRIERSD_DEV_NUM
 		/* 5. Carrier SD card for ROM-7421 */
 		if (!spl_mmc_load_image(CONFIG_CARRIERSD_DEV_NUM)) {
@@ -208,6 +211,13 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 		if (!spl_sata_load_image(CONFIG_SATA_DEV_NUM)) {
 			printf("booting from SATA\n");
 			*(int *)0x22200000 = 0x02;
+		} else
+#endif
+#ifdef CONFIG_SPL_USB_SUPPORT
+		/* 6. USB */
+		if (!spl_usb_load_image()) {
+			printf("booting from USB\n");
+			*(int *)0x22200000 = 0x06;
 		} else
 #endif
 #ifdef CONFIG_SPL_MMC_SUPPORT
