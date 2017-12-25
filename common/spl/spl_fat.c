@@ -39,6 +39,49 @@ static int spl_register_fat_device(block_dev_desc_t *block_dev, int partition)
 	return err;
 }
 
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_SPL_USB_SUPPORT)
+int spl_usb_check_crc(block_dev_desc_t *block_dev, int partition)
+{
+	int err;
+	/* read crc file */
+	char tag[512];
+	char crc[512];
+
+	err = spl_register_fat_device(block_dev, partition);
+
+	if (err) {
+		printf("\n %s: spl_register_fat_device() error!\n", __func__);
+		return 1;
+	}
+
+	err = file_fat_read(CONFIG_SPL_FS_LOAD_PAYLOAD_CRC_NAME, tag, sizeof(tag));
+
+	if (err <= 0) {
+		printf("\n %s: error reading image %s, err - %d\n", __func__, CONFIG_SPL_FS_LOAD_PAYLOAD_CRC_NAME, err);
+		return 1;
+	}
+
+	err = file_fat_read(CONFIG_SPL_FS_LOAD_PAYLOAD_NAME, (const uchar *) 0x22000000, 0x96000);
+
+	if (err <= 0) {
+		printf("\n %s: error reading image %s, err - %d\n", __func__, CONFIG_SPL_FS_LOAD_PAYLOAD_NAME, err);
+		return 1;
+	}
+
+	*(int *)0x21f00000 = crc32 (0, (const uchar *) 0x22000000, 0x96000);
+	sprintf(crc, "%08x", *(int *)0x21f00000);
+
+	/* verrify crc */
+	if(memcmp(tag, crc, 8))
+	{
+		printf("\n %s: Boot from USB - crc error\n", __func__);
+		return 1;
+	}
+
+	return 0;
+}
+#endif /*defined(CONFIG_ADVANTECH) && defined(CONFIG_SPL_USB_SUPPORT)*/
+
 int spl_load_image_fat(block_dev_desc_t *block_dev,
 						int partition,
 						const char *filename)

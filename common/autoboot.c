@@ -327,6 +327,10 @@ const char *bootdelay_process(void)
 	bootdelay = s ? (int)simple_strtol(s, NULL, 10) : CONFIG_BOOTDELAY;
 
 #ifdef is_boot_from_usb
+#ifdef CONFIG_ADVANTECH
+#ifdef CONFIG_USB_BOOT
+	printf("Normal Boot\n");
+#else
 	if (is_boot_from_usb()) {
 		disconnect_from_pc();
 		printf("Boot from USB for mfgtools\n");
@@ -336,7 +340,19 @@ const char *bootdelay_process(void)
 	} else {
 		printf("Normal Boot\n");
 	}
-#endif
+#endif /*CONFIG_USB_BOOT*/
+#else
+	if (is_boot_from_usb()) {
+		disconnect_from_pc();
+		printf("Boot from USB for mfgtools\n");
+		bootdelay = 0;
+		set_default_env("Use default environment for \
+				 mfgtools\n");
+	} else {
+		printf("Normal Boot\n");
+	}
+#endif /*CONFIG_ADVANTECH*/
+#endif /*is_boot_from_usb*/
 
 #ifdef CONFIG_OF_CONTROL
 	bootdelay = fdtdec_get_config_int(gd->fdt_blob, "bootdelay",
@@ -363,12 +379,15 @@ const char *bootdelay_process(void)
 	} else
 #endif /* CONFIG_BOOTCOUNT_LIMIT */
 		s = getenv("bootcmd");
+#if 0 //alex
 
 #ifdef is_boot_from_usb
 	if (is_boot_from_usb()) {
 		s = getenv("bootcmd_mfg");
 		printf("Run bootcmd_mfg: %s\n", s);
 	}
+#endif
+
 #endif
 
 	process_fdt_options(gd->fdt_blob);

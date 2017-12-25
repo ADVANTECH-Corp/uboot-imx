@@ -72,6 +72,11 @@ int spl_net_load_image(const char *device);
 /* USB SPL functions */
 int spl_usb_load_image(void);
 
+/* USB SPL function */
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_SPL_USB_SUPPORT)
+int spl_usb_check_crc(block_dev_desc_t *block_dev, int partition);
+#endif
+
 /* SATA SPL functions */
 #ifdef CONFIG_ADVANTECH
 int spl_sata_load_image(unsigned int dev);

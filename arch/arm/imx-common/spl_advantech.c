@@ -36,11 +36,15 @@ u32 spl_boot_mode(void)
     case BOOT_DEVICE_MMC2:
     case BOOT_DEVICE_MMC2_2:
     case BOOT_DEVICE_AUTO:
+#ifdef CONFIG_ADVANTECH
+	return MMCSD_MODE_RAW;
+#else
 #ifdef CONFIG_SPL_FAT_SUPPORT
-        return MMCSD_MODE_FAT;
+        return MMCSD_MODE_FS;
 #else
         return MMCSD_MODE_RAW;
-#endif
+#endif /*CONFIG_SPL_FAT_SUPPORT*/
+#endif /*CONFIG_ADVANTECH*/
     default:
         puts("spl: ERROR:  unknown device - can't select boot mode\n");
         hang();

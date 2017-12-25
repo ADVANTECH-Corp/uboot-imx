@@ -39,12 +39,28 @@ int spl_usb_load_image(void)
 #ifdef CONFIG_USB_STORAGE
 	/* try to recognize storage devices immediately */
 	usb_stor_curr_dev = usb_stor_scan(1);
+
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_SPL_USB_SUPPORT)
+	if (usb_stor_curr_dev < 0) {
+		err = 1;
+		/* printf("\n %s Error usb_stor_curr_dev:%d; err:%d\n", __func__, usb_stor_curr_dev, err); */
+		return err;
+	}
+#endif
+
 	stor_dev = usb_stor_get_dev(usb_stor_curr_dev);
 	if (!stor_dev)
 		return -ENODEV;
 #endif
 
 	debug("boot mode - FAT\n");
+
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_SPL_USB_SUPPORT)
+	err = spl_usb_check_crc(stor_dev, CONFIG_SYS_USB_FAT_BOOT_PARTITION);
+
+	if (err) 
+		return err;
+#endif
 
 #ifdef CONFIG_SPL_OS_BOOT
 		if (spl_start_uboot() || spl_load_image_fat_os(stor_dev,

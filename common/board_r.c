@@ -928,6 +928,7 @@ int board_set_boot_device(void)
 	/* Linux */
 		case 1:
 		default:
+#ifdef CONFIG_SD_DEV_NUM
 			/* booting from SD*/
 			printf("booting from SD\n");
 			setenv("mmcdev", "0");
@@ -936,6 +937,7 @@ int board_set_boot_device(void)
 				setenv("mmcroot",buf);
 			}
 			break;
+#endif /*CONFIG_SD_DEV_NUM*/
 		case 2:
 			/* booting from SATA*/
 			printf("booting from SATA\n");
@@ -976,6 +978,27 @@ int board_set_boot_device(void)
 			setenv("mmcroot",buf);
                         break;
 #endif
+#ifdef CONFIG_USB_BOOT
+		case 6:
+			/* booting from USB */
+			printf("booting from USB\n");
+			sprintf(buf, "fatload usb 0:1 ${loadaddr} ${image}");
+			setenv("loadimage", buf);
+			sprintf(buf, "fatload usb 0:1 ${fdt_addr} ${fdt_file}");
+			setenv("loadfdt", buf);
+			sprintf(buf, "fatload usb 0:1 ${loadaddr} ${script}");
+			setenv("loadbootscript", buf);
+			sprintf(buf, "/dev/sda2 rootwait rw");
+			setenv("usbroot", buf);
+			sprintf(buf, "setenv bootargs console=${console},${baudrate} ${smp} root=${usbroot} ${bootargs}");
+			setenv("usbargs", buf);
+			sprintf(buf, "dcache off; usb init; run loadimage; run loadbootscript; run usbargs; run loadfdt; bootz ${loadaddr} - ${fdt_addr}");
+#ifdef CONFIG_ADV_OTA_SUPPORT
+			setenv("fastboot_dev", "usb");
+#endif
+			setenv("bootcmd", buf);
+			break;
+#endif /*CONFIG_USB_BOOT*/
 #endif /*CONFIG_ANDROID_SUPPORT*/
 	}
 

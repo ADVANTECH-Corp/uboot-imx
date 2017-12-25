@@ -1274,6 +1274,12 @@ static int _fastboot_setup_dev(void)
 			set_mmc_id(fastboot_devinfo.dev_id);
 #endif
 		}
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_CMD_USB)
+		else if (!strcmp(fastboot_env, "usb")) {
+			fastboot_devinfo.type = DEV_USB;
+			fastboot_devinfo.dev_id = 0;
+		}
+#endif
 	} else {
 		return 1;
 	}
@@ -1348,7 +1354,6 @@ static int _fastboot_parts_load_from_ptable(void)
 	} else if (fastboot_devinfo.type == DEV_MMC) {
 		int mmc_no = 0;
 		mmc_no = fastboot_devinfo.dev_id;
-
 		printf("flash target is MMC:%d\n", mmc_no);
 		mmc = find_mmc_device(mmc_no);
 		if (mmc && mmc_init(mmc))
@@ -1366,6 +1371,21 @@ static int _fastboot_parts_load_from_ptable(void)
 			boot_partition = FASTBOOT_MMC_BOOT_PARTITION_ID;
 			user_partition = FASTBOOT_MMC_USER_PARTITION_ID;
 		}
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_CMD_USB)
+	} else if (fastboot_devinfo.type == DEV_USB) {
+		int usb_stor_curr_dev = -1; /* current device */
+
+		puts("flash target is USB\n");
+
+		if (usb_init() < 0)
+			return -1;
+
+		/* Driver model will probe the devices as they are found */
+#ifdef CONFIG_USB_STORAGE
+		/* try to recognize storage devices immediately */
+		usb_stor_curr_dev = usb_stor_scan(1);
+#endif
+#endif /* defined(CONFIG_ADVANTECH) && defined(CONFIG_CMD_USB) */
 	} else {
 		printf("Can't setup partition table on this device %d\n",
 			fastboot_devinfo.type);

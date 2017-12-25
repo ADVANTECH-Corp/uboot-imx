@@ -55,6 +55,20 @@
 #define CONFIG_SPL_SATA_SUPPORT
 #endif
 
+/* USB support */
+#ifdef CONFIG_USB_BOOT
+#define CONFIG_SPL_USB_SUPPORT
+#define CONFIG_SPL_USB_HOST_SUPPORT
+#define CONFIG_SPL_FAT_SUPPORT
+#define CONFIG_SPL_ENV_SUPPORT
+#endif
+
+#ifdef CONFIG_SPL_USB_SUPPORT
+#define CONFIG_SYS_USB_FAT_BOOT_PARTITION	1
+#define CONFIG_SPL_FS_LOAD_PAYLOAD_NAME 	"u-boot_crc.bin"
+#define CONFIG_SPL_FS_LOAD_PAYLOAD_CRC_NAME	"u-boot_crc.bin.crc"
+#endif
+
 /* SPI support */
 #ifdef CONFIG_SPI_BOOT
 #ifdef CONFIG_MX6Q
