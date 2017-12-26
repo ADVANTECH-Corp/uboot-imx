@@ -379,16 +379,19 @@ const char *bootdelay_process(void)
 	} else
 #endif /* CONFIG_BOOTCOUNT_LIMIT */
 		s = getenv("bootcmd");
-#if 0 //alex
+
 
 #ifdef is_boot_from_usb
+#ifdef CONFIG_ADVANTECH
+#ifndef CONFIG_USB_BOOT
 	if (is_boot_from_usb()) {
 		s = getenv("bootcmd_mfg");
 		printf("Run bootcmd_mfg: %s\n", s);
 	}
-#endif
+#endif /*CONFIG_USB_BOOT*/
+#endif /*CONFIG_ADVANTECH*/
+#endif /*is_boot_from_usb*/
 
-#endif
 
 	process_fdt_options(gd->fdt_blob);
 	stored_bootdelay = bootdelay;
