@@ -113,6 +113,13 @@ config TARGET_MX6RSB4411A1_1G
 	select DM
 	select DM_THERMAL
 
+config TARGET_MX6RSB4411A1_2G
+	bool "Support mx6rsb4411a1 2G"
+	select CPU_V7
+	select SUPPORT_SPL
+	select DM
+	select DM_THERMAL
+
 config TARGET_MX6EBCRS03A1_1G
 	bool "Support mx6rbcrs03a1 1G"
 	select CPU_V7

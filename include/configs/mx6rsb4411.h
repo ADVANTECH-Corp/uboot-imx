@@ -31,7 +31,7 @@
 #define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
 #endif
 
-#if defined(CONFIG_TARGET_MX6RSB4411A1_1G)
+#if defined(CONFIG_TARGET_MX6RSB4411A1_1G) || defined(CONFIG_TARGET_MX6RSB4411A1_2G)
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rsb4411-a1.dtb"
 #elif defined(CONFIG_MX6Q)
