@@ -310,6 +310,10 @@ const char *bootdelay_process(void)
 {
 	char *s;
 	int bootdelay;
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)
+	int dev = (*(int *)0x22200000);
+#endif
+
 #ifdef CONFIG_BOOTCOUNT_LIMIT
 	unsigned long bootcount = 0;
 	unsigned long bootlimit = 0;
@@ -327,31 +331,24 @@ const char *bootdelay_process(void)
 	bootdelay = s ? (int)simple_strtol(s, NULL, 10) : CONFIG_BOOTDELAY;
 
 #ifdef is_boot_from_usb
-#ifdef CONFIG_ADVANTECH
-#ifdef CONFIG_USB_BOOT
-	printf("Normal Boot\n");
-#else
-	if (is_boot_from_usb()) {
-		disconnect_from_pc();
-		printf("Boot from USB for mfgtools\n");
-		bootdelay = 0;
-		set_default_env("Use default environment for \
-				 mfgtools\n");
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)
+	/* [1]dev=6 --> USB boot. [2]dev > 6 --> OTG port: upgrade image by mfg tool */
+	if (dev > 6) {
+#endif /*defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)*/
+		if (is_boot_from_usb()) {
+			disconnect_from_pc();
+			printf("Boot from USB for mfgtools\n");
+			bootdelay = 0;
+			set_default_env("Use default environment for \
+					 mfgtools\n");
+		} else {
+			printf("Normal Boot\n");
+		}
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)
 	} else {
 		printf("Normal Boot\n");
 	}
-#endif /*CONFIG_USB_BOOT*/
-#else
-	if (is_boot_from_usb()) {
-		disconnect_from_pc();
-		printf("Boot from USB for mfgtools\n");
-		bootdelay = 0;
-		set_default_env("Use default environment for \
-				 mfgtools\n");
-	} else {
-		printf("Normal Boot\n");
-	}
-#endif /*CONFIG_ADVANTECH*/
+#endif /*defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)*/
 #endif /*is_boot_from_usb*/
 
 #ifdef CONFIG_OF_CONTROL
@@ -380,18 +377,19 @@ const char *bootdelay_process(void)
 #endif /* CONFIG_BOOTCOUNT_LIMIT */
 		s = getenv("bootcmd");
 
-
 #ifdef is_boot_from_usb
-#ifdef CONFIG_ADVANTECH
-#ifndef CONFIG_USB_BOOT
-	if (is_boot_from_usb()) {
-		s = getenv("bootcmd_mfg");
-		printf("Run bootcmd_mfg: %s\n", s);
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)
+	/* [1]dev=6 --> USB boot. [2]dev > 6 --> OTG port: upgrade image by mfg tool*/
+	if (dev > 6) {
+#endif /*defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)*/
+		if (is_boot_from_usb()) {
+			s = getenv("bootcmd_mfg");
+			printf("Run bootcmd_mfg: %s\n", s);
+		}
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)
 	}
-#endif /*CONFIG_USB_BOOT*/
-#endif /*CONFIG_ADVANTECH*/
+#endif /*defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)*/
 #endif /*is_boot_from_usb*/
-
 
 	process_fdt_options(gd->fdt_blob);
 	stored_bootdelay = bootdelay;

@@ -926,18 +926,24 @@ int board_set_boot_device(void)
 #endif
 #else
 	/* Linux */
-		case 1:
-		default:
 #ifdef CONFIG_SD_DEV_NUM
+		case 1:
+#endif /*CONFIG_SD_DEV_NUM*/
+		default:
 			/* booting from SD*/
-			printf("booting from SD\n");
+#ifdef CONFIG_SD_DEV_NUM
+			if(dev == 1)
+				printf("booting from SD\n");
+			else
+#endif /*CONFIG_SD_DEV_NUM*/
+				printf("default booting from SD\n");
+
 			setenv("mmcdev", "0");
 			if(emmc_exist) {
 				sprintf(buf, "/dev/mmcblk1p2 rootwait rw");
 				setenv("mmcroot",buf);
 			}
 			break;
-#endif /*CONFIG_SD_DEV_NUM*/
 		case 2:
 			/* booting from SATA*/
 			printf("booting from SATA\n");
