@@ -831,7 +831,7 @@ int board_set_boot_device(void)
 		default:
 			/* booting from SD*/
 			printf("booting from SD\n");
-			sprintf(buf, "%s androidboot.selinux=disabled", getenv("bootargs_adv"));
+			sprintf(buf, "%s", getenv("bootargs_adv"));
 			setenv("bootargs_adv", buf);
 			setenv("fastboot_dev", "mmc0");
 			setenv("bootcmd", "boota mmc0");
@@ -839,7 +839,7 @@ int board_set_boot_device(void)
 		case 2:
 			/* booting from SATA*/
 			printf("booting from SATA\n");
-			sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=sata", getenv("bootargs_adv"));
+			sprintf(buf, "%s androidboot.fs=sata", getenv("bootargs_adv"));
 			setenv("bootargs_adv", buf);
 			setenv("fastboot_dev", "sata");
 			setenv("bootcmd", "boota sata");
@@ -847,7 +847,7 @@ int board_set_boot_device(void)
 		case 3:
 			/* booting from iNAND*/
 			printf("booting from iNAND\n");
-			sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=emmc", getenv("bootargs_adv"));
+			sprintf(buf, "%s androidboot.fs=emmc", getenv("bootargs_adv"));
 			setenv("bootargs_adv", buf);
 			setenv("fastboot_dev", "mmc"MK_STR(CONFIG_EMMC_DEV_NUM)"");
 			setenv("bootcmd", "boota mmc"MK_STR(CONFIG_EMMC_DEV_NUM)"");
@@ -856,7 +856,7 @@ int board_set_boot_device(void)
 		case 4:
 			/* booting from SPI*/
 			printf("booting from SPI -> kernel boot form EMMC\n");
-			sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=emmc", getenv("bootargs_adv"));
+			sprintf(buf, "%s androidboot.fs=emmc", getenv("bootargs_adv"));
 			setenv("bootargs_adv", buf);
 			if(emmc_exist) {
 				setenv("fastboot_dev", "mmc1");
@@ -868,7 +868,7 @@ int board_set_boot_device(void)
 		case 5:
 			/* booting from Carrier SD*/
 			printf("booting from Carrier SD\n");
-                        sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=sd2", getenv("bootargs_adv"));
+                        sprintf(buf, "%s androidboot.fs=sd2", getenv("bootargs_adv"));
                         setenv("bootargs_adv", buf);
                         setenv("fastboot_dev", "mmc"MK_STR(CONFIG_CARRIERSD_DEV_NUM)"");
                         setenv("bootcmd", "boota mmc"MK_STR(CONFIG_CARRIERSD_DEV_NUM)"");
