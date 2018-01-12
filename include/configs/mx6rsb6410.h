@@ -30,20 +30,13 @@
 #define CONFIG_SATA_BOOT
 #define CONFIG_SATA_GEN2        0x05919452
 
-#if defined(CONFIG_TARGET_MX6RSB6410A1_512M)
-#define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
-#elif defined(CONFIG_TARGET_MX6RSB6410A1_1G)
+#if defined(CONFIG_TARGET_MX6RSB6410A2_1G)  || defined(CONFIG_TARGET_MX6RSB6410A1_1G)
 #define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
-#elif defined(CONFIG_TARGET_MX6RSB6410A1_2G)
+#elif defined(CONFIG_TARGET_MX6RSB6410A2_2G) || defined(CONFIG_TARGET_MX6RSB6410A1_2G)
 #define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
 #endif
 
-#if defined(CONFIG_TARGET_MX6RSB6410A2_1G)
-#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
-#elif defined(CONFIG_TARGET_MX6RSB6410A2_2G)
-#define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
-#endif
-
+#if defined(CONFIG_TARGET_MX6RSB6410A2_1G) || defined(CONFIG_TARGET_MX6RSB6410A2_2G)
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rsb6410-a2.dtb"
 #elif defined(CONFIG_MX6Q)
@@ -53,6 +46,18 @@
 #elif defined(CONFIG_MX6SOLO)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb6410-a2.dtb"
 #endif
+#elif #if defined(CONFIG_TARGET_MX6RSB6410A1_1G) || defined(CONFIG_TARGET_MX6RSB6410A1_2G)
+#if defined(CONFIG_MX6QP)
+#define CONFIG_DEFAULT_FDT_FILE "imx6qp-rsb6410-a1.dtb"
+#elif defined(CONFIG_MX6Q)
+#define CONFIG_DEFAULT_FDT_FILE "imx6q-rsb6410-a1.dtb"
+#elif defined(CONFIG_MX6DL)
+#define CONFIG_DEFAULT_FDT_FILE "imx6dl-rsb6410-a1.dtb"
+#elif defined(CONFIG_MX6SOLO)
+#define CONFIG_DEFAULT_FDT_FILE "imx6dl-rsb6410-a1.dtb"
+#endif
+#endif
+
 
 /* switch debug port to normal uart */
 #define CONFIG_SWITCH_DEBUG_PORT_TO_UART1
