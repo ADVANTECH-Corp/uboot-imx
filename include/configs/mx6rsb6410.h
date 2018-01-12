@@ -46,7 +46,7 @@
 #elif defined(CONFIG_MX6SOLO)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb6410-a2.dtb"
 #endif
-#elif #if defined(CONFIG_TARGET_MX6RSB6410A1_1G) || defined(CONFIG_TARGET_MX6RSB6410A1_2G)
+#elif defined(CONFIG_TARGET_MX6RSB6410A1_1G) || defined(CONFIG_TARGET_MX6RSB6410A1_2G)
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE "imx6qp-rsb6410-a1.dtb"
 #elif defined(CONFIG_MX6Q)
