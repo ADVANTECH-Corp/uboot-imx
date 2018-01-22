@@ -55,10 +55,6 @@
 #define CONFIG_SF_DEFAULT_CS   0
 #endif
 
-#undef CONFIG_FEC_MXC_PHYADDR
-#define CONFIG_FEC_MXC_PHYADDR  0
-
-
 /*
  * imx6 q/dl/solo pcie would be failed to work properly in kernel, if
  * the pcie module is iniialized/enumerated both in uboot and linux
