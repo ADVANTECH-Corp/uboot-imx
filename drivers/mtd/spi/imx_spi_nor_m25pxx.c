@@ -43,6 +43,8 @@ struct imx_spi_flash_params {
 #ifdef CONFIG_ADVANTECH
 	u32		idcode2;
 	u32		idcode3;
+	u32             idcode4;
+	u32             idcode5;
 #endif
 	u32		block_size;
 	u32		block_count;
@@ -68,6 +70,8 @@ static const struct imx_spi_flash_params imx_spi_flash_table[] = {
 #ifdef CONFIG_ADVANTECH
 		.idcode2		= 0x16,
 		.idcode3		= 0xEF,
+		.idcode4                = 0x36,
+		.idcode5                = 0xC2,
 #endif
 		.block_size		= SZ_64K,
 		.block_count		= 64,
@@ -503,8 +507,16 @@ struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs, unsigned in
 	for (i = 0; i < ARRAY_SIZE(imx_spi_flash_table); ++i) {
 		params = &imx_spi_flash_table[i];
 #if defined CONFIG_ADVANTECH
-		if ( params->idcode2 == idcode[2])
+		if ( params->idcode2 == idcode[2]){
                         if (params->idcode1 == idcode[0] || params->idcode3 == idcode[0])
+				break;
+		}
+		else if ( params->idcode4 == idcode[2]){
+			if (params->idcode5 == idcode[0])
+				break;
+		}
+		else{
+		}
 #else
 		if (params->idcode1 == idcode[1])
 #endif
