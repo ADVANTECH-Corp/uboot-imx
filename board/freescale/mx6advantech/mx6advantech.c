@@ -1018,12 +1018,29 @@ void setup_lvds_init(void)
 }
 
 #endif
+
+
+#ifdef	DIGITAL_OUTPUT
+void setup_do_init()
+{
+	imx_iomux_v3_setup_pad(IOMUX_DO_2 | MUX_PAD_CTRL(NO_PAD_CTRL));
+	imx_iomux_v3_setup_pad(IOMUX_DO_3| MUX_PAD_CTRL(NO_PAD_CTRL));
+	imx_iomux_v3_setup_pad(IOMUX_DO_1| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_direction_output(DO_2,0);
+	gpio_direction_output(DO_3,0);
+	gpio_direction_output(DO_1,0);
+}
+#endif
+
 int board_init(void)
 {
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 #if defined (CONFIG_ADVANTECH) && defined(CONFIG_SUPPORT_LVDS)
        setup_lvds_init();
+#endif
+#ifdef	DIGITAL_OUTPUT
+	setup_do_init();
 #endif
 #ifdef CONFIG_MXC_SPI
 	setup_spi();

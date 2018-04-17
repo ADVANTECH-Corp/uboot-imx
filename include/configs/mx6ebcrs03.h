@@ -127,4 +127,12 @@
 #define IOMUX_SPI_CS0           MX6_PAD_EIM_EB2__ECSPI1_SS0
 
 #define USDHC2_CD_GPIO		IMX_GPIO_NR(1, 4)
+
+#define	DIGITAL_OUTPUT
+#define	IOMUX_DO_2		MX6_PAD_EIM_CS0__GPIO2_IO23
+#define	IOMUX_DO_3		MX6_PAD_EIM_CS1__GPIO2_IO24
+#define	IOMUX_DO_1		MX6_PAD_EIM_OE__GPIO2_IO25
+#define	DO_2           		IMX_GPIO_NR(2,23)
+#define	DO_3           		IMX_GPIO_NR(2,24)
+#define	DO_1           		IMX_GPIO_NR(2,25)
 #endif                         /* __MX6QSABRESD_CONFIG_H */
