@@ -1070,9 +1070,6 @@ int board_init(void)
 #if defined (CONFIG_ADVANTECH) && defined(CONFIG_SUPPORT_LVDS)
        setup_lvds_init();
 #endif
-#ifdef	DIGITAL_OUTPUT
-	setup_do_init();
-#endif
 #ifdef CONFIG_MXC_SPI
 	setup_spi();
 #endif
@@ -1879,6 +1876,10 @@ void board_init_f(ulong dummy)
 	/* iomux and setup of i2c */
 	board_early_init_f();
 
+#ifdef	DIGITAL_OUTPUT
+	setup_do_init();
+#endif
+
 	/* setup GP timer */
 	timer_init();
 
@@ -1891,7 +1892,6 @@ void board_init_f(ulong dummy)
 #else
 	spl_dram_init();
 #endif
-
 	/* Clear the BSS. */
 	memset(__bss_start, 0, __bss_end - __bss_start);
 
