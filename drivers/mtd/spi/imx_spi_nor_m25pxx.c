@@ -518,9 +518,10 @@ struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs, unsigned in
 		else if ( params->idcode4 == idcode[2]){
 			if (params->idcode5 == idcode[0])
 				break;
-                else if ( params->idcode6 == idcode[2]){
-                        if (params->idcode7 == idcode[0])
-                                break;
+		}
+		else if ( params->idcode6 == idcode[2]){
+			if (params->idcode7 == idcode[0])
+				break;
 		}
 		else{
 		}
