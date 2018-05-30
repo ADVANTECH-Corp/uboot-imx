@@ -30,9 +30,6 @@
 #define CONFIG_SATA_BOOT
 #define CONFIG_SATA_GEN2        0x05919452
 
-#undef CONFIG_FEC_MXC_PHYADDR
-#define CONFIG_FEC_MXC_PHYADDR 0
-
 #if defined(CONFIG_TARGET_MX6RSB6410A2_1G)  || defined(CONFIG_TARGET_MX6RSB6410A1_1G)
 #define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_TARGET_MX6RSB6410A2_2G) || defined(CONFIG_TARGET_MX6RSB6410A1_2G)
@@ -84,6 +81,9 @@
 #define CONFIG_SPI_FLASH_CS	1
 #endif
 #endif
+
+#undef CONFIG_FEC_MXC_PHYADDR
+#define CONFIG_FEC_MXC_PHYADDR 0
 /*
  * imx6 q/dl/solo pcie would be failed to work properly in kernel, if
  * the pcie module is iniialized/enumerated both in uboot and linux
