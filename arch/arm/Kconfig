@@ -538,6 +538,11 @@ config TARGET_MX6RSB4411A1_1G
 	select CPU_V7
 	select SUPPORT_SPL
 
+config TARGET_MX6EPCRS200A1_1G
+	bool "Support mx6epcrs200a1 1G"
+	select CPU_V7
+	select SUPPORT_SPL
+
 config TARGET_MX6UBCDS31A1_1G
 	bool "Support mx6ubcds31a1 1G"
 	select CPU_V7
