@@ -306,13 +306,28 @@ static void process_fdt_options(const void *blob)
 #endif /* CONFIG_OF_CONTROL && CONFIG_SYS_TEXT_BASE */
 }
 
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)
+static int is_normal_mode_boot()
+{
+	int dev = (*(int *)0x22200000); /* normal boot mode */
+	unsigned int ddr_bit = *(unsigned int *)0x22500000;
+
+	if((dev > 0) && (dev <= 6)) {
+		/* reference spl_board_init() */
+		if((ddr_bit == 32) || (ddr_bit == 64))
+			return 1; /* normal mode booting */
+		else
+			return 0; /* recovery mode booting */
+	} else {
+		return 0; /* recovery mode booting */
+	}
+}
+#endif
+
 const char *bootdelay_process(void)
 {
 	char *s;
 	int bootdelay;
-#if defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)
-	int dev = (*(int *)0x22200000);
-#endif
 
 #ifdef CONFIG_BOOTCOUNT_LIMIT
 	unsigned long bootcount = 0;
@@ -332,23 +347,18 @@ const char *bootdelay_process(void)
 
 #ifdef is_boot_from_usb
 #if defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)
-	/* [1]dev=6 --> USB boot. [2]dev > 6 --> OTG port: upgrade image by mfg tool */
-	if (dev > 6) {
-#endif /*defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)*/
-		if (is_boot_from_usb()) {
-			disconnect_from_pc();
-			printf("Boot from USB for mfgtools\n");
-			bootdelay = 0;
-			set_default_env("Use default environment for \
-					 mfgtools\n");
-		} else {
-			printf("Normal Boot\n");
-		}
-#if defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)
+	if(!is_normal_mode_boot() && is_boot_from_usb()) {
+#else
+	if (is_boot_from_usb()) {
+#endif
+		disconnect_from_pc();
+		printf("Boot from USB for mfgtools\n");
+		bootdelay = 0;
+		set_default_env("Use default environment for \
+				 mfgtools\n");
 	} else {
 		printf("Normal Boot\n");
 	}
-#endif /*defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)*/
 #endif /*is_boot_from_usb*/
 
 #ifdef CONFIG_OF_CONTROL
@@ -379,16 +389,13 @@ const char *bootdelay_process(void)
 
 #ifdef is_boot_from_usb
 #if defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)
-	/* [1]dev=6 --> USB boot. [2]dev > 6 --> OTG port: upgrade image by mfg tool*/
-	if (dev > 6) {
-#endif /*defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)*/
-		if (is_boot_from_usb()) {
-			s = getenv("bootcmd_mfg");
-			printf("Run bootcmd_mfg: %s\n", s);
-		}
-#if defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)
+	if(!is_normal_mode_boot() && is_boot_from_usb()) {
+#else
+	if (is_boot_from_usb()) {
+#endif
+		s = getenv("bootcmd_mfg");
+		printf("Run bootcmd_mfg: %s\n", s);
 	}
-#endif /*defined(CONFIG_ADVANTECH) && defined(CONFIG_USB_BOOT)*/
 #endif /*is_boot_from_usb*/
 
 	process_fdt_options(gd->fdt_blob);
