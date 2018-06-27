@@ -149,4 +149,9 @@
 #define IOMUX_SPI_CS0           MX6_PAD_EIM_D19__ECSPI1_SS1
 
 #define USDHC2_CD_GPIO          IMX_GPIO_NR(2, 2)
+
+#define CONFIG_PCIE_RESET
+#define IOMUX_PCIE_RESET        MX6_PAD_GPIO_17__GPIO7_IO12    //PCIE_RST_B
+#define PCIE_RESET              IMX_GPIO_NR(7,12)
+
 #endif                         /* __MX6QSABRESD_CONFIG_H */
