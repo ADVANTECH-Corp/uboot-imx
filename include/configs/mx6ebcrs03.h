@@ -135,4 +135,16 @@
 #define	DO_2           		IMX_GPIO_NR(2,23)
 #define	DO_3           		IMX_GPIO_NR(2,24)
 #define	DO_1           		IMX_GPIO_NR(2,25)
+
+#define CONFIG_PCIE_RESET
+#define IOMUX_PCIE_RESET        MX6_PAD_NANDF_CS2__GPIO6_IO15   //M2_RST
+#define PCIE_RESET              IMX_GPIO_NR(6,15)
+
+#define CONFIG_M2_SLOT
+#define IOMUX_M2_WLAN_OFF       MX6_PAD_SD1_CMD__GPIO1_IO18	//M2_W_DIS2
+#define IOMUX_M2_BT_OFF         MX6_PAD_SD1_CLK__GPIO1_IO20	//M2_W_DIS1
+#define M2_WLAN_OFF             IMX_GPIO_NR(1, 20)
+#define M2_BT_OFF               IMX_GPIO_NR(1, 18)
+
+
 #endif                         /* __MX6QSABRESD_CONFIG_H */

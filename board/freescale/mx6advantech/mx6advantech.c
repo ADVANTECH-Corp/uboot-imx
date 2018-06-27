@@ -1032,12 +1032,46 @@ void setup_do_init()
 }
 #endif
 
+
+#ifdef	CONFIG_PCIE_RESET
+void setup_iomux_pcie()
+{
+	imx_iomux_v3_setup_pad(IOMUX_PCIE_RESET| MUX_PAD_CTRL(NO_PAD_CTRL));
+        gpio_direction_output(PCIE_RESET,0);
+
+}
+#endif
+
+#ifdef	CONFIG_M2_SLOT
+void setup_iomux_m2()
+{
+#ifdef IOMUX_M2_WLAN_OFF
+	imx_iomux_v3_setup_pad(IOMUX_M2_WLAN_OFF| MUX_PAD_CTRL(NO_PAD_CTRL));
+        gpio_direction_output(M2_WLAN_OFF,0);
+	mdelay(10);
+        gpio_direction_output(M2_WLAN_OFF,1);
+#endif
+#ifdef IOMUX_M2_BT_OFF
+	imx_iomux_v3_setup_pad(IOMUX_M2_BT_OFF| MUX_PAD_CTRL(NO_PAD_CTRL));
+        gpio_direction_output(M2_BT_OFF,0);
+	mdelay(10);
+        gpio_direction_output(M2_BT_OFF,1);
+#endif
+}
+#endif
+
 int board_init(void)
 {
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 #if defined (CONFIG_ADVANTECH) && defined(CONFIG_SUPPORT_LVDS)
        setup_lvds_init();
+#endif
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_PCIE_RESET)
+	setup_iomux_pcie();
+#endif
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_M2_SLOT)
+	setup_iomux_m2();
 #endif
 #ifdef CONFIG_MXC_SPI
 	setup_spi();
