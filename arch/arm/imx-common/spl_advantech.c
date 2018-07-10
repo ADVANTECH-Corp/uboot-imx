@@ -155,3 +155,12 @@ void spl_board_init(void)
 #endif
 }
 #endif
+
+#ifdef CONFIG_RESET_OUT
+void reset_init(void)
+{
+	gpio_direction_output(SABRESD_NANDF_D7, 0);
+	udelay(50000); /* 50 mini second */
+	gpio_direction_output(SABRESD_NANDF_D7, 1);
+}
+#endif

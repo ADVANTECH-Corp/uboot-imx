@@ -170,4 +170,10 @@
 #define IOMUX_PCIE_RESET        MX6_PAD_CSI0_PIXCLK__GPIO5_IO18    //PCIE_A_RST
 #define PCIE_RESET              IMX_GPIO_NR(5,18)
 
+
+#define CONFIG_RESET_OUT
+#ifdef CONFIG_RESET_OUT
+#define SABRESD_NANDF_D7	IMX_GPIO_NR(2, 7) /* GPIO2_7 */
+#endif
+
 #endif                         /* __MX6QSABRESD_CONFIG_H */
