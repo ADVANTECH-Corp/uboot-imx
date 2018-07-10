@@ -159,6 +159,10 @@ void board_init_r(gd_t *dummy1, ulong dummy2)
 	u32 boot_device;
 	debug(">>spl:board_init_r()\n");
 
+#ifdef CONFIG_RESET_OUT
+	reset_init();
+#endif
+
 #if defined(CONFIG_SYS_SPL_MALLOC_START)
 	mem_malloc_init(CONFIG_SYS_SPL_MALLOC_START,
 			CONFIG_SYS_SPL_MALLOC_SIZE);
