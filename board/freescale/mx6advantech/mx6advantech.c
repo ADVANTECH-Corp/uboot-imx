@@ -1054,12 +1054,14 @@ void setup_lvds_init(void)
 #ifdef	DIGITAL_OUTPUT
 void setup_do_init()
 {
+	imx_iomux_v3_setup_pad(IOMUX_DO_1| MUX_PAD_CTRL(NO_PAD_CTRL));
 	imx_iomux_v3_setup_pad(IOMUX_DO_2 | MUX_PAD_CTRL(NO_PAD_CTRL));
 	imx_iomux_v3_setup_pad(IOMUX_DO_3| MUX_PAD_CTRL(NO_PAD_CTRL));
-	imx_iomux_v3_setup_pad(IOMUX_DO_1| MUX_PAD_CTRL(NO_PAD_CTRL));
+	imx_iomux_v3_setup_pad(IOMUX_DO_POWER_OFF| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_direction_output(DO_1,0);
 	gpio_direction_output(DO_2,0);
 	gpio_direction_output(DO_3,0);
-	gpio_direction_output(DO_1,0);
+	gpio_direction_output(DO_POWER_OFF,0);
 }
 #endif
 
