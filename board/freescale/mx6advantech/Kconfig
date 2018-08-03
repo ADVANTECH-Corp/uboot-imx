@@ -166,4 +166,10 @@ config SYS_CONFIG_NAME
 	default "mx6ebcrb01"
 
 endif
+if TARGET_MX6EBCJF02A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6ebcjf02"
+
+endif
 

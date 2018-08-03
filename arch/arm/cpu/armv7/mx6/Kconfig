@@ -281,6 +281,13 @@ config TARGET_MX6EBCRB01A1_1G
 	select DM
 	select DM_THERMAL
 
+config TARGET_MX6EBCJF02A1_1G
+	bool "Support mx6ebcjf02a1 1G"
+	select CPU_V7
+	select SUPPORT_SPL
+	select DM
+	select DM_THERMAL
+
 config TARGET_MX6SLEVK
 	bool "mx6slevk"
 	select SUPPORT_SPL
