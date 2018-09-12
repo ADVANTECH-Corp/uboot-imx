@@ -1,0 +1,13 @@
+config SYS_BOARD
+	default "mx7dadvantech"
+
+config SYS_VENDOR
+	default "freescale"
+
+if TARGET_MX7DEBCRM01A1_2G
+
+config SYS_CONFIG_NAME
+	default "mx7debcrm01"
+
+endif
+

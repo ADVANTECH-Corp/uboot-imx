@@ -1,0 +1,6 @@
+MX7DEBCRM01A1_2G BOARD
+M:	Alex
+S:	Maintained
+F:	board/freescale/mx7dadvantech
+F:	include/configs/mx7debcrm01.h
+F:	configs/mx7debcrm01a1_2G_IM_defconfig
