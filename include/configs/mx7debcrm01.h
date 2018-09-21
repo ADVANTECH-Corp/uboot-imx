@@ -13,9 +13,9 @@
 /* #include "mx7_common.h" */
 
 #define CONFIG_DBG_MONITOR
-/* #define PHYS_SDRAM_SIZE			SZ_2G */
+#define PHYS_SDRAM_SIZE			SZ_2G
 
-#define PHYS_SDRAM_SIZE			SZ_1G
+/* #define PHYS_SDRAM_SIZE			SZ_1G*/
 
 /* uncomment for PLUGIN mode support */
 /* #define CONFIG_USE_PLUGIN */
