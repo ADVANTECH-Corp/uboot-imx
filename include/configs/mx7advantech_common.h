@@ -17,6 +17,7 @@
 #include "mx7_common.h"
 
 /* #define CONFIG_ADVANTECH */
+#define CONFIG_ADVANTECH_MX7
 
 #define CONFIG_PHYLIB
 #define CONFIG_PHY_ATHEROS
