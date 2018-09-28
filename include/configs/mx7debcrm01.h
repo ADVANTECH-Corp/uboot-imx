@@ -414,5 +414,9 @@
 
 #define RESET_CB_GPIO	IMX_GPIO_NR(1, 9)
 
+#define CONFIG_PCIE_RESET
+#define IOMUX_PCIE_RESET	MX7D_PAD_ENET1_COL__GPIO7_IO15	/* PCIE_RST */
+#define PCIE_RESET              IMX_GPIO_NR(7,15)
+
 #endif	/* __CONFIG_H */
 

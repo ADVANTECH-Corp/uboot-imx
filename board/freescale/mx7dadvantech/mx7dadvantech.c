@@ -148,12 +148,16 @@ static iomux_v3_cfg_t const usdhc3_emmc_pads[] = {
 	MX7D_PAD_SD3_RESET_B__GPIO6_IO11 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 };
 
-//alex
+#ifdef CONFIG_ADVANTECH_MX7
+static iomux_v3_cfg_t const reset_cb_pads[] = {
+	MX7D_PAD_GPIO1_IO09__GPIO1_IO9	| MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+#else
+#ifdef CONFIG_MXC_EPDC
 #define IOX_SDI IMX_GPIO_NR(1, 9)
 #define IOX_STCP IMX_GPIO_NR(1, 12)
 #define IOX_SHCP IMX_GPIO_NR(1, 13)
 
-//alex
 static iomux_v3_cfg_t const iox_pads[] = {
 	/* IOX_SDI */
 	MX7D_PAD_GPIO1_IO09__GPIO1_IO9	| MUX_PAD_CTRL(NO_PAD_CTRL),
@@ -162,6 +166,8 @@ static iomux_v3_cfg_t const iox_pads[] = {
 	/* IOX_SHCP */
 	MX7D_PAD_GPIO1_IO13__GPIO1_IO13	| MUX_PAD_CTRL(NO_PAD_CTRL),
 };
+#endif
+#endif /* CONFIG_ADVANTECH_MX7 */
 
 /*
  * PCIE_DIS_B --> Q0
@@ -204,13 +210,14 @@ static enum qn_func qn_output[8] = {
 	qn_disable
 };
 
+#ifdef CONFIG_IOX74LV
 static void iox74lv_init(void)
 {
 	int i;
 
 	for (i = 7; i >= 0; i--) {
 		gpio_direction_output(IOX_SHCP, 0);
-		gpio_direction_output(IOX_SDI, seq[qn_output[i]][0]); //alex
+		gpio_direction_output(IOX_SDI, seq[qn_output[i]][0]);
 		udelay(500);
 		gpio_direction_output(IOX_SHCP, 1);
 		udelay(500);
@@ -225,7 +232,7 @@ static void iox74lv_init(void)
 
 	for (i = 7; i >= 0; i--) {
 		gpio_direction_output(IOX_SHCP, 0);
-		gpio_direction_output(IOX_SDI, seq[qn_output[i]][1]); //alex
+		gpio_direction_output(IOX_SDI, seq[qn_output[i]][1]);
 		udelay(500);
 		gpio_direction_output(IOX_SHCP, 1);
 		udelay(500);
@@ -244,7 +251,6 @@ void iox74lv_set(int index)
 	for (i = 7; i >= 0; i--) {
 		gpio_direction_output(IOX_SHCP, 0);
 
-		//alex
 		if (i == index)
 			gpio_direction_output(IOX_SDI, seq[qn_output[i]][0]);
 		else
@@ -263,7 +269,7 @@ void iox74lv_set(int index)
 
 	for (i = 7; i >= 0; i--) {
 		gpio_direction_output(IOX_SHCP, 0);
-		gpio_direction_output(IOX_SDI, seq[qn_output[i]][1]); //alex
+		gpio_direction_output(IOX_SDI, seq[qn_output[i]][1]);
 		udelay(500);
 		gpio_direction_output(IOX_SHCP, 1);
 		udelay(500);
@@ -276,6 +282,7 @@ void iox74lv_set(int index)
 	  */
 	gpio_direction_output(IOX_STCP, 1);
 };
+#endif /* #ifdef CONFIG_IOX74LV */
 
 #define BOARD_REV_C  0x300
 #define BOARD_REV_B  0x200
@@ -918,17 +925,37 @@ int board_early_init_f(void)
 	return 0;
 }
 
+#ifdef CONFIG_PCIE_RESET
+void setup_iomux_pcie()
+{
+	imx_iomux_v3_setup_pad(IOMUX_PCIE_RESET| MUX_PAD_CTRL(NO_PAD_CTRL));
+        gpio_direction_output(PCIE_RESET,0);
+/*
+	udelay(500);
+	gpio_direction_output(PCIE_RESET,1);
+*/
+}
+#endif
+
 int board_init(void)
 {
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
 
-	imx_iomux_v3_setup_multiple_pads(iox_pads, ARRAY_SIZE(iox_pads));
-
+#ifdef CONFIG_ADVANTECH_MX7
+	/* set reset_cb output high */
+	imx_iomux_v3_setup_multiple_pads(reset_cb_pads, ARRAY_SIZE(reset_cb_pads));
 	gpio_direction_output(RESET_CB_GPIO, 1);
-
-#if 0
+#else
+#ifdef CONFIG_MXC_EPDC
+	imx_iomux_v3_setup_multiple_pads(iox_pads, ARRAY_SIZE(iox_pads));
 	iox74lv_init();
+#endif
+
+#endif /* CONFIG_ADVANTECH_MX7 */
+
+#if defined (CONFIG_ADVANTECH_MX7) && defined(CONFIG_PCIE_RESET)
+	setup_iomux_pcie();
 #endif
 
 #ifdef CONFIG_FEC_MXC
