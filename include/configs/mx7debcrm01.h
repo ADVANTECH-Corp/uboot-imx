@@ -321,7 +321,7 @@
 #define CONFIG_SYS_FSL_ESDHC_ADDR       0
 #define CONFIG_SYS_MMC_ENV_DEV		0   /* USDHC1 */
 #define CONFIG_SYS_MMC_ENV_PART		0	/* user area */
-#define CONFIG_MMCROOT			"/dev/mmcblk0p2"  /* USDHC1 */
+#define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC1 */
 
 /* USB Configs */
 #define CONFIG_CMD_USB
@@ -339,7 +339,7 @@
 
 #define CONFIG_CMD_BMODE
 
-#define CONFIG_VIDEO
+/* #define CONFIG_VIDEO */
 #ifdef CONFIG_VIDEO
 #define CONFIG_CFB_CONSOLE
 #define CONFIG_VIDEO_MXS
@@ -417,6 +417,12 @@
 #define CONFIG_PCIE_RESET
 #define IOMUX_PCIE_RESET	MX7D_PAD_ENET1_COL__GPIO7_IO15	/* PCIE_RST */
 #define PCIE_RESET              IMX_GPIO_NR(7,15)
+
+/* Boot Select */
+#define SABRESD_NANDF_CS1	IMX_GPIO_NR(3, 19) //BOOT_CFG14 - BOOT_SEL2#
+#define SABRESD_NANDF_CS2	IMX_GPIO_NR(3, 18) //BOOT_CFG13 - BOOT_SEL1#
+#define SABRESD_NANDF_CS3	IMX_GPIO_NR(3, 17) //BOOT_CFG12 - BOOT_SEL0#
+#define SABRESD_NANDF_CS4	IMX_GPIO_NR(3, 16) //BOOT_CFG11 - BOOT_SEL3#
 
 #endif	/* __CONFIG_H */
 

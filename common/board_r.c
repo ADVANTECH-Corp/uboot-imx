@@ -600,9 +600,12 @@ static int initr_ethaddr(void)
 	return 0;
 }
 
-#ifdef CONFIG_ADVANTECH
+#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX7)
 #define XMK_STR(x)	#x
 #define MK_STR(x)	XMK_STR(x)
+#endif
+
+#ifdef CONFIG_ADVANTECH
 int boardcfg_get_mac(void)
 {
 	int rc = 0;
@@ -1016,6 +1019,48 @@ int board_set_boot_device(void)
 }
 #endif /* CONFIG_ADVANTECH */
 
+#ifdef CONFIG_ADVANTECH_MX7
+int board_set_boot_device_mx7(void)
+{
+	int board_cs1, board_cs2, board_cs3, board_cs4;
+	char buf[256];
+
+	board_cs1 = gpio_get_value(SABRESD_NANDF_CS1);
+	board_cs2 = gpio_get_value(SABRESD_NANDF_CS2);
+	board_cs3 = gpio_get_value(SABRESD_NANDF_CS3);
+	board_cs4 = gpio_get_value(SABRESD_NANDF_CS4);
+
+	printf("Boot_Switch: cs1=%d,cs2=%d,cs3=%d,cs4=%d\n",board_cs1,board_cs2,board_cs3,board_cs4);
+	//--------------------------------------------------------------------------------------------
+
+	if((!board_cs1)&&(!board_cs2)&&(board_cs3)&&(!board_cs4))	//Carrier SD Card//
+	{
+		printf("booting from Carrier SD Card\n");
+		
+	}
+	else if((!board_cs1)&&(board_cs2)&&(!board_cs3)&&(board_cs4))	//eMMC Flash//
+	{
+		printf("booting from eMMC\n");
+		setenv("mmcdev", MK_STR(CONFIG_EMMC_DEV_NUM));
+		sprintf(buf, "/dev/mmcblk0p2 rootwait rw");
+		setenv("mmcroot",buf);
+	}
+	else if((board_cs1)&&(!board_cs2)&&(!board_cs3)&&(!board_cs4))	// QSPI//
+	{
+		printf("booting from QSPI -> kernel boot form EMMC\n");
+		setenv("mmcdev", MK_STR(CONFIG_EMMC_DEV_NUM));
+		sprintf(buf, "/dev/mmcblk0p2 rootwait rw");
+		setenv("mmcroot",buf);
+	}
+	else
+	{
+		printf("booting not support\n");
+	}
+
+	return 0;
+}
+#endif /* CONFIG_ADVANTECH_MX7 */
+
 static int run_main_loop(void)
 {
 #ifdef CONFIG_SANDBOX
@@ -1198,6 +1243,9 @@ init_fnc_t init_sequence_r[] = {
 #endif
 #ifdef CONFIG_ADVANTECH
 	board_set_boot_device,
+#endif
+#ifdef CONFIG_ADVANTECH_MX7
+	board_set_boot_device_mx7,
 #endif
 #ifdef CONFIG_FSL_FASTBOOT
 	initr_fastboot_setup,

@@ -127,8 +127,8 @@ static iomux_v3_cfg_t const usdhc1_pads[] = {
 	MX7D_PAD_SD1_DATA3__SD1_DATA3 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 	MX7D_PAD_SD1_CD_B__GPIO5_IO0 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
 	MX7D_PAD_SD1_RESET_B__GPIO5_IO2 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
-#ifdef CONFIG_ADVANTECH
-	MX7D_PAD_SD1_WP__GPIO5_IO1 | MUX_PAD_CTRL(USDHC_PAD_CTRL),
+#ifdef CONFIG_ADVANTECH_MX7
+	MX7D_PAD_SD1_WP__GPIO5_IO1 | MUX_PAD_CTRL(NO_PAD_CTRL),
 #endif
 };
 
@@ -937,6 +937,35 @@ void setup_iomux_pcie()
 }
 #endif
 
+#ifdef CONFIG_ADVANTECH_MX7
+static iomux_v3_cfg_t const bootselect_pads[] = {
+	MX7D_PAD_LCD_DATA11__GPIO3_IO16	| MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX7D_PAD_LCD_DATA12__GPIO3_IO17 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX7D_PAD_LCD_DATA13__GPIO3_IO18 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX7D_PAD_LCD_DATA14__GPIO3_IO19 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+int boot_select_init(void)
+{
+	/* Set the iomux */
+	imx_iomux_v3_setup_multiple_pads(bootselect_pads, ARRAY_SIZE(bootselect_pads));
+
+	gpio_request(SABRESD_NANDF_CS1, "Board_CS1");
+	gpio_direction_input(SABRESD_NANDF_CS1);
+
+	gpio_request(SABRESD_NANDF_CS2, "Board_CS2");
+	gpio_direction_input(SABRESD_NANDF_CS2);
+
+	gpio_request(SABRESD_NANDF_CS3, "Board_CS3");
+	gpio_direction_input(SABRESD_NANDF_CS3);
+
+	gpio_request(SABRESD_NANDF_CS4, "Board_CS4");
+	gpio_direction_input(SABRESD_NANDF_CS4);
+
+	return 0;
+}
+#endif
+
 int board_init(void)
 {
 	/* address of boot parameters */
@@ -946,6 +975,8 @@ int board_init(void)
 	/* set reset_cb output high */
 	imx_iomux_v3_setup_multiple_pads(reset_cb_pads, ARRAY_SIZE(reset_cb_pads));
 	gpio_direction_output(RESET_CB_GPIO, 1);
+
+	boot_select_init();
 #else
 #ifdef CONFIG_MXC_EPDC
 	imx_iomux_v3_setup_multiple_pads(iox_pads, ARRAY_SIZE(iox_pads));
