@@ -53,6 +53,7 @@ const struct spi_flash_params spi_flash_params_table[] = {
 	{"MX25L12855E",	   0xc22618, 0x0,	64 * 1024,   256, RD_FULL,		     WR_QPP},
 #ifdef CONFIG_ADVANTECH_MX7
 	{"MX66L1G45G",	   0xc2201b, 0x0,	64 * 1024,  2048, RD_FULL,		     WR_QPP},
+	{"MT25QL01GBBB",   0x20ba21, 0x0,	64 * 1024,  2048, RD_FULL,		     WR_QPP},
 #endif
 #endif
 #ifdef CONFIG_SPI_FLASH_SPANSION	/* SPANSION */
