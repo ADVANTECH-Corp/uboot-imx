@@ -149,7 +149,7 @@ config TARGET_MX6UBCDS31A1_1G
 	select DM_THERMAL
 
 config TARGET_MX6UBC220A1_1G
-	bool "Support mx6ub220a1 1G"
+	bool "Support mx6ubc220a1 1G"
 	select CPU_V7
 	select SUPPORT_SPL
 	select DM
@@ -240,7 +240,14 @@ config TARGET_MX6ROM7421A1_512M
         select DM_THERMAL
 
 config TARGET_MX6WISE3310A1_1G
-	bool "Support mx6romwise3310a1 1G"
+	bool "Support mx6wise3310a1 1G"
+	select CPU_V7
+	select SUPPORT_SPL
+	select DM
+	select DM_THERMAL
+
+config TARGET_MX6RSB3430A1_1G
+	bool "Support mx6rsb3430a1 1G"
 	select CPU_V7
 	select SUPPORT_SPL
 	select DM

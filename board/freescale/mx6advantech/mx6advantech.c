@@ -998,20 +998,33 @@ void setup_lvds_init(void)
 	imx_iomux_v3_setup_pad(IOMUX_LCD_BKLT_PWM); /* LCD_BKLT_PWM */
 	imx_iomux_v3_setup_pad(IOMUX_LCD_BKLT_EN); /* LCD_BKLT_EN */
 	imx_iomux_v3_setup_pad(IOMUX_LCD_VDD_EN); /* LCD_VDD_EN */
-
-	/* LCD_BKLT_PWM - disable pwm */
-	gpio_direction_output(LCD_BKLT_PWM, 0);
+	if (IOMUX_VDD_BKLT_EN)
+		imx_iomux_v3_setup_pad(IOMUX_VDD_BKLT_EN); /* VDD_BKLT_EN */
 
 	/* LCD_BKLT_EN - disable backlight */
-#ifdef LCD_BKLT_EN_VALUE
-	gpio_direction_output(LCD_BKLT_EN, LCD_BKLT_EN_VALUE);
+#ifdef LCD_BKLT_EN_INVERT
+	gpio_direction_output(LCD_BKLT_EN, 1);
 #else
 	gpio_direction_output(LCD_BKLT_EN, 0);
 #endif
-
-	/* LCD_VDD_EN - disable VDD */
-#ifdef LCD_VDD_EN_VALUE
-		gpio_direction_output(LCD_VDD_EN, LCD_VDD_EN_VALUE);
+	mdelay(10);
+	/* LCD_BKLT_PWM - disable pwm */
+#ifdef LCD_BKLT_PWM_INVERT
+	gpio_direction_output(LCD_BKLT_PWM, 1);
+#else
+	gpio_direction_output(LCD_BKLT_PWM, 0);
+#endif
+	mdelay(10);
+	/* VDD_BKLT_EN - disable backight VDD */
+#ifdef VDD_BKLT_EN_INVERT
+	gpio_direction_output(VDD_BKLT_EN, 1);
+#else
+	gpio_direction_output(VDD_BKLT_EN, 0);
+#endif
+	mdelay(200);
+	/* LCD_VDD_EN - disable display VDD */
+#ifdef LCD_VDD_EN_INVERT
+	gpio_direction_output(LCD_VDD_EN, 1);
 #else
 	gpio_direction_output(LCD_VDD_EN, 0);
 #endif
