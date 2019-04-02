@@ -1,10 +1,9 @@
+if TARGET_IMX8MQ_ROM5720A1_2G
 config SYS_BOARD
-	default "imx8mq_advantech"
+	default "imx8mq_rom5720a1"
 
 config SYS_VENDOR
 	default "freescale"
-
-if TARGET_IMX8MQ_ROM5720A1_2G
 
 config SYS_CONFIG_NAME
 	default "imx8mq_rom5720"
