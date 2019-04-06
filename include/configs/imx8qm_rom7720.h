@@ -335,8 +335,8 @@
 /* On LPDDR4 board, USDHC1 is for eMMC, USDHC2 is for SD on CPU board, USDHC3 is for SD on base board
   * On DDR4 board, USDHC1 is mux for NAND, USDHC2 is for SD, USDHC3 is for SD on base board
   */
-#define CONFIG_SYS_MMC_ENV_DEV		1   /* USDHC1 */
-#define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC1 */
+#define CONFIG_SYS_MMC_ENV_DEV		2   /* USDHC1 */
+#define CONFIG_MMCROOT			"/dev/mmcblk2p2"  /* USDHC1 */
 #define CONFIG_SYS_FSL_USDHC_NUM	3
 
 /* Size of malloc() pool */
