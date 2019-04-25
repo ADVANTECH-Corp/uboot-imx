@@ -226,7 +226,13 @@
 	"mmcpart=" __stringify(CONFIG_SYS_MMC_IMG_LOAD_PART) "\0" \
 	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
 	"mmcautodetect=yes\0" \
-	"mmcargs=setenv bootargs console=${console},${baudrate} earlycon=${earlycon},${baudrate} root=${mmcroot} video=HDMI-A-1:1920x1080@60\0 " \
+	"videores=1920x1080@60\0" \
+	"mmcargs=setenv bootargs console=${console},${baudrate} earlycon=${earlycon},${baudrate} root=${mmcroot} video=HDMI-A-1:${videores} audit=0\0 " \
+	"hdmi3840=setenv videores 3840x2160@30;boot\0" \
+	"hdmi4096=setenv videores 4096x2160@30;boot\0" \
+	"lvds_ch0=setenv fdt_file imx8qm-rom7720-a1_ch0.dtb; boot\0" \
+	"lvds_ch1=setenv fdt_file imx8qm-rom7720-a1_ch1.dtb; boot\0" \
+	"lvds_dual=setenv fdt_file imx8qm-rom7720-a1_dual.dtb; boot\0" \
 	"loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
 	"bootscript=echo Running bootscript from mmc ...; " \
 		"source\0" \
