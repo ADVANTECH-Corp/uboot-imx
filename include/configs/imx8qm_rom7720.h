@@ -227,9 +227,13 @@
 	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
 	"mmcautodetect=yes\0" \
 	"videores=1920x1080@60\0" \
-	"mmcargs=setenv bootargs console=${console},${baudrate} earlycon=${earlycon},${baudrate} root=${mmcroot} video=HDMI-A-1:${videores} audit=0\0 " \
+	"hdmi640=setenv videores 640x480@60;boot\0" \
+	"hdmi720=setenv videores 720x480@60;boot\0" \
+	"hdmi1280=setenv videores 1280x720@60;boot\0" \
+	"hdmi3840p24=setenv videores 3840x2160@24;boot\0" \
 	"hdmi3840=setenv videores 3840x2160@30;boot\0" \
 	"hdmi4096=setenv videores 4096x2160@30;boot\0" \
+	"mmcargs=setenv bootargs console=${console},${baudrate} earlycon=${earlycon},${baudrate} root=${mmcroot} video=HDMI-A-1:${videores} audit=0\0 " \
 	"lvds_ch0=setenv fdt_file imx8qm-rom7720-a1_ch0.dtb; boot\0" \
 	"lvds_ch1=setenv fdt_file imx8qm-rom7720-a1_ch1.dtb; boot\0" \
 	"lvds_dual=setenv fdt_file imx8qm-rom7720-a1_dual.dtb; boot\0" \
