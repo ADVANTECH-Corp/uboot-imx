@@ -31,6 +31,24 @@ config SYS_CONFIG_NAME
 	default "mx6rsb4411"
 
 endif
+if TARGET_MX6RSB4411A1_2G
+
+config SYS_CONFIG_NAME
+	default "mx6rsb4411"
+
+endif
+if TARGET_MX6EBCRS03A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6ebcrs03"
+
+endif
+if TARGET_MX6EBCRS03A1_2G
+
+config SYS_CONFIG_NAME
+	default "mx6ebcrs03"
+
+endif
 if TARGET_MX6UBCDS31A1_1G
 
 config SYS_CONFIG_NAME
@@ -109,11 +127,22 @@ config SYS_CONFIG_NAME
 	default "mx6rom7421"
 
 endif
+if TARGET_MX6ROM7421A1_512M
+
+config SYS_CONFIG_NAME
+        default "mx6rom7421"
+
+endif
 if TARGET_MX6WISE3310A1_1G
 
 config SYS_CONFIG_NAME
 	default "mx6wise3310"
 
+endif
+if TARGET_MX6RSB3430A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6rsb3430"
 endif
 if TARGET_MX6RSB6410A1_1G
 
@@ -137,6 +166,18 @@ if TARGET_MX6RSB6410A2_2G
 
 config SYS_CONFIG_NAME
         default "mx6rsb6410"
+
+endif
+if TARGET_MX6EBCRB01A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6ebcrb01"
+
+endif
+if TARGET_MX6EBCJF02A1_1G
+
+config SYS_CONFIG_NAME
+	default "mx6ebcjf02"
 
 endif
 
