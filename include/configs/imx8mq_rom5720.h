@@ -55,6 +55,7 @@
 #define CONFIG_SYS_I2C_MXC_I2C1		/* enable I2C bus 1 */
 #define CONFIG_SYS_I2C_MXC_I2C2		/* enable I2C bus 2 */
 #define CONFIG_SYS_I2C_MXC_I2C3		/* enable I2C bus 3 */
+#define CONFIG_SYS_I2C_MXC_I2C4		/* enable I2C bus 4 */
 
 #define CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
 
@@ -101,6 +102,8 @@
 #define CONFIG_PHY_ATHEROS
 #endif
 
+#define	CONFIG_DEFAULT_FDT_FILE	"fsl-imx8mq-rom5720-a1.dtb"
+
 /*
  * Another approach is add the clocks for inmates into clks_init_on
  * in clk-imx8mq.c, then clk_ingore_unused could be removed.
@@ -131,14 +134,20 @@
 	"fdt_addr=0x43000000\0"			\
 	"fdt_high=0xffffffffffffffff\0"		\
 	"boot_fdt=try\0" \
-	"fdt_file=fsl-imx8mq-evk.dtb\0" \
+	"fdt_file=" CONFIG_DEFAULT_FDT_FILE"\0" \
 	"initrd_addr=0x43800000\0"		\
 	"initrd_high=0xffffffffffffffff\0" \
 	"mmcdev="__stringify(CONFIG_SYS_MMC_ENV_DEV)"\0" \
 	"mmcpart=" __stringify(CONFIG_SYS_MMC_IMG_LOAD_PART) "\0" \
 	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
 	"mmcautodetect=yes\0" \
-	"mmcargs=setenv bootargs ${jh_clk} console=${console} root=${mmcroot}\0 " \
+	"videores=1920x1080@60\0" \
+	"hdmi640=setenv videores 640x480@60;boot\0" \
+	"hdmi720=setenv videores 720x480@60;boot\0" \
+	"hdmi1280=setenv videores 1280x720@60;boot\0" \
+	"hdmi3840p24=setenv videores 3840x2160@60;boot\0" \
+	"hdmi4096=setenv videores 4096x2160@60;boot\0" \
+	"mmcargs=setenv bootargs ${jh_clk} console=${console} root=${mmcroot} video=HDMI-A-1:${videores}\0 " \
 	"loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
 	"bootscript=echo Running bootscript from mmc ...; " \
 		"source\0" \
