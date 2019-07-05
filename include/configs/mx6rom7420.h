@@ -61,11 +61,9 @@
 
 #ifdef CONFIG_CMD_SF
 #define CONFIG_SF_DEFAULT_CS   1
-#ifdef CONFIG_ROM7420
 #ifdef CONFIG_SPI_FLASH_CS
 #undef CONFIG_SPI_FLASH_CS
 #define CONFIG_SPI_FLASH_CS	1
-#endif
 #endif
 #endif
 
