@@ -1029,6 +1029,7 @@ int board_init(void)
 	return 0;
 }
 
+#ifndef CONFIG_ADVANTECH
 #ifdef CONFIG_POWER
 int power_init_board(void)
 {
@@ -1201,6 +1202,7 @@ int power_init_board(void)
 	return 0;
 }
 #endif
+#endif /* CONFIG_ADVANTECH */
 
 #ifdef CONFIG_LDO_BYPASS_CHECK
 #ifdef CONFIG_POWER
