@@ -964,11 +964,44 @@ int board_early_init_f(void)
 	return 0;
 }
 
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_SUPPORT_LVDS)
+void setup_lvds_init(void)
+{
+	imx_iomux_v3_setup_pad(IOMUX_LCD_BKLT_PWM); /* LCD_BKLT_PWM */
+	imx_iomux_v3_setup_pad(IOMUX_LCD_BKLT_EN); /* LCD_BKLT_EN */
+	imx_iomux_v3_setup_pad(IOMUX_LCD_VDD_EN); /* LCD_VDD_EN */
+
+	gpio_request(LCD_BKLT_PWM, "LCD BKLT PWM");
+	gpio_request(LCD_BKLT_EN, "LCD BKLT EN");
+	gpio_request(LCD_VDD_EN, "LCD VDD EN");
+
+	/* LCD_BKLT_PWM - disable pwm */
+	gpio_direction_output(LCD_BKLT_PWM, 0);
+
+	/* LCD_BKLT_EN - disable backlight */
+	gpio_direction_output(LCD_BKLT_EN, 0);
+
+	/* LCD_VDD_EN - disable VDD */
+	gpio_direction_output(LCD_VDD_EN, 0);
+}
+
+void setup_lvds_poweron(void)
+{
+	//LCD_BKLT_EN
+	gpio_direction_output(LCD_BKLT_EN, 1);
+
+	//LCD_VDD_EN
+	gpio_direction_output(LCD_VDD_EN, 1);
+}
+#endif
 int board_init(void)
 {
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
-
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_SUPPORT_LVDS)
+       setup_lvds_init();
+       setup_lvds_poweron();
+#endif
 #ifdef CONFIG_MXC_SPI
 	setup_spi();
 #endif
