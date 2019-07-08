@@ -85,7 +85,11 @@ int spl_load_simple_fit(struct spl_image_info *spl_image,
 /* SPL common functions */
 void preloader_console_init(void);
 u32 spl_boot_device(void);
+#ifdef CONFIG_ADVANTECH
+u32 spl_boot_mode(void);
+#else
 u32 spl_boot_mode(const u32 boot_device);
+#endif
 void spl_set_bd(void);
 
 /**
@@ -97,7 +101,9 @@ void spl_set_bd(void);
  *
  * @spl_image: Image description to set up
  */
+#ifndef CONFIG_ADVANTECH
 void spl_set_header_raw_uboot(struct spl_image_info *spl_image);
+#endif
 
 
 
@@ -126,8 +132,10 @@ void spl_set_header_raw_atf(struct spl_image_info *spl_image);
  * @header image header to parse
  * @return 0 if a header was correctly parsed, -ve on error
  */
+#ifndef CONFIG_ADVANTECH
 int spl_parse_image_header(struct spl_image_info *spl_image,
 			   const struct image_header *header);
+#endif
 
 void spl_board_prepare_for_linux(void);
 void spl_board_prepare_for_boot(void);
@@ -296,8 +304,12 @@ bool spl_was_boot_source(void);
  */
 int spl_dfu_cmd(int usbctrl, char *dfu_alt_info, char *interface, char *devstr);
 
+#ifdef CONFIG_ADVANTECH
+int spl_mmc_load_image(unsigned int dev);
+#else
 int spl_mmc_load_image(struct spl_image_info *spl_image,
 		       struct spl_boot_device *bootdev);
+#endif
 
 /**
  * spl_invoke_atf - boot using an ARM trusted firmware image
