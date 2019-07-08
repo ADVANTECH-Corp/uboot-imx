@@ -412,7 +412,6 @@ int board_mmc_getcd(struct mmc *mmc)
 
 int board_mmc_init(bd_t *bis)
 {
-#ifndef CONFIG_SPL_BUILD
 	int ret;
 	int i;
 
@@ -463,7 +462,7 @@ int board_mmc_init(bd_t *bis)
 #ifndef CONFIG_TWO_SD_BOOT
 		/* We use index 1 for SD card and index 3 for eMMC */
 		if (i != 1) {
-			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
+		ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
 			}
 #else
 		/* ROM-7421: We use index 1 for Micro SD card,  index 3 for eMMC and index 5 for carrier SD card */
@@ -475,41 +474,6 @@ int board_mmc_init(bd_t *bis)
 	}
 
 	return 0;
-#else
-	struct src *psrc = (struct src *)SRC_BASE_ADDR;
-	unsigned reg = readl(&psrc->sbmr1) >> 11;
-	/*
-	 * Upon reading BOOT_CFG register the following map is done:
-	 * Bit 11 and 12 of BOOT_CFG register can determine the current
-	 * mmc port
-	 * 0x1                  SD1
-	 * 0x2                  SD2
-	 * 0x3                  SD4
-	 */
-
-	switch (reg & 0x3) {
-	case 0x1:
-		SETUP_IOMUX_PADS(usdhc2_pads);
-		usdhc_cfg[0].esdhc_base = USDHC2_BASE_ADDR;
-		usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
-		gd->arch.sdhc_clk = usdhc_cfg[0].sdhc_clk;
-		break;
-	case 0x2:
-		SETUP_IOMUX_PADS(usdhc3_pads);
-		usdhc_cfg[0].esdhc_base = USDHC3_BASE_ADDR;
-		usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
-		gd->arch.sdhc_clk = usdhc_cfg[0].sdhc_clk;
-		break;
-	case 0x3:
-		SETUP_IOMUX_PADS(usdhc4_pads);
-		usdhc_cfg[0].esdhc_base = USDHC4_BASE_ADDR;
-		usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
-		gd->arch.sdhc_clk = usdhc_cfg[0].sdhc_clk;
-		break;
-	}
-
-	return fsl_esdhc_initialize(bis, &usdhc_cfg[0]);
-#endif
 }
 #endif
 
