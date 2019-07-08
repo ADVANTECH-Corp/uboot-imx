@@ -11,7 +11,7 @@
 #define __MX6SABRESD_CONFIG_H
 
 #ifdef CONFIG_SPL
-#include "imx6_spl.h"
+#include "imx6_spl_advantech.h"
 #endif
 
 #define CONFIG_MACH_TYPE	3980
