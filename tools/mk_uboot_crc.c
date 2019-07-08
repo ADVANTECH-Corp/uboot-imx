@@ -12,7 +12,7 @@
 #include <fcntl.h>
 #include <sys/wait.h>
 
-#define IMG_SZ 819200
+#define IMG_SZ 614400
 
 int  main(void)
 {
