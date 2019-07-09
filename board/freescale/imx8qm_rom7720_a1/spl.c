@@ -63,7 +63,6 @@ DECLARE_GLOBAL_DATA_PTR;
 
 static struct fsl_esdhc_cfg usdhc_cfg[CONFIG_SYS_FSL_USDHC_NUM] = {
 	{USDHC1_BASE_ADDR, 0, 8},
-	{USDHC2_BASE_ADDR, 0, 4},
 	{USDHC3_BASE_ADDR, 0, 4},
 };
 
@@ -81,18 +80,6 @@ static iomux_cfg_t emmc0[] = {
 	SC_P_EMMC0_RESET_B | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
 	SC_P_EMMC0_STROBE | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
 };
-static iomux_cfg_t usdhc1_sd[] = {
-	SC_P_USDHC1_CLK | MUX_PAD_CTRL(ESDHC_CLK_PAD_CTRL),
-	SC_P_USDHC1_CMD | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_DATA0 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_DATA1 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_DATA2 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_DATA3 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_DATA6 | MUX_MODE_ALT(2) | MUX_PAD_CTRL(ESDHC_PAD_CTRL), /* Mux for WP */
-	SC_P_USDHC1_DATA7 | MUX_MODE_ALT(3) | MUX_PAD_CTRL(ESDHC_PAD_CTRL), /* Mux for CD,  GPIO5 IO22 */
-	SC_P_USDHC1_RESET_B | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_VSELECT | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-};
 static iomux_cfg_t usdhc2_sd[] = {
 	SC_P_USDHC2_CLK | MUX_PAD_CTRL(ESDHC_CLK_PAD_CTRL),
 	SC_P_USDHC2_CMD | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
@@ -101,8 +88,8 @@ static iomux_cfg_t usdhc2_sd[] = {
 	SC_P_USDHC2_DATA2 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
 	SC_P_USDHC2_DATA3 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
 	SC_P_USDHC2_RESET_B | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC2_WP | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC2_CD_B | MUX_MODE_ALT(3) | MUX_PAD_CTRL(ESDHC_PAD_CTRL),	/* Mux to GPIO4 IO12 */
+	SC_P_USDHC2_WP   | MUX_MODE_ALT(3) | MUX_PAD_CTRL(ESDHC_PAD_CTRL),	/* Mux for WP, GPIO4 IO11 */
+	SC_P_USDHC2_CD_B | MUX_MODE_ALT(3) | MUX_PAD_CTRL(ESDHC_PAD_CTRL),	/* Mux for CD, GPIO4 IO12 */
 };
 
 int board_mmc_init(bd_t *bis)
@@ -132,26 +119,12 @@ int board_mmc_init(bd_t *bis)
 			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC_CLK);
 			break;
 		case 1:
-                        ret = sc_pm_set_resource_power_mode(ipcHndl, SC_R_SDHC_1, SC_PM_PW_MODE_ON);
-                        if (ret != SC_ERR_NONE)
-                                return ret;
-                        ret = sc_pm_set_resource_power_mode(ipcHndl, SC_R_GPIO_5, SC_PM_PW_MODE_ON);
-                        if (ret != SC_ERR_NONE)
-                                return ret;
-
-			imx8_iomux_setup_multiple_pads(usdhc1_sd, ARRAY_SIZE(usdhc1_sd));
-			init_clk_usdhc(1);
-			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
-			gpio_request(USDHC1_CD_GPIO, "sd1_cd");
-			gpio_direction_input(USDHC1_CD_GPIO);
-			break;
-		case 2:
-                        ret = sc_pm_set_resource_power_mode(ipcHndl, SC_R_SDHC_2, SC_PM_PW_MODE_ON);
-                        if (ret != SC_ERR_NONE)
-                                return ret;
-                        ret = sc_pm_set_resource_power_mode(ipcHndl, SC_R_GPIO_4, SC_PM_PW_MODE_ON);
-                        if (ret != SC_ERR_NONE)
-                                return ret;
+			ret = sc_pm_set_resource_power_mode(ipcHndl, SC_R_SDHC_2, SC_PM_PW_MODE_ON);
+			if (ret != SC_ERR_NONE)
+				return ret;
+			ret = sc_pm_set_resource_power_mode(ipcHndl, SC_R_GPIO_4, SC_PM_PW_MODE_ON);
+			if (ret != SC_ERR_NONE)
+				return ret;
 
 			imx8_iomux_setup_multiple_pads(usdhc2_sd, ARRAY_SIZE(usdhc2_sd));
 			init_clk_usdhc(2);
@@ -204,11 +177,47 @@ void spl_dram_init(void)
 
 void spl_board_init(void)
 {
+#if defined(CONFIG_SPL_SPI_SUPPORT)
+	sc_ipc_t ipcHndl = 0;
+
+	ipcHndl = gd->arch.ipc_channel_handle;
+	if (sc_rm_is_resource_owned(ipcHndl, SC_R_FSPI_0)) {
+		if (sc_pm_set_resource_power_mode(ipcHndl, SC_R_FSPI_0, SC_PM_PW_MODE_ON)) {
+			puts("Warning: failed to initialize FSPI0\n");
+		}
+	}
+#endif
+
         /* DDR initialization */
         spl_dram_init();
 
         puts("Normal Boot\n");
 }
+
+void spl_board_prepare_for_boot(void)
+{
+#if defined(CONFIG_SPL_SPI_SUPPORT)
+	sc_ipc_t ipcHndl = 0;
+
+	ipcHndl = gd->arch.ipc_channel_handle;
+	if (sc_rm_is_resource_owned(ipcHndl, SC_R_FSPI_0)) {
+		if (sc_pm_set_resource_power_mode(ipcHndl, SC_R_FSPI_0, SC_PM_PW_MODE_OFF)) {
+			puts("Warning: failed to turn off FSPI0\n");
+		}
+	}
+#endif
+}
+
+
+#ifdef CONFIG_SPL_LOAD_FIT
+int board_fit_config_name_match(const char *name)
+{
+	/* Just empty function now - can't decide what to choose */
+	debug("%s: %s\n", __func__, name);
+
+	return 0;
+}
+#endif
 
 void board_init_f(ulong dummy)
 {

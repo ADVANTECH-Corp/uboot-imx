@@ -1,5 +1,4 @@
 /*
- * Copyright (C) 2016 Freescale Semiconductor, Inc.
  * Copyright 2017 NXP
  *
  * This program is free software; you can redistribute it and/or
@@ -22,23 +21,16 @@
 
 / {
 	model = "Advantech iMX8QM Qseven series";
-	compatible = "fsl,imx8qm-arm2", "fsl,imx8qm";
+	compatible = "fsl,imx8qm-mek", "fsl,imx8qm";
+
+	aliases {
+	   mmc0 = &usdhc1;
+	   mmc2 = &usdhc3;
+    };
 
 	chosen {
 		bootargs = "console=ttyLP0,115200 earlycon=lpuart32,0x5a060000,115200";
 		stdout-path = &lpuart0;
-	};
-
-	leds {
-		compatible = "gpio-leds";
-		pinctrl-names = "default";
-		pinctrl-0 = <&pinctrl_gpio_leds>;
-		user {
-			label = "heartbeat";
-			gpios = <&gpio2 15 0>;
-			default-state = "on";
-			linux,default-trigger = "heartbeat";
-		};
 	};
 
 	regulators {
@@ -63,28 +55,33 @@
 			regulator-max-microvolt = <3300000>;
 			gpio = <&gpio4 7 GPIO_ACTIVE_HIGH>;
 			enable-active-high;
+			startup-delay-us = <100>;
+			off-on-delay-us = <12000>;
 		};
-
 	};
-
 };
 
 &iomuxc {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_hog_1>;
 
-	imx8qm-arm2 {
+	imx8qm-mek {
 		pinctrl_hog_1: hoggrp-1 {
 			fsl,pins = <
 				SC_P_USB_SS3_TC0_LSIO_GPIO4_IO03	  0x06000048
+				SC_P_LVDS0_I2C0_SCL_LSIO_GPIO1_IO06	  0x06000021
+				SC_P_LVDS0_I2C0_SDA_LSIO_GPIO1_IO07	  0x06000021
+				SC_P_QSPI1A_SS1_B_LSIO_GPIO4_IO20		  0x06000021
+				SC_P_QSPI1A_DATA2_LSIO_GPIO4_IO24		  0x06000021
+				SC_P_QSPI1A_DATA3_LSIO_GPIO4_IO23		  0x06000021
 			>;
 		};
 
 		pinctrl_fec1: fec1grp {
 			fsl,pins = <
 				SC_P_COMP_CTL_GPIO_1V8_3V3_ENET_ENETB_PAD	0x000014a0
-				SC_P_ENET0_MDC_CONN_ENET0_MDC			0x06000048
-				SC_P_ENET0_MDIO_CONN_ENET0_MDIO			0x06000048
+				SC_P_ENET0_MDC_CONN_ENET0_MDC			0x06000020
+				SC_P_ENET0_MDIO_CONN_ENET0_MDIO			0x06000020
 				SC_P_ENET0_RGMII_TX_CTL_CONN_ENET0_RGMII_TX_CTL	0x00000060
 				SC_P_ENET0_RGMII_TXC_CONN_ENET0_RGMII_TXC	0x00000060
 				SC_P_ENET0_RGMII_TXD0_CONN_ENET0_RGMII_TXD0	0x00000060
@@ -234,6 +231,13 @@
 			>;
 		};
 
+		pinctrl_usdhc3_gpio: usdhc3grpgpio {
+			fsl,pins = <
+				SC_P_USDHC2_WP_LSIO_GPIO4_IO11          0x00000021
+				SC_P_USDHC2_CD_B_LSIO_GPIO4_IO12        0x00000021
+			>;
+		};
+
 		pinctrl_usdhc3: usdhc3grp {
 			fsl,pins = <
 				SC_P_USDHC2_CLK_CONN_USDHC2_CLK         0x06000041
@@ -242,25 +246,35 @@
 				SC_P_USDHC2_DATA1_CONN_USDHC2_DATA1     0x00000021
 				SC_P_USDHC2_DATA2_CONN_USDHC2_DATA2     0x00000021
 				SC_P_USDHC2_DATA3_CONN_USDHC2_DATA3     0x00000021
-				/* WP */
-				SC_P_USDHC2_WP_LSIO_GPIO4_IO11          0x00000021
-				/* CD */
-				SC_P_USDHC2_CD_B_LSIO_GPIO4_IO12        0x00000021
 			>;
 		};
 
-		pinctrl_lpi2c1: lpi2c1grp {
+		pinctrl_usdhc3_100mhz: usdhc3grp100mhz {
 			fsl,pins = <
-				SC_P_GPT0_CLK_DMA_I2C1_SCL		0x06000020
-				SC_P_GPT0_CAPTURE_DMA_I2C1_SDA		0x06000020
-				/*
-				 * Change the default alt function from SCL/SDA to others,
-				 * to avoid select input conflict with GPT0
-				 */
-				SC_P_USB_SS3_TC0_LSIO_GPIO4_IO03	0x0700004c
-				SC_P_USB_SS3_TC1_LSIO_GPIO4_IO04	0x0700004c
-				SC_P_USB_SS3_TC2_LSIO_GPIO4_IO05	0x0700004c
-				SC_P_USB_SS3_TC3_LSIO_GPIO4_IO06	0x0700004c
+				SC_P_USDHC2_CLK_CONN_USDHC2_CLK         0x06000040
+				SC_P_USDHC2_CMD_CONN_USDHC2_CMD         0x00000020
+				SC_P_USDHC2_DATA0_CONN_USDHC2_DATA0     0x00000020
+				SC_P_USDHC2_DATA1_CONN_USDHC2_DATA1     0x00000020
+				SC_P_USDHC2_DATA2_CONN_USDHC2_DATA2     0x00000020
+				SC_P_USDHC2_DATA3_CONN_USDHC2_DATA3     0x00000020
+			>;
+		};
+
+		pinctrl_usdhc3_200mhz: usdhc3grp200mhz {
+			fsl,pins = <
+				SC_P_USDHC2_CLK_CONN_USDHC2_CLK         0x06000040
+				SC_P_USDHC2_CMD_CONN_USDHC2_CMD         0x00000020
+				SC_P_USDHC2_DATA0_CONN_USDHC2_DATA0     0x00000020
+				SC_P_USDHC2_DATA1_CONN_USDHC2_DATA1     0x00000020
+				SC_P_USDHC2_DATA2_CONN_USDHC2_DATA2     0x00000020
+				SC_P_USDHC2_DATA3_CONN_USDHC2_DATA3     0x00000020
+			>;
+		};
+
+		pinctrl_lpi2c0: lpi2c0grp {
+			fsl,pins = <
+				SC_P_HDMI_TX0_TS_SCL_DMA_I2C0_SCL		0x06000020
+				SC_P_HDMI_TX0_TS_SDA_DMA_I2C0_SDA		0x06000020
 			>;
 		};
 
@@ -295,11 +309,6 @@
 			>;
 		};
 
-		pinctrl_gpio_leds: gpioledsgrp {
-			fsl,pins = <
-				SC_P_SPDIF0_TX_LSIO_GPIO2_IO15		0x00000021
-			>;
-		};
 	};
 };
 
@@ -325,6 +334,7 @@
 	status = "okay";
 };
 
+
 &usdhc2 {
 	pinctrl-names = "default", "state_100mhz", "state_200mhz";
 	pinctrl-0 = <&pinctrl_usdhc2>, <&pinctrl_usdhc2_gpio>;
@@ -334,12 +344,15 @@
 	cd-gpios = <&gpio5 22 GPIO_ACTIVE_LOW>;
 	wp-gpios = <&gpio5 21 GPIO_ACTIVE_HIGH>;
 	vmmc-supply = <&reg_usdhc2_vmmc>;
-	status = "okay";
+	status = "disabled";
 };
+
 
 &usdhc3 {
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_usdhc3>;
+	pinctrl-0 = <&pinctrl_usdhc3>, <&pinctrl_usdhc3_gpio>;
+	pinctrl-1 = <&pinctrl_usdhc3_100mhz>, <&pinctrl_usdhc3_gpio>;
+	pinctrl-2 = <&pinctrl_usdhc3_200mhz>, <&pinctrl_usdhc3_gpio>;
 	bus-width = <4>;
 	cd-gpios = <&gpio4 12 GPIO_ACTIVE_LOW>;
 	wp-gpios = <&gpio4 11 GPIO_ACTIVE_HIGH>;
@@ -367,6 +380,8 @@
 	phy-handle = <&ethphy0>;
 	fsl,ar8031-phy-fixup;
 	fsl,magic-packet;
+//	fsl,rgmii_txc_dly;
+//	fsl,rgmii_rxc_dly;
 	status = "okay";
 
 	mdio {
@@ -376,11 +391,15 @@
 		ethphy0: ethernet-phy@0 {
 			compatible = "ethernet-phy-ieee802.3-c22";
 			reg = <0>;
+//			at803x,eee-disabled;
+//			at803x,vddio-1p8v;
 		};
 
 		ethphy1: ethernet-phy@1 {
 			compatible = "ethernet-phy-ieee802.3-c22";
 			reg = <1>;
+//			at803x,eee-disabled;
+//			at803x,vddio-1p8v;
 		};
 	};
 };
@@ -410,41 +429,14 @@
 	};
 };
 
-&i2c1 {
+&i2c0 {
 	#address-cells = <1>;
 	#size-cells = <0>;
 	clock-frequency = <100000>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_lpi2c1>;
+	pinctrl-0 = <&pinctrl_lpi2c0>;
 	status = "okay";
 
-	pca9557_a: gpio@18 {
-		compatible = "nxp,pca9557";
-		reg = <0x18>;
-		gpio-controller;
-		#gpio-cells = <2>;
-	};
-
-	pca9557_b: gpio@19 {
-		compatible = "nxp,pca9557";
-		reg = <0x19>;
-		gpio-controller;
-		#gpio-cells = <2>;
-	};
-
-	pca9557_c: gpio@1b {
-		compatible = "nxp,pca9557";
-		reg = <0x1b>;
-		gpio-controller;
-		#gpio-cells = <2>;
-	};
-
-	pca9557_d: gpio@1f {
-		compatible = "nxp,pca9557";
-		reg = <0x1f>;
-		gpio-controller;
-		#gpio-cells = <2>;
-	};
 };
 
 &i2c1_lvds0 {
@@ -489,13 +481,8 @@
 	};
 };
 
-&lpuart0 {
+&lpuart0 { /* console */
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_lpuart0>;
 	status = "okay";
 };
-
-&lpuart1 {
-	status = "okay";
-};
-

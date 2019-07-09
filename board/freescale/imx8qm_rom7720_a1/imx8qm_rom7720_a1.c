@@ -13,7 +13,6 @@
 #include <environment.h>
 #include <fsl_esdhc.h>
 #include <i2c.h>
-#include "pca953x.h"
 
 #include <asm/io.h>
 #include <asm/gpio.h>
@@ -28,16 +27,11 @@
 #include <asm/mach-imx/video.h>
 #include <asm/arch/video_common.h>
 #include <power-domain.h>
+#include "../common/tcpc.h"
 #include <cdns3-uboot.h>
+#include <asm/arch/lpcg.h>
 
 DECLARE_GLOBAL_DATA_PTR;
-
-#define ESDHC_PAD_CTRL	((SC_PAD_CONFIG_NORMAL << PADRING_CONFIG_SHIFT) | (SC_PAD_ISO_OFF << PADRING_LPCONFIG_SHIFT) \
-						| (SC_PAD_28FDSOI_DSE_DV_HIGH << PADRING_DSE_SHIFT) | (SC_PAD_28FDSOI_PS_PU << PADRING_PULL_SHIFT))
-
-#define ESDHC_CLK_PAD_CTRL	((SC_PAD_CONFIG_OUT_IN << PADRING_CONFIG_SHIFT) | (SC_PAD_ISO_OFF << PADRING_LPCONFIG_SHIFT) \
-						| (SC_PAD_28FDSOI_DSE_DV_HIGH << PADRING_DSE_SHIFT) | (SC_PAD_28FDSOI_PS_PU << PADRING_PULL_SHIFT))
-
 
 #define ENET_INPUT_PAD_CTRL	((SC_PAD_CONFIG_OD_IN << PADRING_CONFIG_SHIFT) | (SC_PAD_ISO_OFF << PADRING_LPCONFIG_SHIFT) \
 						| (SC_PAD_28FDSOI_DSE_18V_10MA << PADRING_DSE_SHIFT) | (SC_PAD_28FDSOI_PS_PU << PADRING_PULL_SHIFT))
@@ -72,6 +66,12 @@ int board_early_init_f(void)
 	sc_ipc_t ipcHndl = 0;
 	sc_err_t sciErr = 0;
 
+	/* When start u-boot in XEN VM, directly return */
+	if (IS_ENABLED(CONFIG_XEN)) {
+		writel(0xF53535F5, (void __iomem *)0x80000000);
+		return 0;
+	}
+
 	ipcHndl = gd->arch.ipc_channel_handle;
 
 	/* Power up UART0, this is very early while power domain is not working */
@@ -90,141 +90,12 @@ int board_early_init_f(void)
 	if (sciErr != SC_ERR_NONE)
 		return 0;
 
+	LPCG_AllClockOn(LPUART_0_LPCG);
+
 	setup_iomux_uart();
 
 	return 0;
 }
-
-#ifdef CONFIG_FSL_ESDHC
-
-#define USDHC1_CD_GPIO	IMX_GPIO_NR(5, 22)
-#define USDHC2_CD_GPIO	IMX_GPIO_NR(4, 12)
-
-#ifndef CONFIG_SPL_BUILD
-
-static struct fsl_esdhc_cfg usdhc_cfg[CONFIG_SYS_FSL_USDHC_NUM] = {
-	{USDHC1_BASE_ADDR, 0, 8},
-	{USDHC2_BASE_ADDR, 0, 4},
-	{USDHC3_BASE_ADDR, 0, 4},
-};
-
-static iomux_cfg_t emmc0[] = {
-	SC_P_EMMC0_CLK | MUX_PAD_CTRL(ESDHC_CLK_PAD_CTRL),
-	SC_P_EMMC0_CMD | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_EMMC0_DATA0 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_EMMC0_DATA1 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_EMMC0_DATA2 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_EMMC0_DATA3 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_EMMC0_DATA4 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_EMMC0_DATA5 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_EMMC0_DATA6 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_EMMC0_DATA7 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_EMMC0_RESET_B | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_EMMC0_STROBE | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-};
-static iomux_cfg_t usdhc1_sd[] = {
-	SC_P_USDHC1_CLK | MUX_PAD_CTRL(ESDHC_CLK_PAD_CTRL),
-	SC_P_USDHC1_CMD | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_DATA0 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_DATA1 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_DATA2 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_DATA3 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_DATA6 | MUX_MODE_ALT(2) | MUX_PAD_CTRL(ESDHC_PAD_CTRL), /* Mux for WP */
-	SC_P_USDHC1_DATA7 | MUX_MODE_ALT(3) | MUX_PAD_CTRL(ESDHC_PAD_CTRL), /* Mux for CD,  GPIO5 IO22 */
-	SC_P_USDHC1_RESET_B | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC1_VSELECT | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-};
-static iomux_cfg_t usdhc2_sd[] = {
-	SC_P_USDHC2_CLK | MUX_PAD_CTRL(ESDHC_CLK_PAD_CTRL),
-	SC_P_USDHC2_CMD | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC2_DATA0 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC2_DATA1 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC2_DATA2 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC2_DATA3 | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC2_RESET_B | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC2_WP | MUX_PAD_CTRL(ESDHC_PAD_CTRL),
-	SC_P_USDHC2_CD_B | MUX_MODE_ALT(3) | MUX_PAD_CTRL(ESDHC_PAD_CTRL),	/* Mux to GPIO4 IO12 */
-};
-
-int board_mmc_init(bd_t *bis)
-{
-	int i, ret;
-	struct power_domain pd;
-
-	/*
-	 * According to the board_mmc_init() the following map is done:
-	 * (U-boot device node)    (Physical Port)
-	 * mmc0                    USDHC1
-	 * mmc1                    USDHC2
-	 * mmc2                    USDHC3
-	 */
-	for (i = 0; i < CONFIG_SYS_FSL_USDHC_NUM; i++) {
-		switch (i) {
-		case 0:
-			if (!power_domain_lookup_name("conn_sdhc0", &pd))
-				power_domain_on(&pd);
-
-			imx8_iomux_setup_multiple_pads(emmc0, ARRAY_SIZE(emmc0));
-			init_clk_usdhc(0);
-			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC_CLK);
-			break;
-		case 1:
-			if (!power_domain_lookup_name("conn_sdhc1", &pd))
-				power_domain_on(&pd);
-
-			imx8_iomux_setup_multiple_pads(usdhc1_sd, ARRAY_SIZE(usdhc1_sd));
-			init_clk_usdhc(1);
-			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
-			gpio_request(USDHC1_CD_GPIO, "sd1_cd");
-			gpio_direction_input(USDHC1_CD_GPIO);
-			break;
-		case 2:
-			if (!power_domain_lookup_name("conn_sdhc2", &pd))
-				power_domain_on(&pd);
-
-			imx8_iomux_setup_multiple_pads(usdhc2_sd, ARRAY_SIZE(usdhc2_sd));
-			init_clk_usdhc(2);
-			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
-			gpio_request(USDHC2_CD_GPIO, "sd2_cd");
-			gpio_direction_input(USDHC2_CD_GPIO);
-			break;
-		default:
-			printf("Warning: you configured more USDHC controllers"
-				"(%d) than supported by the board\n", i + 1);
-			return 0;
-		}
-		ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
-		if (ret) {
-			printf("Warning: failed to initialize mmc dev %d\n", i);
-			return ret;
-		}
-	}
-
-	return 0;
-}
-
-int board_mmc_getcd(struct mmc *mmc)
-{
-	struct fsl_esdhc_cfg *cfg = (struct fsl_esdhc_cfg *)mmc->priv;
-	int ret = 0;
-
-	switch (cfg->esdhc_base) {
-	case USDHC1_BASE_ADDR:
-		ret = 1; /* eMMC */
-		break;
-	case USDHC2_BASE_ADDR:
-		ret = !gpio_get_value(USDHC1_CD_GPIO);
-		break;
-	case USDHC3_BASE_ADDR:
-		ret = !gpio_get_value(USDHC2_CD_GPIO);
-		break;
-	}
-
-	return ret;
-}
-#endif /* CONFIG_SPL_BUILD */
-#endif /* CONFIG_FSL_ESDHC */
-
 
 #ifdef CONFIG_FEC_MXC
 #include <miiphy.h>
@@ -275,41 +146,6 @@ static void setup_iomux_fec(void)
 		imx8_iomux_setup_multiple_pads(pad_enet1, ARRAY_SIZE(pad_enet1));
 }
 
-static void enet_device_phy_reset(void)
-{
-	struct gpio_desc desc_enet0;
-	struct gpio_desc desc_enet1;
-	int ret;
-
-	ret = dm_gpio_lookup_name("gpio@18_1", &desc_enet0);
-	if (ret)
-		return;
-
-	ret = dm_gpio_request(&desc_enet0, "enet0_reset");
-	if (ret)
-		return;
-	ret = dm_gpio_lookup_name("gpio@18_4", &desc_enet1);
-	if (ret)
-		return;
-
-	ret = dm_gpio_request(&desc_enet1, "enet1_reset");
-	if (ret)
-		return;
-
-	dm_gpio_set_dir_flags(&desc_enet0, GPIOD_IS_OUT);
-	dm_gpio_set_value(&desc_enet0, 0);
-	udelay(50);
-	dm_gpio_set_value(&desc_enet0, 1);
-
-	dm_gpio_set_dir_flags(&desc_enet1, GPIOD_IS_OUT);
-	dm_gpio_set_value(&desc_enet1, 0);
-	udelay(50);
-	dm_gpio_set_value(&desc_enet1, 1);
-
-	/* The board has a long delay for this reset to become stable */
-	mdelay(200);
-}
-
 int board_eth_init(bd_t *bis)
 {
 	int ret;
@@ -337,24 +173,6 @@ int board_eth_init(bd_t *bis)
 
 int board_phy_config(struct phy_device *phydev)
 {
-#ifdef CONFIG_FEC_ENABLE_MAX7322
-	uint8_t value;
-
-	/* This is needed to drive the pads to 1.8V instead of 1.5V */
-	i2c_set_bus_num(CONFIG_MAX7322_I2C_BUS);
-
-	if (!i2c_probe(CONFIG_MAX7322_I2C_ADDR)) {
-		/* Write 0x1 to enable O0 output, this device has no addr */
-		/* hence addr length is 0 */
-		value = 0x1;
-		if (i2c_write(CONFIG_MAX7322_I2C_ADDR, 0, 0, &value, 1))
-			printf("MAX7322 write failed\n");
-	} else {
-		printf("MAX7322 Not found\n");
-	}
-	mdelay(1);
-#endif
-
 	phy_write(phydev, MDIO_DEVAD_NONE, 0x1d, 0x1f);
 	phy_write(phydev, MDIO_DEVAD_NONE, 0x1e, 0x8);
 
@@ -368,40 +186,26 @@ int board_phy_config(struct phy_device *phydev)
 
 	return 0;
 }
-
-static int setup_fec(int ind)
-{
-	/* Reset ENET PHY */
-	enet_device_phy_reset();
-
-	return 0;
-}
 #endif
 
 #ifdef CONFIG_MXC_GPIO
 
 #define LVDS_ENABLE IMX_GPIO_NR(1, 6)
 #define MIPI_ENABLE IMX_GPIO_NR(1, 7)
-#define DEBUG_LED   IMX_GPIO_NR(2, 15)
-#define IOEXP_RESET IMX_GPIO_NR(1, 12)
 
-static iomux_cfg_t board_gpios[] = {
-	SC_P_LVDS0_I2C0_SCL | MUX_MODE_ALT(3) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
-	SC_P_LVDS0_I2C0_SDA | MUX_MODE_ALT(3) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
-	SC_P_LVDS1_I2C0_SCL | MUX_MODE_ALT(3) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
-	SC_P_SPDIF0_TX | MUX_MODE_ALT(3) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
-};
+#define BB_GPIO_3V3_1 IMX_GPIO_NR(4, 20)
+#define BB_GPIO_3V3_2 IMX_GPIO_NR(4, 24)
+#define BB_GPIO_3V3_3 IMX_GPIO_NR(4, 23)
 
 static void board_gpio_init(void)
 {
-	imx8_iomux_setup_multiple_pads(board_gpios, ARRAY_SIZE(board_gpios));
-
-	gpio_request(DEBUG_LED, "debug_led");
-	gpio_direction_output(DEBUG_LED, 1);
-
-	/* enable i2c port expander assert reset line */
-	gpio_request(IOEXP_RESET, "ioexp_rst");
-	gpio_direction_output(IOEXP_RESET, 1);
+	/* Enable BB 3V3 */
+	gpio_request(BB_GPIO_3V3_1, "bb_3v3_1");
+	gpio_direction_output(BB_GPIO_3V3_1, 1);
+	gpio_request(BB_GPIO_3V3_2, "bb_3v3_2");
+	gpio_direction_output(BB_GPIO_3V3_2, 1);
+	gpio_request(BB_GPIO_3V3_3, "bb_3v3_3");
+	gpio_direction_output(BB_GPIO_3V3_3, 1);
 
 	/* enable LVDS SAS boards */
 	gpio_request(LVDS_ENABLE, "lvds_enable");
@@ -415,7 +219,7 @@ static void board_gpio_init(void)
 
 int checkboard(void)
 {
-	puts("Board: ROM-7720 A1\n");
+	puts("Board: ROM-7720-A1 4GB\n");
 
 	print_bootinfo();
 
@@ -468,8 +272,20 @@ static void imx8qm_hsio_initialize(void)
 			 printf("hsio_gpio Power up failed! (error = %d)\n", ret);
 	}
 
-	imx8_iomux_setup_multiple_pads(board_pcie_pins, ARRAY_SIZE(board_pcie_pins));
+	LPCG_AllClockOn(HSIO_PCIE_X2_LPCG);
+	LPCG_AllClockOn(HSIO_PCIE_X1_LPCG);
+	LPCG_AllClockOn(HSIO_SATA_LPCG);
+	LPCG_AllClockOn(HSIO_PHY_X2_LPCG);
+	LPCG_AllClockOn(HSIO_PHY_X1_LPCG);
+	LPCG_AllClockOn(HSIO_PHY_X2_CRR0_LPCG);
+	LPCG_AllClockOn(HSIO_PHY_X1_CRR1_LPCG);
+	LPCG_AllClockOn(HSIO_PCIE_X2_CRR2_LPCG);
+	LPCG_AllClockOn(HSIO_PCIE_X1_CRR3_LPCG);
+	LPCG_AllClockOn(HSIO_SATA_CRR4_LPCG);
+	LPCG_AllClockOn(HSIO_MISC_LPCG);
+	LPCG_AllClockOn(HSIO_GPIO_LPCG);
 
+	imx8_iomux_setup_multiple_pads(board_pcie_pins, ARRAY_SIZE(board_pcie_pins));
 }
 
 void pci_init_board(void)
@@ -479,8 +295,45 @@ void pci_init_board(void)
 }
 #endif
 
-#ifdef CONFIG_USB_CDNS3_GADGET
+#ifdef CONFIG_USB
 
+#ifdef CONFIG_USB_TCPC
+#define USB_TYPEC_SEL IMX_GPIO_NR(4, 6)
+#define USB_TYPEC_EN IMX_GPIO_NR(4, 19)
+
+static iomux_cfg_t ss_mux_gpio[] = {
+	SC_P_USB_SS3_TC3 | MUX_MODE_ALT(3) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
+	SC_P_QSPI1A_SS0_B | MUX_MODE_ALT(3) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
+};
+
+struct tcpc_port port;
+struct tcpc_port_config port_config = {
+	.i2c_bus = 0,
+	.addr = 0x51,
+	.port_type = TYPEC_PORT_DFP,
+};
+
+void ss_mux_select(enum typec_cc_polarity pol)
+{
+	if (pol == TYPEC_POLARITY_CC1)
+		gpio_direction_output(USB_TYPEC_SEL, 0);
+	else
+		gpio_direction_output(USB_TYPEC_SEL, 1);
+}
+
+static void setup_typec(void)
+{
+	imx8_iomux_setup_multiple_pads(ss_mux_gpio, ARRAY_SIZE(ss_mux_gpio));
+	gpio_request(USB_TYPEC_SEL, "typec_sel");
+	gpio_request(USB_TYPEC_EN, "typec_en");
+
+	gpio_direction_output(USB_TYPEC_EN, 1);
+
+	tcpc_init(&port, port_config, &ss_mux_select);
+}
+#endif
+
+#ifdef CONFIG_USB_CDNS3_GADGET
 static struct cdns3_device cdns3_device_data = {
 	.none_core_base = 0x5B110000,
 	.xhci_base = 0x5B130000,
@@ -491,18 +344,37 @@ static struct cdns3_device cdns3_device_data = {
 	.index = 1,
 };
 
-int usb_gadget_handle_interrupts(void)
+int usb_gadget_handle_interrupts(int index)
 {
-	cdns3_uboot_handle_interrupt(1);
+	cdns3_uboot_handle_interrupt(index);
 	return 0;
 }
+#endif
 
 int board_usb_init(int index, enum usb_init_type init)
 {
 	int ret = 0;
 
 	if (index == 1) {
-		if (init == USB_INIT_DEVICE) {
+		if (init == USB_INIT_HOST) {
+#ifdef CONFIG_USB_TCPC
+			ret = tcpc_setup_dfp_mode(&port);
+#endif
+#ifdef CONFIG_USB_CDNS3_GADGET
+		} else {
+#ifdef CONFIG_SPL_BUILD
+			sc_ipc_t ipcHndl = 0;
+
+			ipcHndl = gd->arch.ipc_channel_handle;
+
+			ret = sc_pm_set_resource_power_mode(ipcHndl, SC_R_USB_2, SC_PM_PW_MODE_ON);
+			if (ret != SC_ERR_NONE)
+				printf("conn_usb2 Power up failed! (error = %d)\n", ret);
+
+			ret = sc_pm_set_resource_power_mode(ipcHndl, SC_R_USB_2_PHY, SC_PM_PW_MODE_ON);
+			if (ret != SC_ERR_NONE)
+				printf("conn_usb2_phy Power up failed! (error = %d)\n", ret);
+#else
 			struct power_domain pd;
 			int ret;
 
@@ -518,9 +390,16 @@ int board_usb_init(int index, enum usb_init_type init)
 				if (ret)
 					printf("conn_usb2_phy Power up failed! (error = %d)\n", ret);
 			}
+#endif
+
+#ifdef CONFIG_USB_TCPC
+			ret = tcpc_setup_ufp_mode(&port);
+			printf("%d setufp mode %d\n", index, ret);
+#endif
 
 			ret = cdns3_uboot_init(&cdns3_device_data);
 			printf("%d cdns3_uboot_initmode %d\n", index, ret);
+#endif
 		}
 	}
 	return ret;
@@ -531,24 +410,44 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 	int ret = 0;
 
 	if (index == 1) {
-		if (init == USB_INIT_DEVICE) {
+		if (init == USB_INIT_HOST) {
+#ifdef CONFIG_USB_TCPC
+			ret = tcpc_disable_src_vbus(&port);
+#endif
+#ifdef CONFIG_USB_CDNS3_GADGET
+		} else {
+			cdns3_uboot_exit(1);
+
+#ifdef CONFIG_SPL_BUILD
+			sc_ipc_t ipcHndl = 0;
+
+			ipcHndl = gd->arch.ipc_channel_handle;
+
+			ret = sc_pm_set_resource_power_mode(ipcHndl, SC_R_USB_2, SC_PM_PW_MODE_OFF);
+			if (ret != SC_ERR_NONE)
+				printf("conn_usb2 Power down failed! (error = %d)\n", ret);
+
+			ret = sc_pm_set_resource_power_mode(ipcHndl, SC_R_USB_2_PHY, SC_PM_PW_MODE_OFF);
+			if (ret != SC_ERR_NONE)
+				printf("conn_usb2_phy Power down failed! (error = %d)\n", ret);
+#else
 			struct power_domain pd;
 			int ret;
-
-			cdns3_uboot_exit(1);
 
 			/* Power off usb */
 			if (!power_domain_lookup_name("conn_usb2", &pd)) {
 				ret = power_domain_off(&pd);
 				if (ret)
-					printf("conn_usb2 Power up failed! (error = %d)\n", ret);
+					printf("conn_usb2 Power down failed! (error = %d)\n", ret);
 			}
 
 			if (!power_domain_lookup_name("conn_usb2_phy", &pd)) {
 				ret = power_domain_off(&pd);
 				if (ret)
-					printf("conn_usb2_phy Power up failed! (error = %d)\n", ret);
+					printf("conn_usb2_phy Power down failed! (error = %d)\n", ret);
 			}
+#endif
+#endif
 		}
 	}
 	return ret;
@@ -557,12 +456,11 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 
 int board_init(void)
 {
+	if (IS_ENABLED(CONFIG_XEN))
+		return 0;
+
 #ifdef CONFIG_MXC_GPIO
 	board_gpio_init();
-#endif
-
-#ifdef CONFIG_FEC_MXC
-	setup_fec(CONFIG_FEC_ENET_DEV);
 #endif
 
 #ifdef CONFIG_FSL_HSIO
@@ -571,14 +469,25 @@ int board_init(void)
 	sata_init();
 #endif
 #endif
+
+#if defined(CONFIG_USB_XHCI_IMX8) && defined(CONFIG_USB_TCPC)
+	setup_typec();
+#endif
+
 	return 0;
 }
 
-void board_quiesce_devices()
+void board_quiesce_devices(void)
 {
 	const char *power_on_devices[] = {
 		"dma_lpuart0",
 	};
+
+	if (IS_ENABLED(CONFIG_XEN)) {
+		/* Clear magic number to let xen know uboot is over */
+		writel(0x0, (void __iomem *)0x80000000);
+		return;
+	}
 
 	power_off_pd_devices(power_on_devices, ARRAY_SIZE(power_on_devices));
 }
@@ -608,18 +517,30 @@ int ft_board_setup(void *blob, bd_t *bd)
 
 int board_mmc_get_env_dev(int devno)
 {
+	/* Use EMMC */
+	if (IS_ENABLED(CONFIG_XEN))
+		return 0;
+
 	return devno;
 }
 
 int mmc_map_to_kernel_blk(int dev_no)
 {
+	/* Use EMMC */
+	if (IS_ENABLED(CONFIG_XEN))
+		return 0;
+
 	return dev_no;
 }
 
+extern uint32_t _end_ofs;
 int board_late_init(void)
 {
+	char *fdt_file;
+	bool m4_boot;
+
 #ifdef CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG
-	env_set("board_name", "ARM2");
+	env_set("board_name", "MEK");
 	env_set("board_rev", "iMX8QM");
 #endif
 
@@ -628,8 +549,36 @@ int board_late_init(void)
 	env_set("sec_boot", "yes");
 #endif
 
+	fdt_file = env_get("fdt_file");
+	m4_boot = check_m4_parts_boot();
+
+	if (fdt_file && !strcmp(fdt_file, "undefined")) {
+		if (m4_boot)
+			env_set("fdt_file", "fsl-imx8qm-mek-rpmsg.dtb");
+		else
+			env_set("fdt_file", "fsl-imx8qm-mek.dtb");
+	}
+
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
+#endif
+
+#ifdef IMX_LOAD_HDMI_FIMRWARE
+	char *end_of_uboot;
+	char command[256];
+	end_of_uboot = (char *)(ulong)(CONFIG_SYS_TEXT_BASE + _end_ofs + fdt_totalsize(gd->fdt_blob));
+	end_of_uboot += 9;
+
+	/* load hdmitxfw.bin and hdmirxfw.bin*/
+	memcpy(IMX_HDMI_FIRMWARE_LOAD_ADDR, end_of_uboot,
+			IMX_HDMITX_FIRMWARE_SIZE + IMX_HDMIRX_FIRMWARE_SIZE);
+
+	sprintf(command, "hdp load 0x%x", IMX_HDMI_FIRMWARE_LOAD_ADDR);
+	run_command(command, 0);
+
+	sprintf(command, "hdprx load 0x%x",
+			IMX_HDMI_FIRMWARE_LOAD_ADDR + IMX_HDMITX_FIRMWARE_SIZE);
+	run_command(command, 0);
 #endif
 
 	return 0;

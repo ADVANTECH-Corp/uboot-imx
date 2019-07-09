@@ -48,7 +48,7 @@ choice
 	optional
 
 config TARGET_IMX8QM_ROM7720_A1
-	bool "Support i.MX8QM ROM-7720-A1"
+	bool "Support i.MX8QM ROM-7720-A1 (4GB DRAM)"
 	select BOARD_LATE_INIT
 	select SUPPORT_SPL
 	select IMX8QM
@@ -95,7 +95,7 @@ config TARGET_IMX8QXP_MEK
 
 endchoice
 
-source "board/freescale/imx8qm_rom7720a1/Kconfig"
+source "board/freescale/imx8qm_rom7720_a1/Kconfig"
 source "board/freescale/imx8qm_arm2/Kconfig"
 source "board/freescale/imx8qm_mek/Kconfig"
 source "board/freescale/imx8qxp_arm2/Kconfig"
