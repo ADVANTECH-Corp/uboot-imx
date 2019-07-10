@@ -994,7 +994,7 @@ ifeq ($(CONFIG_ARCH_MX6)$(CONFIG_ADVANTECH), yy)
 u-boot_crc.bin:	u-boot.bin
 		@cp tools/mk_uboot_crc .
 		@./mk_uboot_crc
-		@crc32 ./u-boot_crc.bin > ./u-boot_crc.bin.crc
+		@/usr/bin/crc32 ./u-boot_crc.bin > ./u-boot_crc.bin.crc
 		@rm -f ./mk_uboot_crc
 endif
 
