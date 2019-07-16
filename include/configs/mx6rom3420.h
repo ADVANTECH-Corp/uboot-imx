@@ -24,8 +24,8 @@
 #endif
 
 /* support SATA boot */
-#define CONFIG_SATA_BOOT
-#define CONFIG_SATA_GEN2	0x059195fe	
+/*#define CONFIG_SATA_BOOT
+#define CONFIG_SATA_GEN2	0x059195fe*/
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rom3420-a1.dtb"
 #define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)

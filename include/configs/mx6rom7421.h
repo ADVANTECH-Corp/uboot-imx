@@ -24,8 +24,8 @@
 #endif
 
 /* support SATA boot */
-#define CONFIG_SATA_BOOT
-#define CONFIG_SATA_GEN2        0x0593e4c4
+/*#define CONFIG_SATA_BOOT
+#define CONFIG_SATA_GEN2        0x0593e4c4*/
 
 /* support two sd card boot*/
 #define CONFIG_TWO_SD_BOOT

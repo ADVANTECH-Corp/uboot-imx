@@ -24,8 +24,8 @@
 #endif
 
 /* support SATA boot */
-#define CONFIG_SATA_BOOT
-#define CONFIG_SATA_GEN2        0x059180e6
+/*#define CONFIG_SATA_BOOT
+#define CONFIG_SATA_GEN2        0x059180e6*/
 #if defined(CONFIG_TARGET_MX6ROM5420A1_1G) || defined(CONFIG_TARGET_MX6ROM5420A1_2G)
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rom5420-a1.dtb"
