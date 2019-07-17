@@ -40,9 +40,6 @@ static u8 g_rx_buf[256];
 
 struct imx_spi_flash_params {
 	u32		idcode1;
-#ifdef CONFIG_ADVANTECH
-	u32		idcode2;
-#endif
 	u32		block_size;
 	u32		block_count;
 	u32		device_size;
@@ -64,9 +61,6 @@ to_imx_spi_flash(struct spi_flash *flash)
 static const struct imx_spi_flash_params imx_spi_flash_table[] = {
 	{
 		.idcode1		= 0x20,
-#ifdef CONFIG_ADVANTECH
-		.idcode2		= 0x16,
-#endif
 		.block_size		= SZ_64K,
 		.block_count		= 64,
 		.device_size		= SZ_64K * 64,
@@ -500,9 +494,7 @@ struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs, unsigned in
 
 	for (i = 0; i < ARRAY_SIZE(imx_spi_flash_table); ++i) {
 		params = &imx_spi_flash_table[i];
-#if defined CONFIG_ADVANTECH
-		if (params->idcode1 == idcode[0] && params->idcode2 == idcode[2])
-#else
+#ifndef CONFIG_ADVANTECH
 		if (params->idcode1 == idcode[1])
 #endif
 			break;
