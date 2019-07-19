@@ -859,9 +859,9 @@ int board_set_boot_device(void)
 		case 5:
 			/* booting from Carrier SD*/
 			printf("booting from Carrier SD\n");
-			setenv("mmcdev", "2");
+			env_set("mmcdev", "2");
 			sprintf(buf, "/dev/mmcblk2p2 rootwait rw");
-			setenv("mmcroot",buf);
+			env_set("mmcroot",buf);
                         break;
 #endif
 	}
