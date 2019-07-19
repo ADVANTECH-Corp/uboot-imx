@@ -446,6 +446,15 @@ config TARGET_MX6ROM7421A1_1G
     select BOARD_LATE_INIT
     select BOARD_EARLY_INIT_F
 
+config TARGET_MX6ROM7421A1_2G
+    bool "Support mx6rom7421a1 2G"
+    select MX6QP
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
 config TARGET_MX6WISE3310A1_1G
     bool "Support mx6romwise3310a1 1G"
     select MX6Q
