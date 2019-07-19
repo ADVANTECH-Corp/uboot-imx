@@ -26,7 +26,7 @@ endif
 obj-$(CONFIG_$(SPL_TPL_)UBI) += spl_ubi.o
 obj-$(CONFIG_$(SPL_TPL_)NET_SUPPORT) += spl_net.o
 ifdef CONFIG_ADVANTECH
-obj-$(CONFIG_SPL_MMC_SUPPORT) += spl_mmc_advantech.o
+obj-$(CONFIG_$(SPL_TPL_)MMC_SUPPORT) += spl_mmc_advantech.o
 else
 obj-$(CONFIG_$(SPL_TPL_)MMC_SUPPORT) += spl_mmc.o
 endif

@@ -29,6 +29,9 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
+extern struct spl_image_info spl_image;
+
+
 static int spl_mmc_check_crc(unsigned int dev,struct mmc *mmc)
 {
 #ifdef CONFIG_SPL_FAT_SUPPORT
