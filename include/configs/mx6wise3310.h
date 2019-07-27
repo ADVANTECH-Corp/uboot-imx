@@ -23,18 +23,22 @@
 #undef CONFIG_DEFAULT_FDT_FILE
 #endif
 
+#if defined(CONFIG_TARGET_MX6QWISE3310A1_512M)
+#define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6QWISE3310A1_1G)
+#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6QWISE3310A1_2G)
+#define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
+#endif
+
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-wise3310-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_MX6Q)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6q-wise3310-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_MX6DL)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-wise3310-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
-#elif defined(CONFIG_MX6SOLO)
+#elif defined(CONFIG_MX6S)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-wise3310-a1.dtb"
-#define PHYS_SDRAM_SIZE		(512u * 1024 * 1024)
 #endif
 
 #include "mx6advantech_common.h"
@@ -112,7 +116,16 @@
 #endif /* CONFIG_SPLASH_SCREEN && CONFIG_MXC_EPDC */
 #endif
 
+/* uncomment for SECURE mode support */
+/* #define CONFIG_SECURE_BOOT */
 
+#ifdef CONFIG_SECURE_BOOT
+#ifndef CONFIG_CSF_SIZE
+#define CONFIG_CSF_SIZE 0x4000
+#endif
+#endif
+
+/* #define CONFIG_MFG_IGNORE_CHECK_SECURE_BOOT */
 
 #define SPI1_CS0                IMX_GPIO_NR(2,30)
 #define IOMUX_SPI_SCLK          MX6_PAD_EIM_D16__ECSPI1_SCLK

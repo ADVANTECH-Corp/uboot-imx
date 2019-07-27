@@ -23,33 +23,33 @@
 #undef CONFIG_DEFAULT_FDT_FILE
 #endif
 
-#if defined(CONFIG_TARGET_MX6RSB4410A1_1G)
+#if defined(CONFIG_TARGET_MX6QRSB4410A1_512M) || defined(CONFIG_TARGET_MX6QRSB4410A2_512M)
+#define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6QRSB4410A1_1G) || defined(CONFIG_TARGET_MX6QRSB4410A2_1G)
+#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6QRSB4410A1_2G) || defined(CONFIG_TARGET_MX6QRSB4410A2_2G)
+#define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
+#endif
+
+#if defined(CONFIG_TARGET_MX6QRSB4410A1_1G)
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rsb4410-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_MX6Q)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6q-rsb4410-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_MX6DL)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb4410-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
-#elif defined(CONFIG_MX6SOLO)
+#elif defined(CONFIG_MX6S)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb4410-a1.dtb"
-#define PHYS_SDRAM_SIZE		(512u * 1024 * 1024)
 #endif
-#elif defined(CONFIG_TARGET_MX6RSB4410A2_1G)
+#elif defined(CONFIG_TARGET_MX6QRSB4410A2_1G)
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE "imx6qp-rsb4410-a2.dtb"
-#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_MX6Q)
 #define CONFIG_DEFAULT_FDT_FILE "imx6q-rsb4410-a2.dtb"
-#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_MX6DL)
 #define CONFIG_DEFAULT_FDT_FILE "imx6dl-rsb4410-a2.dtb"
-#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
-#elif defined(CONFIG_MX6SOLO)
+#elif defined(CONFIG_MX6S)
 #define CONFIG_DEFAULT_FDT_FILE "imx6dl-rsb4410-a2.dtb"
-#define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
 #endif
 #endif
 
@@ -127,6 +127,17 @@
 	#define CONFIG_WAVEFORM_BUF_SIZE		0x400000
 #endif /* CONFIG_SPLASH_SCREEN && CONFIG_MXC_EPDC */
 #endif
+
+/* uncomment for SECURE mode support */
+/* #define CONFIG_SECURE_BOOT */
+
+#ifdef CONFIG_SECURE_BOOT
+#ifndef CONFIG_CSF_SIZE
+#define CONFIG_CSF_SIZE 0x4000
+#endif
+#endif
+
+/* #define CONFIG_MFG_IGNORE_CHECK_SECURE_BOOT */
 
 #define CONFIG_SUPPORT_LVDS
 #ifdef CONFIG_SUPPORT_LVDS

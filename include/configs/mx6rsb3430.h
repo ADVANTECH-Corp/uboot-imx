@@ -15,61 +15,36 @@
 #endif
 
 #define CONFIG_MACH_TYPE	3980
-#define CONFIG_MXC_UART_BASE	UART1_BASE
-#define CONSOLE_DEV		"ttymxc0"
-#define CONFIG_MMCROOT			"/dev/mmcblk0p2"  /* SDHC3 */
+#define CONFIG_MXC_UART_BASE	UART2_BASE
+#define CONSOLE_DEV		"ttymxc1"
+#define CONFIG_MMCROOT			"/dev/mmcblk0p2"  /* SDHC2 */
+#define ADV_ENABLE_UART2
 
 #if defined(CONFIG_DEFAULT_FDT_FILE)
 #undef CONFIG_DEFAULT_FDT_FILE
 #endif
 
-#if defined(CONFIG_TARGET_MX6QROM5420A1_512M) || defined(CONFIG_TARGET_MX6QROM5420B1_512M) || defined(CONFIG_TARGET_MX6SOLOROM5420B1_512M)
-#define PHYS_SDRAM_SIZE		(512u * 1024 * 1024)
-#elif defined(CONFIG_TARGET_MX6QROM5420A1_1G) || defined(CONFIG_TARGET_MX6QROM5420B1_1G) || defined(CONFIG_TARGET_MX6SOLOROM5420B1_1G)
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
-#elif defined(CONFIG_TARGET_MX6QROM5420A1_2G) || defined(CONFIG_TARGET_MX6QROM5420B1_2G) || defined(CONFIG_TARGET_MX6DLROM5420B1_2G)
-#define PHYS_SDRAM_SIZE		(2u * 1024 * 1024 * 1024)
+#if defined(CONFIG_TARGET_MX6QRSB3430A1_512M) || defined(CONFIG_TARGET_MX6DLRSB3430A1_512M) 
+#define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6QRSB3430A1_1G) || defined(CONFIG_TARGET_MX6DLRSB3430A1_1G)
+#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6QRSB3430A1_2G) || defined(CONFIG_TARGET_MX6DLRSB3430A1_2G)
+#define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
 #endif
 
-#if defined(CONFIG_TARGET_MX6QROM5420A1_1G) || defined(CONFIG_TARGET_MX6QROM5420A1_2G) || defined(CONFIG_TARGET_MX6SOLOROM5420B1_1G)
 #if defined(CONFIG_MX6QP)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rom5420-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rsb3430-a1.dtb"
 #elif defined(CONFIG_MX6Q)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6q-rom5420-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6q-rsb3430-a1.dtb"
 #elif defined(CONFIG_MX6DL)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rom5420-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb3430-a1.dtb"
 #elif defined(CONFIG_MX6S)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rom5420-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb3430-a1.dtb"
 #endif
-#elif defined(CONFIG_TARGET_MX6QROM5420B1_1G) || defined(CONFIG_TARGET_MX6QROM5420B1_2G) || defined(CONFIG_TARGET_MX6DLROM5420B1_2G) || defined(CONFIG_TARGET_MX6SOLOROM5420B1_512M)
-#if defined(CONFIG_MX6QP)
-#define CONFIG_DEFAULT_FDT_FILE "imx6qp-rom5420-b1.dtb"
-#elif defined(CONFIG_MX6Q)
-#define CONFIG_DEFAULT_FDT_FILE "imx6q-rom5420-b1.dtb"
-#elif defined(CONFIG_MX6DL)
-#define CONFIG_DEFAULT_FDT_FILE "imx6dl-rom5420-b1.dtb"
-#elif defined(CONFIG_MX6S)
-#define CONFIG_DEFAULT_FDT_FILE "imx6dl-rom5420-b1.dtb"
-#endif
-#endif
-
+#define CONFIG_MMC_CLOCK_DOWNGRADE
 #include "mx6advantech_common.h"
 /* don't use pmic */
 #undef CONFIG_LDO_BYPASS_CHECK
-
-/* support SPI boot */
-#ifdef CONFIG_MX6Q
-#define CONFIG_SPI_BOOT
-#define CONFIG_SPL_SPI_BUS	4
-#define CONFIG_SPL_SPI_CS	0
-#define IOMUX_SPI5_SCLK		MX6_PAD_SD1_CLK__ECSPI5_SCLK
-#define IOMUX_SPI5_MISO		MX6_PAD_SD1_DAT0__ECSPI5_MISO
-#define IOMUX_SPI5_MOSI		MX6_PAD_SD1_CMD__ECSPI5_MOSI
-#define IOMUX_SPI5_CS0		MX6_PAD_SD1_DAT1__ECSPI5_SS0
-#endif
-#ifdef CONFIG_SPL_BUILD
-#define CONFIG_BOOT_SELECT
-#endif
 
 /* Falcon Mode */
 #define CONFIG_SPL_FS_LOAD_ARGS_NAME	"args"
@@ -83,7 +58,7 @@
 
 #define CONFIG_SYS_FSL_USDHC_NUM	3
 #if defined(CONFIG_ENV_IS_IN_MMC)
-#define CONFIG_SYS_MMC_ENV_DEV		1	/* SDHC3 */
+#define CONFIG_SYS_MMC_ENV_DEV		0	/* SDHC2 */
 #ifndef CONFIG_SYS_MMC_ENV_PART
 #define CONFIG_SYS_MMC_ENV_PART                0       /* user partition */
 #endif
@@ -92,9 +67,6 @@
 #ifdef CONFIG_CMD_SF
 #define CONFIG_SF_DEFAULT_CS   0
 #endif
-
-#undef CONFIG_FEC_MXC_PHYADDR
-#define CONFIG_FEC_MXC_PHYADDR	0
 
 /*
  * imx6 q/dl/solo pcie would be failed to work properly in kernel, if
@@ -110,8 +82,8 @@
 #ifdef CONFIG_CMD_PCI
 #define CONFIG_PCI_SCAN_SHOW
 #define CONFIG_PCIE_IMX
-#define CONFIG_PCIE_IMX_PERST_GPIO	IMX_GPIO_NR(7, 12)
-#define CONFIG_PCIE_IMX_POWER_GPIO	IMX_GPIO_NR(3, 19)
+#define CONFIG_PCIE_IMX_PERST_GPIO	IMX_GPIO_NR(6, 15)
+//#define CONFIG_PCIE_IMX_POWER_GPIO	IMX_GPIO_NR(3, 19)
 #endif
 
 /* USB Configs */
@@ -158,12 +130,16 @@
 
 #define CONFIG_SUPPORT_LVDS
 #ifdef CONFIG_SUPPORT_LVDS
-#define IOMUX_LCD_BKLT_PWM 	MX6_PAD_GPIO_9__GPIO1_IO09
-#define IOMUX_LCD_BKLT_EN	MX6_PAD_KEY_COL0__GPIO4_IO06
+#define IOMUX_LCD_BKLT_PWM 	MX6_PAD_SD1_CMD__GPIO1_IO18
+#define IOMUX_LCD_BKLT_EN	MX6_PAD_SD1_CLK__GPIO1_IO20
 #define IOMUX_LCD_VDD_EN	MX6_PAD_KEY_ROW0__GPIO4_IO07
-#define LCD_BKLT_PWM 		IMX_GPIO_NR(1, 9)
-#define LCD_BKLT_EN 		IMX_GPIO_NR(4, 6)
-#define LCD_VDD_EN 		IMX_GPIO_NR(4, 7)	
+#define IOMUX_VDD_BKLT_EN	MX6_PAD_KEY_COL0__GPIO4_IO06
+#define LCD_BKLT_PWM 		IMX_GPIO_NR(1, 18)
+#define LCD_BKLT_EN 		IMX_GPIO_NR(1, 20)
+#define LCD_VDD_EN 		IMX_GPIO_NR(4, 7)
+#define LCD_VDD_EN_INVERT
+#define VDD_BKLT_EN		IMX_GPIO_NR(4, 6)
+#define VDD_BKLT_EN_INVERT
 #endif
 
 #define SPI1_CS0                IMX_GPIO_NR(2,30)
@@ -172,12 +148,6 @@
 #define IOMUX_SPI_MOSI          MX6_PAD_EIM_D18__ECSPI1_MOSI
 #define IOMUX_SPI_CS0           MX6_PAD_EIM_EB2__ECSPI1_SS0
 
-#define USDHC2_CD_GPIO          IMX_GPIO_NR(2, 2)
+#define USDHC2_CD_GPIO		IMX_GPIO_NR(1, 4)
 #define USDHC3_CD_GPIO          IMX_GPIO_NR(2, 0)
-
-#define CONFIG_PCIE_RESET
-#define IOMUX_PCIE_RESET        MX6_PAD_KEY_ROW1__GPIO4_IO09	//PCIE_A_RST
-#define PCIE_RESET              IMX_GPIO_NR(4,9)
-
-
 #endif                         /* __MX6SABRESD_CONFIG_H */

@@ -338,35 +338,8 @@ config TARGET_MX6SOLOSABRESD
     select TARGET_MX6SABRESD
     select MX6S
 
-config TARGET_MX6RSB4410A1_1G
-    bool "Support mx6rsb4410a1 1G"
-    select MX6Q
-    select SUPPORT_SPL
-    select DM
-    select DM_THERMAL
-    select BOARD_LATE_INIT
-    select BOARD_EARLY_INIT_F
-
-config TARGET_MX6RSB4410A2_1G
-    bool "Support mx6rsb4410a2 1G"
-    select MX6Q
-    select SUPPORT_SPL
-    select DM
-    select DM_THERMAL
-    select BOARD_LATE_INIT
-    select BOARD_EARLY_INIT_F
-
-config TARGET_MX6UBCDS31A1_1G
-    bool "Support mx6ubcds31a1 1G"
-    select MX6Q
-    select SUPPORT_SPL
-    select DM
-    select DM_THERMAL
-    select BOARD_LATE_INIT
-    select BOARD_EARLY_INIT_F
-
-config TARGET_MX6UBC220A1_1G
-    bool "Support mx6ub220a1 1G"
+config TARGET_MX6DLEBCRS03A1_1G
+    bool "Support mx6dlrbcrs03a1 1G"
     select MX6DL
     select SUPPORT_SPL
     select DM
@@ -374,71 +347,44 @@ config TARGET_MX6UBC220A1_1G
     select BOARD_LATE_INIT
     select BOARD_EARLY_INIT_F
 
-config TARGET_MX6ROM3420A1_1G
-    bool "Support mx6rom3420a1 1G"
-    select MX6Q
+config TARGET_MX6DLROM5420B1_2G
+    bool "Support mx6dlrom5420b1 2G"
+    select MX6DL
     select SUPPORT_SPL
     select DM
     select DM_THERMAL
     select BOARD_LATE_INIT
     select BOARD_EARLY_INIT_F
 
-config TARGET_MX6ROM3420A1_2G
-    bool "Support mx6rom3420a1 2G"
-    select MX6Q
+config TARGET_MX6DLRSB3430A1_1G
+    bool "Support mx6dlrsb3430a1 1G"
+    select MX6DL
     select SUPPORT_SPL
     select DM
     select DM_THERMAL
     select BOARD_LATE_INIT
     select BOARD_EARLY_INIT_F
 
-config TARGET_MX6ROM5420A1_1G
-    bool "Support mx6rom5420a1 1G"
-    select MX6Q
+config TARGET_MX6DLRSB4411A1_2G
+    bool "Support mx6dlrsb4411a1 2G"
+    select MX6DL
     select SUPPORT_SPL
     select DM
     select DM_THERMAL
     select BOARD_LATE_INIT
     select BOARD_EARLY_INIT_F
 
-config TARGET_MX6ROM5420A1_2G
-    bool "Support mx6rom5420a1 2G"
-    select MX6Q
+config TARGET_MX6DLUBC220A1_1G
+    bool "Support mx6dlub220a1 1G"
+    select MX6DL
     select SUPPORT_SPL
     select DM
     select DM_THERMAL
     select BOARD_LATE_INIT
     select BOARD_EARLY_INIT_F
 
-config TARGET_MX6ROM5420B1_1G
-    bool "Support mx6rom5420b1 1G"
-    select MX6Q
-    select SUPPORT_SPL
-    select DM
-    select DM_THERMAL
-    select BOARD_LATE_INIT
-    select BOARD_EARLY_INIT_F
-
-config TARGET_MX6ROM5420B1_2G
-    bool "Support mx6rom5420b1 2G"
-    select MX6Q
-    select SUPPORT_SPL
-    select DM
-    select DM_THERMAL
-    select BOARD_LATE_INIT
-    select BOARD_EARLY_INIT_F
-
-config TARGET_MX6ROM7420A1_1G
-    bool "Support mx6rom7420a1 1G"
-    select MX6Q
-    select SUPPORT_SPL
-    select DM
-    select DM_THERMAL
-    select BOARD_LATE_INIT
-    select BOARD_EARLY_INIT_F
-
-config TARGET_MX6ROM7421A1_1G
-    bool "Support mx6rom7421a1 1G"
+config TARGET_MX6QPROM7421A1_1G
+    bool "Support mx6qprom7421a1 1G"
     select MX6QP
     select SUPPORT_SPL
     select DM
@@ -446,8 +392,8 @@ config TARGET_MX6ROM7421A1_1G
     select BOARD_LATE_INIT
     select BOARD_EARLY_INIT_F
 
-config TARGET_MX6ROM7421A1_2G
-    bool "Support mx6rom7421a1 2G"
+config TARGET_MX6QPROM7421A1_2G
+    bool "Support mx6qprom7421a1 2G"
     select MX6QP
     select SUPPORT_SPL
     select DM
@@ -455,9 +401,288 @@ config TARGET_MX6ROM7421A1_2G
     select BOARD_LATE_INIT
     select BOARD_EARLY_INIT_F
 
-config TARGET_MX6WISE3310A1_1G
-    bool "Support mx6romwise3310a1 1G"
+config TARGET_MX6QEBCGF66A1_2G
+    bool "Support mx6qebcgf66a1 2G"
     select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QEBCJF02A1_1G
+    bool "Support mx6qebcjf02a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QEBCRB01A1_1G
+    bool "Support mx6qebcrb01a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QEBCRS03A1_2G
+    bool "Support mx6qrbcrs03a1 2G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QEPCRS200A1_1G
+    bool "Support mx6qepcrs200a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QROM3420A1_1G
+    bool "Support mx6qrom3420a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QROM3420A1_2G
+    bool "Support mx6qrom3420a1 2G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QROM5420A1_1G
+    bool "Support mx6qrom5420a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QROM5420A1_2G
+    bool "Support mx6qrom5420a1 2G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QROM5420B1_1G
+    bool "Support mx6qrom5420b1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QROM5420B1_2G
+    bool "Support mx6qrom5420b1 2G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QROM7420A1_1G
+    bool "Support mx6qrom7420a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QROM7420A1_2G
+    bool "Support mx6qrom7420a1 2G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QROM7421A1_1G
+    bool "Support mx6qrom7421a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QROM7421A1_2G
+    bool "Support mx6qrom7421a1 2G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QRSB3430A1_1G
+    bool "Support mx6qrsb3430a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QRSB4410A1_1G
+    bool "Support mx6qrsb4410a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QRSB4410A2_1G
+    bool "Support mx6qrsb4410a2 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QRSB4411A1_1G
+    bool "Support mx6qrsb4411a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QRSB4411A1_2G
+    bool "Support mx6qrsb4411a1 2G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QRSB6410A1_1G
+    bool "Support mx6qrsb6410a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QRSB6410A1_2G
+    bool "Support mx6qrsb6410a1 2G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QRSB6410A2_1G
+    bool "Support mx6qrsb6410a2 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QRSB6410A2_2G
+    bool "Support mx6qrsb6410a2 2G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QUBC220A1_1G
+    bool "Support mx6qub220a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QUBCDS31A1_1G
+    bool "Support mx6qubcds31a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6QWISE3310A1_1G
+    bool "Support mx6qwise3310a1 1G"
+    select MX6Q
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6SOLOEBCGF06A1_512M
+    bool "Support mx6soloebcgf06a1 512M"
+    select MX6S
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6SOLOROM5420B1_1G
+    bool "Support mx6solorom5420b1 1G"
+    select MX6S
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6SOLOROM5420B1_512M
+    bool "Support mx6solorom5420b1 512M"
+    select MX6S
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6SOLOROM7421A1_1G
+    bool "Support mx6solorom7421a1 1G"
+    select MX6S
+    select SUPPORT_SPL
+    select DM
+    select DM_THERMAL
+    select BOARD_LATE_INIT
+    select BOARD_EARLY_INIT_F
+
+config TARGET_MX6SOLOROM7421A1_512M
+    bool "Support mx6solorom7421a1 512M"
+    select MX6S
     select SUPPORT_SPL
     select DM
     select DM_THERMAL

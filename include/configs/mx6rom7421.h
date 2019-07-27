@@ -23,25 +23,22 @@
 #undef CONFIG_DEFAULT_FDT_FILE
 #endif
 
-/* support SATA boot */
-/*#define CONFIG_SATA_BOOT
-#define CONFIG_SATA_GEN2        0x0593e4c4*/
-
-/* support two sd card boot*/
-#define CONFIG_TWO_SD_BOOT
+#if defined(CONFIG_TARGET_MX6QROM7421A1_512M) || defined(CONFIG_TARGET_MX6QPROM7421A1_512M) || defined(CONFIG_TARGET_MX6SOLOPROM7421A1_512M)
+#define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6QROM7421A1_1G) || defined(CONFIG_TARGET_MX6QPROM7421A1_1G) || defined(CONFIG_TARGET_MX6SOLOROM7421A1_1G)
+#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6QROM7421A1_2G) || defined(CONFIG_TARGET_MX6QPROM7421A1_2G) || defined(CONFIG_TARGET_MX6SOLOROM7421A1_2G) 
+#define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
+#endif
 
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rom7421-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_MX6Q)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6q-rom7421-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
 #elif defined(CONFIG_MX6DL)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rom7421-a1.dtb"
-#define PHYS_SDRAM_SIZE		(1u * 1024 * 1024 * 1024)
-#elif defined(CONFIG_MX6SOLO)
+#elif defined(CONFIG_MX6S)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rom7421-a1.dtb"
-#define PHYS_SDRAM_SIZE		(512u * 1024 * 1024)
 #endif
 
 #include "mx6advantech_common.h"
@@ -125,6 +122,17 @@
 #endif /* CONFIG_SPLASH_SCREEN && CONFIG_MXC_EPDC */
 #endif
 
+/* uncomment for SECURE mode support */
+/* #define CONFIG_SECURE_BOOT */
+
+#ifdef CONFIG_SECURE_BOOT
+#ifndef CONFIG_CSF_SIZE
+#define CONFIG_CSF_SIZE 0x4000
+#endif
+#endif
+
+/* #define CONFIG_MFG_IGNORE_CHECK_SECURE_BOOT */
+
 #define CONFIG_SUPPORT_LVDS
 #ifdef CONFIG_SUPPORT_LVDS
 #define IOMUX_LCD_BKLT_PWM 	MX6_PAD_SD1_DAT3__GPIO1_IO21
@@ -144,4 +152,7 @@
 #define USDHC2_CD_GPIO		IMX_GPIO_NR(2, 0)
 #define USDHC3_CD_GPIO		IMX_GPIO_NR(2, 1)
 #define USDHC3_PWREN_GPIO	IMX_GPIO_NR(2, 2)
-#endif                         /* __MX6QSABRESD_CONFIG_H */
+#undef	CONFIG_EMMC_DEV_NUM 
+#define	CONFIG_EMMC_DEV_NUM		2	/* USDHC4 */
+#define	CONFIG_CARRIERSD_DEV_NUM	1	/* USDHC3 */		
+#endif                         /* __MX6SABRESD_CONFIG_H */

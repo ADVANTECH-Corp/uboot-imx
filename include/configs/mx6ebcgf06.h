@@ -23,22 +23,22 @@
 #undef CONFIG_DEFAULT_FDT_FILE
 #endif
 
-#if defined(CONFIG_TARGET_MX6QUBCDS31A1_512M)
+#if defined(CONFIG_TARGET_MX6SOLOEBCGF06A1_512M)
 #define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
-#elif defined(CONFIG_TARGET_MX6QUBCDS31A1_1G)
+#elif defined(CONFIG_TARGET_MX6SOLOEBCGF06A1_1G) 
 #define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
-#elif defined(CONFIG_TARGET_MX6QUBCDS31A1_2G)
+#elif defined(CONFIG_TARGET_MX6SOLOEBCGF06A1_2G) 
 #define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
 #endif
 
 #if defined(CONFIG_MX6QP)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6qp-ubcds31-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6qp-ebcgf06-a1.dtb"
 #elif defined(CONFIG_MX6Q)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6q-ubcds31-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6q-ebcgf06-a1.dtb"
 #elif defined(CONFIG_MX6DL)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-ubcds31-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-ebcgf06-a1.dtb"
 #elif defined(CONFIG_MX6S)
-#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-ubcds31-a1.dtb"
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-ebcgf06-a1.dtb"
 #endif
 
 #include "mx6advantech_common.h"
@@ -64,25 +64,11 @@
 #endif
 
 #ifdef CONFIG_CMD_SF
-#define CONFIG_SF_DEFAULT_CS   0
+#define CONFIG_SF_DEFAULT_CS   1
+#ifdef CONFIG_SPI_FLASH_CS
+#undef CONFIG_SPI_FLASH_CS
+#define CONFIG_SPI_FLASH_CS	1
 #endif
-
-/*
- * imx6 q/dl/solo pcie would be failed to work properly in kernel, if
- * the pcie module is iniialized/enumerated both in uboot and linux
- * kernel.
- * rootcause:imx6 q/dl/solo pcie don't have the reset mechanism.
- * it is only be RESET by the POR. So, the pcie module only be
- * initialized/enumerated once in one POR.
- * Set to use pcie in kernel defaultly, mask the pcie config here.
- * Remove the mask freely, if the uboot pcie functions, rather than
- * the kernel's, are required.
- */
-#ifdef CONFIG_CMD_PCI
-#define CONFIG_PCI_SCAN_SHOW
-#define CONFIG_PCIE_IMX
-#define CONFIG_PCIE_IMX_PERST_GPIO	IMX_GPIO_NR(7, 12)
-#define CONFIG_PCIE_IMX_POWER_GPIO	IMX_GPIO_NR(3, 19)
 #endif
 
 /* USB Configs */
@@ -127,12 +113,33 @@
 
 /* #define CONFIG_MFG_IGNORE_CHECK_SECURE_BOOT */
 
-#define SPI1_CS0                IMX_GPIO_NR(2,30)
+#define CONFIG_SUPPORT_LVDS
+#ifdef CONFIG_SUPPORT_LVDS
+#define IOMUX_LCD_BKLT_PWM 	MX6_PAD_SD1_DAT3__GPIO1_IO21
+#define IOMUX_LCD_BKLT_EN	MX6_PAD_NANDF_WP_B__GPIO6_IO09
+#define IOMUX_LCD_VDD_EN	MX6_PAD_NANDF_CLE__GPIO6_IO07
+#define LCD_BKLT_PWM 		IMX_GPIO_NR(1, 21)
+#define LCD_BKLT_EN 		IMX_GPIO_NR(6, 9)
+#define LCD_VDD_EN			IMX_GPIO_NR(6, 7)	
+#endif
+
+#define SPI1_CS0                IMX_GPIO_NR(3,19)
 #define IOMUX_SPI_SCLK          MX6_PAD_EIM_D16__ECSPI1_SCLK
 #define IOMUX_SPI_MISO          MX6_PAD_EIM_D17__ECSPI1_MISO
 #define IOMUX_SPI_MOSI          MX6_PAD_EIM_D18__ECSPI1_MOSI
-#define IOMUX_SPI_CS0           MX6_PAD_EIM_EB2__ECSPI1_SS0
+#define IOMUX_SPI_CS0           MX6_PAD_EIM_D19__ECSPI1_SS1
 
-#define USDHC2_CD_GPIO          IMX_GPIO_NR(2, 2)
-#define USDHC3_CD_GPIO          IMX_GPIO_NR(2, 0)
+#define USDHC2_CD_GPIO		IMX_GPIO_NR(2, 2)
+#define USDHC3_CD_GPIO		IMX_GPIO_NR(2, 1)
+/* #define USDHC3_PWREN_GPIO	IMX_GPIO_NR(2, 2) */
+#undef	CONFIG_EMMC_DEV_NUM 
+#define	CONFIG_EMMC_DEV_NUM		1	/* USDHC4 */
+/* #define	CONFIG_CARRIERSD_DEV_NUM	1*/ 	/* USDHC3 */
+
+#define CONFIG_SUPPORT_C8051_SEQUENCE
+
+#undef CONFIG_BOOTDELAY
+#define CONFIG_BOOTDELAY		0
+#define CONFIG_ZERO_BOOTDELAY_CHECK
+
 #endif                         /* __MX6SABRESD_CONFIG_H */
