@@ -139,5 +139,4 @@
 #undef	CONFIG_EMMC_DEV_NUM
 #define CONFIG_EMMC_DEV_NUM	0
 
-#define USDHC2_CD_GPIO          IMX_GPIO_NR(2, 2)
 #endif                         /* __MX6SABRESD_CONFIG_H */
