@@ -1850,6 +1850,7 @@ void spi_io_init(struct imx_spi_dev_t *dev)
                 /* ecspi2-3 fall through */
                 break;
 #ifdef CONFIG_ADVANTECH
+#ifdef CONFIG_MX6Q
 #ifdef CONFIG_SPI_BOOT
         case ECSPI5_BASE_ADDR:
                 reg = readl(&ccm_regs->CCGR1);
@@ -1866,8 +1867,9 @@ void spi_io_init(struct imx_spi_dev_t *dev)
                 imx_iomux_v3_setup_pad(IOMUX_SPI5_CS2  | MUX_PAD_CTRL(NO_PAD_CTRL));
 #endif
                 break;
-#endif
-#endif
+#endif //CONFIG_SPI_BOOT
+#endif //CONFIG_MX6Q
+#endif //CONFIG_ADVANTECH
         default:
                 break;
         }
