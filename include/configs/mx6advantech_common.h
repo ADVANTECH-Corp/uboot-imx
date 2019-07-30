@@ -314,7 +314,11 @@
 /* Environment organization */
 #define CONFIG_ENV_SIZE			(8 * 1024)
 
+/* SATA CONFIG */
 #ifdef CONFIG_SATA
+#define CONFIG_CMD_SATA
+#endif
+#ifdef CONFIG_CMD_SATA
 #define CONFIG_DWC_AHSATA
 #define CONFIG_SYS_SATA_MAX_DEVICE	1
 #define CONFIG_DWC_AHSATA_PORT_ID	0

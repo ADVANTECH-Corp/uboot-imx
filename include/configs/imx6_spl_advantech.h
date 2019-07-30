@@ -55,12 +55,8 @@
 #endif
 
 /* SATA support */
-#ifdef CONFIG_SATA_BOOT
+#ifdef CONFIG_SATA
 #define CONFIG_SPL_SATA_SUPPORT
-#endif
-#if defined(CONFIG_SPL_SATA_SUPPORT)
-#define CONFIG_SPL_SATA_BOOT_DEVICE		0
-#define CONFIG_SYS_SATA_FAT_BOOT_PARTITION	1
 #endif
 
 #if defined(CONFIG_MX6SX)

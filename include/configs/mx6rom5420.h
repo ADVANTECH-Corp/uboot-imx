@@ -11,6 +11,9 @@
 #define __MX6SABRESD_CONFIG_H
 
 #ifdef CONFIG_SPL
+#define CONFIG_SATA
+#define CONFIG_SPL_LIBGENERIC_SUPPORT
+#define CONFIG_SPL_LIBDISK_SUPPORT
 #include "imx6_spl_advantech.h"
 #endif
 
@@ -18,6 +21,10 @@
 #define CONFIG_MXC_UART_BASE	UART1_BASE
 #define CONSOLE_DEV		"ttymxc0"
 #define CONFIG_MMCROOT			"/dev/mmcblk0p2"  /* SDHC3 */
+
+/* support SATA boot */
+#define CONFIG_SATA
+#define CONFIG_SATA_GEN2        0x05919552
 
 #if defined(CONFIG_DEFAULT_FDT_FILE)
 #undef CONFIG_DEFAULT_FDT_FILE

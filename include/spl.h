@@ -235,6 +235,11 @@ struct spl_image_loader {
 	}
 #endif
 
+/* SATA SPL functions */
+#ifdef CONFIG_ADVANTECH
+int spl_sata_load_image(unsigned int dev);
+#endif
+
 /* SPL FAT image functions */
 int spl_load_image_fat(struct spl_image_info *spl_image,
 		       struct blk_desc *block_dev, int partition,

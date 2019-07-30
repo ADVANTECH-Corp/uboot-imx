@@ -11,6 +11,9 @@
 #define __MX6SABRESD_CONFIG_H
 
 #ifdef CONFIG_SPL
+#define CONFIG_SATA
+#define CONFIG_SPL_LIBGENERIC_SUPPORT
+#define CONFIG_SPL_LIBDISK_SUPPORT
 #include "imx6_spl_advantech.h"
 #endif
 
