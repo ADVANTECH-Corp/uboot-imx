@@ -453,4 +453,6 @@
 #define	CONFIG_SD_DEV_NUM	0
 #define	CONFIG_SATA_DEV_NUM	0
 
+#define CONFIG_FASTBOOT_SATA_NO 8
+
 #endif                         /* __MX6QSABRE_COMMON_CONFIG_H */

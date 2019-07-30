@@ -29,6 +29,8 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
+extern struct spl_image_info spl_image;
+
 static int spl_sata_check_crc(unsigned int dev)
 {
 	u32 n;
@@ -103,7 +105,7 @@ end:
 
 int spl_sata_load_image(unsigned int dev)
 {
-	block_dev_desc_t *sata_dev_desc;
+	struct blk_desc *sata_dev_desc;
 	int err;
 
 	if (sata_initialize()) {
