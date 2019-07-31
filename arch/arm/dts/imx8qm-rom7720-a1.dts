@@ -17,6 +17,8 @@
 /* First 128KB is for PSCI ATF. */
 /memreserve/ 0x80000000 0x00020000;
 
+#define SDHC_3_3V_ONLY
+
 #include "fsl-imx8qm.dtsi"
 
 / {
@@ -356,6 +358,9 @@
 	bus-width = <4>;
 	cd-gpios = <&gpio4 12 GPIO_ACTIVE_LOW>;
 	wp-gpios = <&gpio4 11 GPIO_ACTIVE_HIGH>;
+#ifdef SDHC_3_3V_ONLY
+	no-1-8-v;
+#endif
 	status = "okay";
 
 };
