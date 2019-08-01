@@ -102,7 +102,7 @@
 #define CONFIG_PHY_ATHEROS
 #endif
 #undef	CONFIG_DEFAULT_FDT_FILE
-#define	CONFIG_DEFAULT_FDT_FILE	"fsl-imx8mq-rom5720-a1.dtb"
+#define	CONFIG_DEFAULT_FDT_FILE	"adv-imx8mq-rom5720-a1.dtb"
 
 /*
  * Another approach is add the clocks for inmates into clks_init_on
