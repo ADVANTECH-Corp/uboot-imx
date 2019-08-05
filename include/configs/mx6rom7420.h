@@ -24,7 +24,7 @@
 
 /* support SATA boot */
 #define CONFIG_SATA
-#define CONFIG_SATA_GEN2        0x0593e4c4
+#define CONFIG_SATA_GEN2        0x059194f6
 
 #if defined(CONFIG_DEFAULT_FDT_FILE)
 #undef CONFIG_DEFAULT_FDT_FILE
