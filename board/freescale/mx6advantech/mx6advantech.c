@@ -1123,10 +1123,60 @@ void setup_iomux_m2()
 }
 #endif
 
+#ifdef CONFIG_SUPPORT_C8051_SEQUENCE
+#define GPIO_DR		0x00000000	/* data register */
+#define GPIO_GDIR	0x00000004	/* direction register */
+
+static void mx6_pwm_event(void)
+{
+	//2K PWM for 8051
+	int reg;
+	int i = 0;
+	imx_iomux_v3_setup_pad(MX6_PAD_SD3_DAT0__GPIO7_IO04 | MUX_PAD_CTRL(NO_PAD_CTRL));
+	imx_iomux_v3_setup_pad(MX6_PAD_SD3_DAT1__GPIO7_IO05 | MUX_PAD_CTRL(NO_PAD_CTRL));
+
+	/* rx */
+	reg = readl(GPIO7_BASE_ADDR + GPIO_GDIR);
+	reg |= (1 << 5);
+	writel(reg, GPIO7_BASE_ADDR + GPIO_GDIR);
+
+	reg = readl(GPIO7_BASE_ADDR + GPIO_DR);
+	reg |= 0x0000020;
+	writel(reg, GPIO7_BASE_ADDR + GPIO_DR);
+	udelay(1000);
+
+	reg = readl(GPIO7_BASE_ADDR + GPIO_DR);
+	reg &= ~0x0000020;
+	writel(reg, GPIO7_BASE_ADDR + GPIO_DR);
+	udelay(2000);
+
+    /* tx */
+	reg = readl(GPIO7_BASE_ADDR + GPIO_GDIR);
+	reg |= (1 << 4);
+	writel(reg, GPIO7_BASE_ADDR + GPIO_GDIR);
+
+	for(i=0;i < 20; i++){
+		reg = readl(GPIO7_BASE_ADDR + GPIO_DR);
+		reg &= ~0x0000010;
+		writel(reg, GPIO7_BASE_ADDR + GPIO_DR);
+		udelay(225);
+
+		reg = readl(GPIO7_BASE_ADDR + GPIO_DR);
+		reg |= 0x00000010;
+		writel(reg, GPIO7_BASE_ADDR + GPIO_DR);
+		udelay(225);
+    }
+}
+#endif
+
 int board_init(void)
 {
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
+#ifdef CONFIG_SUPPORT_C8051_SEQUENCE
+	mx6_pwm_event();
+#endif
+
 #if defined (CONFIG_ADVANTECH) && defined(CONFIG_SUPPORT_LVDS)
        setup_lvds_init();
 #endif
