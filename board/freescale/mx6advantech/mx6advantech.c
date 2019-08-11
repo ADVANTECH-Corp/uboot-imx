@@ -1090,6 +1090,12 @@ void setup_iomux_m2()
 	mdelay(10);
         gpio_direction_output(M2_BT_OFF,1);
 #endif
+#ifdef	IOMUX_M.2E_SW_RESET
+	imx_iomux_v3_setup_pad(IOMUX_M2E_SW_RESET| MUX_PAD_CTRL(NO_PAD_CTRL));
+        gpio_direction_output(M2E_SW_RESET,0);
+	mdelay(10);
+        gpio_direction_output(M2E_SW_RESET,1);
+#endif
 }
 #endif
 
