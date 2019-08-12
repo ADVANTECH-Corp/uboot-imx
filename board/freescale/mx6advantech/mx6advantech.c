@@ -971,8 +971,25 @@ int board_ehci_power(int port, int on)
 }
 #endif
 
+#ifdef CONFIG_KEEP_PHY_RESET
+static void adv_keep_phy_reset(void)
+{
+#ifdef IOMUX_PHY_RESET_GPIO
+	imx_iomux_v3_setup_pad(IOMUX_PHY_RESET_GPIO | MUX_PAD_CTRL(NO_PAD_CTRL));
+#endif
+#ifdef PHY_RESET_GPIO
+	gpio_request(PHY_RESET_GPIO,"KEEP_PHY_RESET");
+	gpio_direction_output(PHY_RESET_GPIO, 0);
+	gpio_free(PHY_RESET_GPIO);
+#endif
+}
+#endif
+
 int board_early_init_f(void)
 {
+#ifdef CONFIG_KEEP_PHY_RESET
+	adv_keep_phy_reset();
+#endif
 	setup_iomux_uart();
 #if defined(CONFIG_VIDEO_IPUV3)
 	setup_display();
