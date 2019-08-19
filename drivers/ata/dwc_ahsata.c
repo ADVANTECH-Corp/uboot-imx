@@ -888,6 +888,9 @@ err_out:
 int init_sata(int dev)
 {
 	struct ahci_uc_priv *uc_priv = NULL;
+#if defined (CONFIG_ADVANTECH)
+	int ret;
+#endif
 
 #if defined(CONFIG_MX6)
 	if (!is_mx6dq() && !is_mx6dqp())
@@ -898,7 +901,13 @@ int init_sata(int dev)
 		return -1;
 	}
 
+#if defined (CONFIG_ADVANTECH)
+	ret = ahci_init_one(dev);
+	if (ret)
+		return 1;
+#else
 	ahci_init_one(dev);
+#endif
 
 	uc_priv = sata_dev_desc[dev].priv;
 

@@ -1980,9 +1980,6 @@ static void spl_dram_init(void)
 
 void board_init_f(ulong dummy)
 {
-	/* DDR initialization */
-	spl_dram_init();
-
 	/* setup AIPS and disable watchdog */
 	arch_cpu_init();
 
