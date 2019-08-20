@@ -838,7 +838,7 @@ int board_set_boot_device(void)
 			env_set("loadbootscript", buf);
 			sprintf(buf, "/dev/sda2 rootwait rw");
 			env_set("sataroot", buf);
-			sprintf(buf, "env_set bootargs console=${console},${baudrate} ${smp} root=${sataroot} ${bootargs}");
+			sprintf(buf, "setenv bootargs console=${console},${baudrate} ${smp} root=${sataroot} ${bootargs}");
 			env_set("sataargs", buf);
 			sprintf(buf, "dcache off; sata init; run loadimage; run loadbootscript; run sataargs; run loadfdt; bootz ${loadaddr} - ${fdt_addr}");
 			env_set("bootcmd", buf);
