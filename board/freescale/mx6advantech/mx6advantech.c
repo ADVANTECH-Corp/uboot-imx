@@ -1066,7 +1066,7 @@ void setup_lvds_init(void)
 #endif
 	/* LCD_VDD_EN - disable display VDD */
 #ifdef LCD_VDD_EN_INVERT
-	gpio_direction_output(LCD_VDD_EN, 1)
+	gpio_direction_output(LCD_VDD_EN, 1);
 #else
 	gpio_direction_output(LCD_VDD_EN, 0);
 #endif
@@ -1621,7 +1621,7 @@ int board_late_init(void)
 
 #ifdef CONFIG_SWITCH_DEBUG_PORT_TO_UART1
 	if (uart1_funtion == 0)
-		setenv("console", "NULL");
+		env_set("console", "NULL");
 #endif
 
 	return 0;
