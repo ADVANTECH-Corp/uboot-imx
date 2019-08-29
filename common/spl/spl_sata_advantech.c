@@ -106,6 +106,10 @@ int spl_sata_load_image(unsigned int dev)
 	block_dev_desc_t *sata_dev_desc;
 	int err;
 
+#ifdef CONFIG_SATA_GPR13
+	setup_sata();
+#endif
+
 	if (sata_initialize()) {
 		printf("spl: sata_initialize failed\n");
 		return 1;
