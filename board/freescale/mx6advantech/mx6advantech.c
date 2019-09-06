@@ -1040,6 +1040,7 @@ void setup_lvds_init(void)
 
 #ifdef IOMUX_VDD_BKLT_EN
 	imx_iomux_v3_setup_pad(IOMUX_VDD_BKLT_EN); /* VDD_BKLT_EN */
+	gpio_request(VDD_BKLT_EN, "VDD BKLT EN");
 #endif
 	/* LCD_BKLT_EN - disable backlight */
 #ifdef LCD_BKLT_EN_INVERT
@@ -1094,6 +1095,7 @@ void setup_do_init()
 void setup_iomux_pcie()
 {
 	imx_iomux_v3_setup_pad(IOMUX_PCIE_RESET| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(PCIE_RESET, "PCIE_RESET");
         gpio_direction_output(PCIE_RESET,0);
 
 }
@@ -1104,18 +1106,21 @@ void setup_iomux_m2()
 {
 #ifdef IOMUX_M2_WLAN_OFF
 	imx_iomux_v3_setup_pad(IOMUX_M2_WLAN_OFF| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(M2_WLAN_OFF, "M2_WLAN_OFF");
         gpio_direction_output(M2_WLAN_OFF,0);
 	mdelay(10);
         gpio_direction_output(M2_WLAN_OFF,1);
 #endif
 #ifdef IOMUX_M2_BT_OFF
 	imx_iomux_v3_setup_pad(IOMUX_M2_BT_OFF| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(M2_BT_OFF, "M2_BT_OFF");
         gpio_direction_output(M2_BT_OFF,0);
 	mdelay(10);
         gpio_direction_output(M2_BT_OFF,1);
 #endif
 #ifdef	IOMUX_M.2E_SW_RESET
 	imx_iomux_v3_setup_pad(IOMUX_M2E_SW_RESET| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(M2E_SW_RESET, "M2E_SW_RESET");
         gpio_direction_output(M2E_SW_RESET,0);
 	mdelay(10);
         gpio_direction_output(M2E_SW_RESET,1);
