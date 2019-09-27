@@ -18,6 +18,7 @@
 #include <fsl_fastboot.h>
 #include <asm/setup.h>
 #include <dm.h>
+#include <mmc.h>
 
 #define ANDROID_IMAGE_DEFAULT_KERNEL_ADDR	0x10008000
 
@@ -120,8 +121,16 @@ int android_image_get_kernel(const struct andr_img_hdr *hdr, int verify,
 	struct tag_serialnr serialnr;
 	get_board_serial(&serialnr);
 
+#ifdef CONFIG_ANDROID_SUPPORT
+	char *adv_cmd_line = env_get("bootargs_adv");
+#endif
 	sprintf(newbootargs,
-					" androidboot.serialno=%08x%08x",
+#ifdef CONFIG_ANDROID_SUPPORT
+					"%s androidboot.serialno=%08x%08x",
+					adv_cmd_line,
+#else
+                    " androidboot.serialno=%08x%08x",
+#endif
 					serialnr.high,
 					serialnr.low);
 	strncat(commandline, newbootargs, sizeof(commandline) - strlen(commandline));
@@ -166,6 +175,14 @@ int android_image_get_kernel(const struct andr_img_hdr *hdr, int verify,
 		} else if (bootdev == NAND_BOOT) {
 			sprintf(newbootargs,
 				" androidboot.storage_type=nand");
+#ifdef CONFIG_ANDROID_SUPPORT
+		} else if (bootdev == SPI_NOR_BOOT) {
+			int dev = (*(int *)0x22200000);
+			if (dev == 1) {
+				sprintf(newbootargs,
+				" androidboot.storage_type=sd");
+			}
+#endif
 		} else
 			printf("boot device type is incorrect.\n");
 		strncat(commandline, newbootargs, sizeof(commandline) - strlen(commandline));

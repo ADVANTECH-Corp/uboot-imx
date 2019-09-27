@@ -799,7 +799,11 @@ int board_set_boot_device(void)
 	strncpy(advboot_version, (void *)0x22300000, 128);
 
 	if ((strstr(advboot_version,"advantech") == NULL) && (strstr(advboot_version,"LIV") == NULL))
+#ifdef CONFIG_ANDROID_SUPPORT
+		strcpy(advboot_version, "NA");
+#else
 		strcpy(advboot_version, "");
+#endif
 
 	pch=strchr(version_string,'2');
 	if (pch!=NULL)
@@ -810,13 +814,59 @@ int board_set_boot_device(void)
 	}
 
 	sprintf(buf, "advboot_version=%s uboot_version=%s", advboot_version, uboot_version);
+#ifdef CONFIG_ANDROID_SUPPORT
+	env_set("bootargs_adv", buf);
+#else
 	env_set("bootargs", buf);
+#endif
 
 	// check emmc exists or not
 	emmc_exist = check_emmc_exist();
 
 	switch(dev)
 	{
+#ifdef CONFIG_ANDROID_SUPPORT
+	/* Android */
+		case 1:
+		default:
+			/* booting from SD*/
+			printf("booting from SD\n");
+			sprintf(buf, "%s androidboot.selinux=disabled", env_get("bootargs_adv"));
+			env_set("bootargs_adv", buf);
+			env_set("bootargs", "console=ttymxc0,115200");
+			env_set("fastboot_dev", "mmc0");
+			env_set("bootcmd", "boota mmc0");
+			break;
+		case 2:
+			/* booting from SATA*/
+			printf("booting from SATA\n");
+			sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=sata", env_get("bootargs_adv"));
+			env_set("bootargs_adv", buf);
+			env_set("fastboot_dev", "sata");
+			env_set("bootcmd", "boota sata");
+			break;
+		case 3:
+			/* booting from iNAND*/
+			printf("booting from iNAND\n");
+			sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=emmc", env_get("bootargs_adv"));
+			env_set("bootargs_adv", buf);
+			env_set("fastboot_dev", "mmc1");
+			env_set("bootcmd", "boota mmc1");
+			break;
+#ifdef CONFIG_SPI_BOOT_SUPPORT
+		case 4:
+			/* booting from SPI*/
+			printf("booting from SPI -> kernel boot form EMMC\n");
+			sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=emmc", env_get("bootargs_adv"));
+			env_set("bootargs_adv", buf);
+			if(emmc_exist) {
+				env_set("fastboot_dev", "mmc1");
+				env_set("bootcmd", "boota mmc1");
+			}
+			break;
+#endif
+#else
+	/* Linux */
 		case 1:
 		default:
 			/* booting from SD*/
@@ -864,6 +914,7 @@ int board_set_boot_device(void)
 			env_set("mmcroot",buf);
                         break;
 #endif
+#endif /*CONFIG_ANDROID_SUPPORT*/
 	}
 
 	/*record ddr bit, 32 or 64 bit*/

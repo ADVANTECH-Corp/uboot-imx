@@ -707,7 +707,9 @@ static int mmc_get_boot_dev(void)
 int mmc_get_env_dev(void)
 {
 	int devno = mmc_get_boot_dev();
-
+#ifdef CONFIG_ANDROID_SUPPORT
+	return board_mmc_get_env_dev(CONFIG_SYS_MMC_ENV_DEV);
+#endif
 	/* If not boot from sd/mmc, use default value */
 	if (devno < 0)
 	    return env_get_ulong("mmcdev", 10, CONFIG_SYS_MMC_ENV_DEV);
