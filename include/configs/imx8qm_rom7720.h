@@ -33,8 +33,7 @@
 #define CONFIG_SYS_UBOOT_BASE 0x08281000
 #define CONFIG_SYS_MMCSD_FS_BOOT_PARTITION             0
 
-
-#define CONFIG_SPL_WATCHDOG_SUPPORT
+#define	CONFIGONFIG_ADVANTECH_MX8
 #define CONFIG_SPL_DRIVERS_MISC_SUPPORT
 #define CONFIG_SPL_LDSCRIPT            "arch/arm/cpu/armv8/u-boot-spl.lds"
 #define CONFIG_SPL_STACK               0x013E000

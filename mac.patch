@@ -1,0 +1,34 @@
+diff --git a/common/board_r.c b/common/board_r.c
+index 5f97894..c3105cd 100755
+--- a/common/board_r.c
++++ b/common/board_r.c
+@@ -57,7 +57,7 @@
+ #ifdef CONFIG_FSL_FASTBOOT
+ #include <fsl_fastboot.h>
+ #endif
+-#ifdef CONFIG_ADVANTECH
++#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
+ #include <version.h>
+ #include <spi_flash.h>
+ 
+@@ -549,7 +549,7 @@ static int initr_ethaddr(void)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_ADVANTECH
++#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
+ #define XMK_STR(x)	#x
+ #define MK_STR(x)	XMK_STR(x)
+ int boardcfg_get_mac(void)
+diff --git a/include/configs/imx8mq_rom5720.h b/include/configs/imx8mq_rom5720.h
+index 8b7efa0..b8fa47d 100644
+--- a/include/configs/imx8mq_rom5720.h
++++ b/include/configs/imx8mq_rom5720.h
+@@ -15,6 +15,7 @@
+ #define CONFIG_CSF_SIZE			0x2000 /* 8K region */
+ #endif
+ 
++#define	CONFIG_ADVANTECH_MX8
+ #define CONFIG_SPL_TEXT_BASE		0x7E1000
+ #define CONFIG_SPL_MAX_SIZE		(148 * 1024)
+ #define CONFIG_SYS_MONITOR_LEN		(512 * 1024)

@@ -494,7 +494,7 @@ struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs, unsigned in
 
 	for (i = 0; i < ARRAY_SIZE(imx_spi_flash_table); ++i) {
 		params = &imx_spi_flash_table[i];
-#ifndef CONFIG_ADVANTECH
+#if !defined(CONFIG_ADVANTECH) && !defined(CONFIG_ADVANTECH_MX8)
 		if (params->idcode1 == idcode[1])
 #endif
 			break;

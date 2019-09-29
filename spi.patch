@@ -1,0 +1,64 @@
+diff --git a/common/board_r.c b/common/board_r.c
+index 5f97894..fe01566 100755
+--- a/common/board_r.c
++++ b/common/board_r.c
+@@ -57,7 +57,7 @@
+ #ifdef CONFIG_FSL_FASTBOOT
+ #include <fsl_fastboot.h>
+ #endif
+-#ifdef CONFIG_ADVANTECH
++#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
+ #include <version.h>
+ #include <spi_flash.h>
+ 
+@@ -549,7 +549,7 @@ static int initr_ethaddr(void)
+ 	return 0;
+ }
+ 
+-#ifdef CONFIG_ADVANTECH
++#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
+ #define XMK_STR(x)	#x
+ #define MK_STR(x)	XMK_STR(x)
+ int boardcfg_get_mac(void)
+@@ -1093,7 +1093,7 @@ static init_fnc_t init_sequence_r[] = {
+ 	/* PPC has a udelay(20) here dating from 2002. Why? */
+ #ifdef CONFIG_CMD_NET
+ 	initr_ethaddr,
+-#ifdef CONFIG_ADVANTECH
++#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
+ 	boardcfg_get_mac,	/* Get MAC address from SPI */
+ #endif
+ #endif
+diff --git a/drivers/mtd/spi/imx_spi_nor_m25pxx.c b/drivers/mtd/spi/imx_spi_nor_m25pxx.c
+index 91d4572..dcce61b 100755
+--- a/drivers/mtd/spi/imx_spi_nor_m25pxx.c
++++ b/drivers/mtd/spi/imx_spi_nor_m25pxx.c
+@@ -494,7 +494,7 @@ struct spi_flash *spi_flash_probe(unsigned int bus, unsigned int cs, unsigned in
+ 
+ 	for (i = 0; i < ARRAY_SIZE(imx_spi_flash_table); ++i) {
+ 		params = &imx_spi_flash_table[i];
+-#ifndef CONFIG_ADVANTECH
++#if !defined(CONFIG_ADVANTECH) && !defined(CONFIG_ADVANTECH_MX8)
+ 		if (params->idcode1 == idcode[1])
+ #endif
+ 			break;
+diff --git a/include/configs/imx8mq_rom5720.h b/include/configs/imx8mq_rom5720.h
+index 8b7efa0..1e09eca 100644
+--- a/include/configs/imx8mq_rom5720.h
++++ b/include/configs/imx8mq_rom5720.h
+@@ -15,6 +15,7 @@
+ #define CONFIG_CSF_SIZE			0x2000 /* 8K region */
+ #endif
+ 
++#define	CONFIG_ADVANTECH_MX8
+ #define CONFIG_SPL_TEXT_BASE		0x7E1000
+ #define CONFIG_SPL_MAX_SIZE		(148 * 1024)
+ #define CONFIG_SYS_MONITOR_LEN		(512 * 1024)
+@@ -256,6 +257,7 @@
+ #define CONFIG_CMD_SF
+ #define	CONFIG_SPI_FLASH
+ #define	CONFIG_SPI_FLASH_STMICRO
++#define	CONFIG_SPI_FLASH_WINBOND
+ #define	CONFIG_SPI_FLASH_BAR
+ #define	CONFIG_SF_DEFAULT_BUS		0
+ #define	CONFIG_SF_DEFAULT_CS		0
