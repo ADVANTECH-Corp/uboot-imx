@@ -140,13 +140,14 @@
 	"mmcpart=" __stringify(CONFIG_SYS_MMC_IMG_LOAD_PART) "\0" \
 	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
 	"mmcautodetect=yes\0" \
+	"modprobe.blacklist=pgdrv\0" \
 	"videores=1920x1080@60\0" \
 	"hdmi640=setenv videores 640x480@60;boot\0" \
 	"hdmi720=setenv videores 720x480@60;boot\0" \
 	"hdmi1280=setenv videores 1280x720@60;boot\0" \
 	"hdmi3840p24=setenv videores 3840x2160@60;boot\0" \
 	"hdmi4096=setenv videores 4096x2160@60;boot\0" \
-	"mmcargs=setenv bootargs ${jh_clk} console=${console} root=${mmcroot} video=HDMI-A-1:${videores}\0 " \
+	"mmcargs=setenv bootargs ${jh_clk} console=${console} modprobe.blacklist=${modprobe.blacklist} root=${mmcroot} video=HDMI-A-1:${videores}\0 " \
 	"loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
 	"bootscript=echo Running bootscript from mmc ...; " \
 		"source\0" \
