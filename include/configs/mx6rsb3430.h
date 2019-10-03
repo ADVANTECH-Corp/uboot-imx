@@ -149,4 +149,11 @@
 #define IOMUX_SPI_CS0           MX6_PAD_EIM_EB2__ECSPI1_SS0
 
 #define USDHC2_CD_GPIO		IMX_GPIO_NR(1, 4)
+
+#define CONFIG_PCIE_POWER
+#ifdef CONFIG_PCIE_POWER
+#define IOMUX_PCIE_POWER 	MX6_PAD_SD1_DAT2__GPIO1_IO19
+#define PCIE_POWER		IMX_GPIO_NR(1, 19)
+#endif
+
 #endif                         /* __MX6SABRESD_CONFIG_H */

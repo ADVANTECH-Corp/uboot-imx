@@ -1090,9 +1090,18 @@ void setup_do_init()
 }
 #endif
 
+#ifdef	CONFIG_PCIE_POWER
+void setup_iomux_pcie_power()
+{
+	imx_iomux_v3_setup_pad(IOMUX_PCIE_POWER| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(PCIE_POWER, "PCIE_POWER");
+	gpio_direction_output(PCIE_POWER,1);
+
+}
+#endif
 
 #ifdef	CONFIG_PCIE_RESET
-void setup_iomux_pcie()
+void setup_iomux_pcie_reset()
 {
 	imx_iomux_v3_setup_pad(IOMUX_PCIE_RESET| MUX_PAD_CTRL(NO_PAD_CTRL));
 	gpio_request(PCIE_RESET, "PCIE_RESET");
@@ -1185,8 +1194,11 @@ int board_init(void)
 #if defined (CONFIG_ADVANTECH) && defined(CONFIG_SUPPORT_LVDS)
        setup_lvds_init();
 #endif
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_PCIE_POWER)
+	setup_iomux_pcie_power();
+#endif
 #if defined (CONFIG_ADVANTECH) && defined(CONFIG_PCIE_RESET)
-	setup_iomux_pcie();
+	setup_iomux_pcie_reset();
 #endif
 #if defined (CONFIG_ADVANTECH) && defined(CONFIG_M2_SLOT)
 	setup_iomux_m2();
