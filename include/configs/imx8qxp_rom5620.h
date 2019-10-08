@@ -233,6 +233,7 @@
 	"loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
 	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
 	"loadcntr=fatload mmc ${mmcdev}:${mmcpart} ${cntr_addr} ${cntr_file}\0" \
+	"lvds_single=setenv fdt_file adv-imx8qxp-rom5620-a1-lvds0-auo.dtb; boot\0" \
 	"lvds_chimei=setenv fdt_file adv-imx8qxp-rom5620-a1-lvds-chimei.dtb; boot\0" \
 	"lvds_dual=setenv fdt_file adv-imx8qxp-rom5620-a1-lvds-dual.dtb; boot\0" \
 	"hdmi_bridge=setenv fdt_file adv-imx8qxp-rom5620-a1-hdmi-bridge.dtb; boot\0" \
