@@ -524,6 +524,7 @@ int board_mmc_init(bd_t *bis)
 			gpio_request(USDHC3_CD_GPIO, "USDHC3 CD");
 			gpio_direction_input(USDHC3_CD_GPIO);
 #ifdef USDHC3_PWREN_GPIO
+			gpio_request(USDHC3_PWREN_GPIO, "USDHC3 PWREN");
 			gpio_direction_output(USDHC3_PWREN_GPIO, 0);
 #endif
 			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
