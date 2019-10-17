@@ -279,7 +279,7 @@
 	"boot_os=booti ${loadaddr} - ${fdt_addr};\0" \
 	"loadcntr=fatload mmc ${mmcdev}:${mmcpart} ${cntr_addr} ${cntr_file}\0" \
 	"lvds_single0=setenv fdt_file adv-imx8qm-rom7720-a1_lvds0.dtb; boot\0" \
-	"lvds_single1=setenv fdt_file adv-imx8qm-rom7720-a1_lvds1-auo.dtb; boot\0" \
+	"lvds_single1=setenv fdt_file adv-imx8qm-rom7720-a1_lvds1.dtb; boot\0" \
 	"lvds_dual=setenv fdt_file adv-imx8qm-rom7720-a1_lvds_dual.dtb; boot\0" \
 	"hdmi_lvds0=setenv fdt_file adv-imx8qm-rom7720-a1_hdmi_lvds0.dtb; boot\0" \
 	"hdmi_lvds1=setenv fdt_file adv-imx8qm-rom7720-a1_hdmi_lvds1.dtb; boot\0" \
