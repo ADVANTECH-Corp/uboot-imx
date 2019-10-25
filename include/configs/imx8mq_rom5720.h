@@ -320,3 +320,7 @@
 #include "imx8mq_evk_androidthings.h"
 #endif
 #endif
+
+#define IOMUX_WDOG_TRIG	IMX8MQ_PAD_SAI2_RXC__GPIO4_IO22	// WDOG_TRIG 
+#define WDOG_TRIG	IMX_GPIO_NR(4,22)
+

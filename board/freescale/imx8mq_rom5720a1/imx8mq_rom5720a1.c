@@ -108,6 +108,14 @@ int ft_board_setup(void *blob, bd_t *bd)
 }
 #endif
 
+void setup_iomux_wdt()
+{
+        imx_iomux_v3_setup_pad(IOMUX_WDOG_TRIG| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(WDOG_TRIG, "wdt_trig");
+        gpio_direction_output(WDOG_TRIG,1);
+
+}
+
 #ifdef CONFIG_FEC_MXC
 #define FEC_RST_PAD IMX_GPIO_NR(1, 9)
 static iomux_v3_cfg_t const fec1_rst_pads[] = {
@@ -308,6 +316,7 @@ int board_init(void)
 #ifdef CONFIG_USB_TCPC
 	setup_typec();
 #endif
+	setup_iomux_wdt();
 	return 0;
 }
 
