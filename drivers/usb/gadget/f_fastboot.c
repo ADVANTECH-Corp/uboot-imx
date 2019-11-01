@@ -955,8 +955,11 @@ static int get_fastboot_target_dev(char *mmc_dev, struct fastboot_ptentry *ptn)
 		} else {
 			printf("Flash target is mmc%d\n", dev);
 			if (target_mmc->part_config != MMCPART_NOAVAILABLE)
+				if(!env_get("emmcboot")){
 				sprintf(mmc_dev, "mmc dev %x %x", dev, /*slot no*/
 						FASTBOOT_MMC_BOOT_PARTITION_ID/*part no*/);
+				}else
+					sprintf(mmc_dev, "mmc dev %x", dev);
 			else
 				sprintf(mmc_dev, "mmc dev %x", dev);
 			}
@@ -1428,10 +1431,12 @@ static int _fastboot_parts_load_from_ptable(void)
 			return -1;
 		}
 
-		/* multiple boot paritions for eMMC 4.3 later */
-		if (mmc->part_config != MMCPART_NOAVAILABLE) {
-			boot_partition = FASTBOOT_MMC_BOOT_PARTITION_ID;
-			user_partition = FASTBOOT_MMC_USER_PARTITION_ID;
+		if(!env_get("emmcboot")){
+			/* multiple boot paritions for eMMC 4.3 later */
+			if (mmc->part_config != MMCPART_NOAVAILABLE) {
+				boot_partition = FASTBOOT_MMC_BOOT_PARTITION_ID;
+				user_partition = FASTBOOT_MMC_USER_PARTITION_ID;
+			}
 		}
 	} else {
 		printf("Can't setup partition table on this device %d\n",
