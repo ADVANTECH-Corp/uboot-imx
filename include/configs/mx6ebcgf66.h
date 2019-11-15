@@ -40,6 +40,10 @@
 #endif
 #endif
 
+/* switch debug port to normal uart */
+#define CONFIG_SWITCH_DEBUG_PORT_TO_UART1
+#define CONFIG_SILENT_CONSOLE
+
 #include "mx6advantech_common.h"
 /* don't use pmic */
 #undef CONFIG_LDO_BYPASS_CHECK
