@@ -11,6 +11,8 @@
 #include <asm/arch/imx-regs.h>
 #include "imx_env.h"
 
+#define CONFIG_ADVANTECH_MX8
+
 #ifdef CONFIG_SPL_BUILD
 
 #ifdef CONFIG_SPL_SPI_SUPPORT
@@ -32,8 +34,6 @@
  */
 #define CONFIG_SYS_UBOOT_BASE 0x08281000
 #define CONFIG_SYS_MMCSD_FS_BOOT_PARTITION             0
-
-#define	CONFIGONFIG_ADVANTECH_MX8
 #define CONFIG_SPL_DRIVERS_MISC_SUPPORT
 #define CONFIG_SPL_LDSCRIPT            "arch/arm/cpu/armv8/u-boot-spl.lds"
 #define CONFIG_SPL_STACK               0x013E000

@@ -596,7 +596,7 @@ int boardcfg_get_mac(void)
 		printf("SPI Read fail!!\n");
 		rc = -1;
 	}
-	
+
 	if (rc==0) {
 		sprintf(print_buf, "0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X", 
 						boardcfg.mac[0],
@@ -607,12 +607,13 @@ int boardcfg_get_mac(void)
 						boardcfg.mac[5]);
 		printf ("MAC addr = %s\n", print_buf);
 
-		if( (strcmp (env_get("ethaddr"),print_buf) != 0)||(env_get("ethaddr") == NULL) 
-			|| (strcmp (env_get("ethaddr"),MK_STR(CONFIG_ETHADDR)) == 0) ) {
+		if( (env_get("ethaddr") == NULL) ||
+			(strcmp (env_get("ethaddr"),print_buf) != 0) ||
+			(strcmp (env_get("ethaddr"),MK_STR(CONFIG_ETHADDR)) == 0) ) {
 			env_set("ethaddr", print_buf);
 		}
 	}
-	
+
 	return rc;
 }
 #endif /* CONFIG_ADVANTECH */
