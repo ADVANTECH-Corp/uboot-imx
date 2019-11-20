@@ -10,9 +10,9 @@
 #include <linux/sizes.h>
 #include <asm/arch/imx-regs.h>
 #include "imx_env.h"
-
+#ifndef CONFIG_ANDROID_SUPPORT
 #define CONFIG_ADVANTECH_MX8
-
+#endif
 #ifdef CONFIG_SPL_BUILD
 
 #ifdef CONFIG_SPL_SPI_SUPPORT

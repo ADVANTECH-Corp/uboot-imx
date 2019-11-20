@@ -122,16 +122,22 @@ int android_image_get_kernel(const struct andr_img_hdr *hdr, int verify,
 
 #ifdef CONFIG_ANDROID_SUPPORT
 	char *adv_cmd_line = env_get("bootargs_adv");
-#endif
-	sprintf(newbootargs,
-#ifdef CONFIG_ANDROID_SUPPORT
-					" %s androidboot.serialno=%08x%08x",
-					adv_cmd_line,
+	if(adv_cmd_line){
+		sprintf(newbootargs,
+			" %s androidboot.serialno=%08x%08x",
+			adv_cmd_line,
+			serialnr.high, serialnr.low);
+	} else {
+		sprintf(newbootargs, 
+			" androidboot.serialno=%08x%08x", 
+			serialnr.high, serialnr.low);
+	}
 #else
-                    " androidboot.serialno=%08x%08x",
+	sprintf(newbootargs, 
+			" androidboot.serialno=%08x%08x", 
+			serialnr.high, serialnr.low);
 #endif
-					serialnr.high,
-					serialnr.low);
+
 	strncat(commandline, newbootargs, sizeof(commandline) - strlen(commandline));
 
 	char bd_addr[16]={0};
