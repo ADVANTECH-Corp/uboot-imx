@@ -640,6 +640,30 @@ int board_mmc_get_env_dev(int devno)
 	return devno;
 }
 
+#define DEBUG_UART_SEL IMX_GPIO_NR(4, 20)
+
+static iomux_cfg_t debug_uart_sel_gpio[] = {
+	SC_P_USDHC1_VSELECT | MUX_MODE_ALT(4) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
+};
+
+static void debug_uart_sel(void)
+{
+	int value = -1;
+
+	imx8_iomux_setup_multiple_pads(debug_uart_sel_gpio, ARRAY_SIZE(debug_uart_sel_gpio));
+	gpio_request(DEBUG_UART_SEL, "debug_uart_sel");
+	gpio_direction_input(DEBUG_UART_SEL);
+
+	value = gpio_get_value(DEBUG_UART_SEL);
+
+	/* High: enable debug log. Low: disable debug log. */
+	if(value == 0)
+	{
+		env_set("console", "disabled");
+		env_set("earlycon", "disabled");
+	}
+}
+
 int board_late_init(void)
 {
 	char *fdt_file;
@@ -668,6 +692,8 @@ int board_late_init(void)
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
 #endif
+
+	debug_uart_sel();
 
 	return 0;
 }
