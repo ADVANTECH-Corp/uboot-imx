@@ -12,13 +12,15 @@
 
 #include "imx_env.h"
 
+#define CONFIG_ADVANTECH_MX8
+#define CONFIG_HAS_ETH1
+
 #ifdef CONFIG_SPL_BUILD
 
 #ifdef CONFIG_SPL_SPI_SUPPORT
 #define CONFIG_SPL_SPI_LOAD
 #endif
 
-#define CONFIG_ADVANTECH_MX8
 #define CONFIG_PARSE_CONTAINER
 #define CONFIG_SPL_TEXT_BASE		0x0
 #define CONFIG_SPL_MAX_SIZE		(124 * 1024)
