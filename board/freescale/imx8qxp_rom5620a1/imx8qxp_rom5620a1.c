@@ -640,10 +640,10 @@ int board_mmc_get_env_dev(int devno)
 	return devno;
 }
 
-#define DEBUG_UART_SEL IMX_GPIO_NR(4, 20)
+#define DEBUG_UART_SEL IMX_GPIO_NR(0, 27)
 
 static iomux_cfg_t debug_uart_sel_gpio[] = {
-	SC_P_USDHC1_VSELECT | MUX_MODE_ALT(4) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
+	SC_P_SAI0_RXD | MUX_MODE_ALT(4) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
 };
 
 static void debug_uart_sel(void)
