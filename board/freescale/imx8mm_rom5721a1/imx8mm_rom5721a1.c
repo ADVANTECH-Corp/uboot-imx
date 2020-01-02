@@ -171,6 +171,26 @@ int ft_board_setup(void *blob, bd_t *bd)
 }
 #endif
 
+#define LVDS_STBY_PAD IMX_GPIO_NR(3, 23)
+#define LCD0_VDD_EN_PAD IMX_GPIO_NR(4, 23)
+static iomux_v3_cfg_t const gpio_init_pads[] = {
+        IMX8MM_PAD_SAI5_RXD2_GPIO3_IO23 | MUX_PAD_CTRL(NO_PAD_CTRL),	//LVDS_STBY
+        IMX8MM_PAD_SAI2_RXD0_GPIO4_IO23 | MUX_PAD_CTRL(NO_PAD_CTRL),	//LCD0_VDD_EN
+};
+
+static void setup_iomux_gpio(void)
+{
+        imx_iomux_v3_setup_multiple_pads(gpio_init_pads,
+                                         ARRAY_SIZE(gpio_init_pads));
+
+        gpio_request(LVDS_STBY_PAD, "LVDS_STBY");
+        gpio_direction_output(LVDS_STBY_PAD, 1);
+        udelay(500);
+        gpio_request(LCD0_VDD_EN_PAD, "LCD0_VDD_EN");
+        gpio_direction_output(LCD0_VDD_EN_PAD, 1);
+}
+
+
 #ifdef CONFIG_FEC_MXC
 #define FEC_RST_PAD IMX_GPIO_NR(4, 22)
 static iomux_v3_cfg_t const fec1_rst_pads[] = {
@@ -409,7 +429,7 @@ int board_init(void)
 #ifdef CONFIG_FSL_FSPI
 	board_qspi_init();
 #endif
-
+	setup_iomux_gpio();
 	return 0;
 }
 
