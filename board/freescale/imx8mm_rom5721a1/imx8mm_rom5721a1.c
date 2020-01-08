@@ -239,6 +239,7 @@ int board_phy_config(struct phy_device *phydev)
 #endif
 
 #ifdef CONFIG_USB_TCPC
+#if 0
 struct tcpc_port port1;
 struct tcpc_port port2;
 
@@ -347,25 +348,25 @@ static int setup_typec(void)
 
 	return ret;
 }
-
+#endif
 int board_usb_init(int index, enum usb_init_type init)
 {
 	int ret = 0;
-	struct tcpc_port *port_ptr;
+//	struct tcpc_port *port_ptr;
 
 	debug("board_usb_init %d, type %d\n", index, init);
 
-	if (index == 0)
-		port_ptr = &port1;
-	else
-		port_ptr = &port2;
+//	if (index == 0)
+//		port_ptr = &port1;
+//	else
+//		port_ptr = &port2;
 
 	imx8m_usb_power(index, true);
 
-	if (init == USB_INIT_HOST)
-		tcpc_setup_dfp_mode(port_ptr);
-	else
-		tcpc_setup_ufp_mode(port_ptr);
+//	if (init == USB_INIT_HOST)
+//		tcpc_setup_dfp_mode(port_ptr);
+//	else
+//		tcpc_setup_ufp_mode(port_ptr);
 
 	return ret;
 }
@@ -376,12 +377,12 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 
 	debug("board_usb_cleanup %d, type %d\n", index, init);
 
-	if (init == USB_INIT_HOST) {
-		if (index == 0)
-			ret = tcpc_disable_src_vbus(&port1);
-		else
-			ret = tcpc_disable_src_vbus(&port2);
-	}
+//	if (init == USB_INIT_HOST) {
+//		if (index == 0)
+//			ret = tcpc_disable_src_vbus(&port1);
+//		else
+//			ret = tcpc_disable_src_vbus(&port2);
+//	}
 
 	imx8m_usb_power(index, false);
 	return ret;
@@ -390,6 +391,7 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 int board_ehci_usb_phy_mode(struct udevice *dev)
 {
 	int ret = 0;
+#if 0
 	enum typec_cc_polarity pol;
 	enum typec_cc_state state;
 	struct tcpc_port *port_ptr;
@@ -406,7 +408,7 @@ int board_ehci_usb_phy_mode(struct udevice *dev)
 		if (state == TYPEC_STATE_SRC_RD_RA || state == TYPEC_STATE_SRC_RD)
 			return USB_INIT_HOST;
 	}
-
+#endif
 	return USB_INIT_DEVICE;
 }
 
@@ -415,7 +417,7 @@ int board_ehci_usb_phy_mode(struct udevice *dev)
 int board_init(void)
 {
 #ifdef CONFIG_USB_TCPC
-	setup_typec();
+//	setup_typec();
 #endif
 
 #ifdef CONFIG_MXC_SPI
