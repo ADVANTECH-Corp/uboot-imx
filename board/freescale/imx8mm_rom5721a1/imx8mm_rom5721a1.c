@@ -172,10 +172,10 @@ int ft_board_setup(void *blob, bd_t *bd)
 #endif
 
 #define LVDS_STBY_PAD IMX_GPIO_NR(3, 23)
-#define LCD0_VDD_EN_PAD IMX_GPIO_NR(4, 23)
+#define LVDS_RESET_PAD IMX_GPIO_NR(3, 24)
 static iomux_v3_cfg_t const gpio_init_pads[] = {
         IMX8MM_PAD_SAI5_RXD2_GPIO3_IO23 | MUX_PAD_CTRL(NO_PAD_CTRL),	//LVDS_STBY
-        IMX8MM_PAD_SAI2_RXD0_GPIO4_IO23 | MUX_PAD_CTRL(NO_PAD_CTRL),	//LCD0_VDD_EN
+        IMX8MM_PAD_SAI5_RXD3_GPIO3_IO24 | MUX_PAD_CTRL(NO_PAD_CTRL),	//LVDS_RESET
 };
 
 static void setup_iomux_gpio(void)
@@ -185,9 +185,9 @@ static void setup_iomux_gpio(void)
 
         gpio_request(LVDS_STBY_PAD, "LVDS_STBY");
         gpio_direction_output(LVDS_STBY_PAD, 1);
-        udelay(500);
-        gpio_request(LCD0_VDD_EN_PAD, "LCD0_VDD_EN");
-        gpio_direction_output(LCD0_VDD_EN_PAD, 1);
+	udelay(100);
+        gpio_request(LVDS_RESET_PAD, "LVDS_RESET");
+        gpio_direction_output(LVDS_RESET_PAD, 1);
 }
 
 
