@@ -16,7 +16,10 @@
 #include <thermal.h>
 #include <dm/device-internal.h>
 #include <dm/device.h>
-
+#ifdef CONFIG_ADVANTECH_MX8
+#include <imx_thermal.h>
+#define OCOTP_TESTER3_TEMP_SHIFT        6
+#endif
 DECLARE_GLOBAL_DATA_PTR;
 
 #define SITES_MAX	16
@@ -133,13 +136,46 @@ static int read_temperature(struct udevice *dev, int *temp)
 		return -EINVAL;
 	}
 }
+#ifdef CONFIG_ADVANTECH_MX8
+u32 get_cpu_crit_temp(int *alert, int *crit)
+{
+        struct ocotp_regs *ocotp = (struct ocotp_regs *)OCOTP_BASE_ADDR;
+        struct fuse_bank *bank = &ocotp->bank[1];
+        struct fuse_bank1_regs *fuse =
+                (struct fuse_bank1_regs *)bank->fuse_regs;
+        uint32_t val;
+        val = readl(&fuse->tester3);
+        val >>= OCOTP_TESTER3_TEMP_SHIFT;
+        val &= 0x3;
 
+        if (alert && crit) {
+                if (val == TEMP_AUTOMOTIVE) {
+                        *alert = 125000;
+                        *crit = 135000;
+                } else if (val == TEMP_INDUSTRIAL) {
+                        *alert = 105000;
+                        *crit = 115000;
+                } else if (val == TEMP_EXTCOMMERCIAL) {
+                        *alert = 105000;
+                        *crit = 115000;
+                } else {
+                        *alert = 95000;
+                        *crit = 105000;
+                }
+        }
+        return val;
+}
+#endif
 int nxp_tmu_get_temp(struct udevice *dev, int *temp)
 {
 	struct nxp_tmu_plat *pdata = dev_get_platdata(dev);
 	int cpu_tmp = 0;
 	int ret;
-
+#ifdef CONFIG_ADVANTECH_MX8
+	int *alert = &pdata->alert;
+	int *crit = &pdata->critical;
+	get_cpu_crit_temp(alert,crit);
+#endif
 	ret = read_temperature(dev, &cpu_tmp);
 	if (ret) {
 		printf("invalid data\n");
