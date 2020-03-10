@@ -266,7 +266,7 @@
 #define	CONFIG_SF_DEFAULT_MODE		SPI_MODE_0
 
 #define FSL_QSPI_FLASH_SIZE		(SZ_32M)
-#define FSL_QSPI_FLASH_NUM		1
+#define FSL_QSPI_FLASH_NUM		2
 #endif
 
 #define CONFIG_MXC_GPIO
