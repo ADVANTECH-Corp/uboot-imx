@@ -582,6 +582,22 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 }
 #endif
 
+#define WDOG_TRIG IMX_GPIO_NR(1, 14)
+
+static iomux_cfg_t wdt_trig[] = {
+	SC_P_ADC_IN4 | MUX_MODE_ALT(4) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
+};
+
+static void setup_iomux_wdt(void)
+{
+	int value = -1;
+
+	imx8_iomux_setup_multiple_pads(wdt_trig, ARRAY_SIZE(wdt_trig));
+	gpio_request(WDOG_TRIG, "wdt_trig");
+	gpio_direction_output(WDOG_TRIG, 1);
+	value = gpio_get_value(WDOG_TRIG);
+}
+
 int board_init(void)
 {
 #ifdef CONFIG_MXC_GPIO
@@ -595,7 +611,7 @@ int board_init(void)
 #if defined(CONFIG_USB) && defined(CONFIG_USB_TCPC)
 	setup_typec();
 #endif
-
+	setup_iomux_wdt();
 	return 0;
 }
 
