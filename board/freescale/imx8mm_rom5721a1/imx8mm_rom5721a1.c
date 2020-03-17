@@ -190,6 +190,16 @@ static void setup_iomux_gpio(void)
         gpio_direction_output(LVDS_RESET_PAD, 1);
 }
 
+void setup_iomux_wdt()
+{
+        imx_iomux_v3_setup_pad(IOMUX_WDOG_TRIG| MUX_PAD_CTRL(NO_PAD_CTRL));
+        imx_iomux_v3_setup_pad(IOMUX_WDOG_ENABLE| MUX_PAD_CTRL(NO_PAD_CTRL));
+        gpio_request(WDOG_ENABLE, "wdt_en");
+        gpio_direction_output(WDOG_ENABLE,0);
+        gpio_request(WDOG_TRIG, "wdt_trig");
+        gpio_direction_output(WDOG_TRIG,1);
+
+}
 
 #ifdef CONFIG_FEC_MXC
 #define FEC_RST_PAD IMX_GPIO_NR(4, 22)
@@ -432,6 +442,7 @@ int board_init(void)
 	board_qspi_init();
 #endif
 	setup_iomux_gpio();
+	setup_iomux_wdt();
 	return 0;
 }
 
