@@ -152,6 +152,13 @@ static iomux_v3_cfg_t const usdhc3_emmc_pads[] = {
 static iomux_v3_cfg_t const reset_cb_pads[] = {
 	MX7D_PAD_GPIO1_IO09__GPIO1_IO9	| MUX_PAD_CTRL(NO_PAD_CTRL),
 };
+static iomux_v3_cfg_t const reset_bdr0_pads[] = {
+        MX7D_PAD_EPDC_BDR0__GPIO2_IO28 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+static iomux_v3_cfg_t const reset_bdr1_pads[] = {
+        MX7D_PAD_EPDC_BDR1__GPIO2_IO29  | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
 #else
 #ifdef CONFIG_MXC_EPDC
 #define IOX_SDI IMX_GPIO_NR(1, 9)
@@ -975,6 +982,12 @@ int board_init(void)
 	/* set reset_cb output high */
 	imx_iomux_v3_setup_multiple_pads(reset_cb_pads, ARRAY_SIZE(reset_cb_pads));
 	gpio_direction_output(RESET_CB_GPIO, 1);
+
+        imx_iomux_v3_setup_multiple_pads(reset_bdr0_pads, ARRAY_SIZE(reset_bdr0_pads));
+        gpio_direction_output(RESET_BDR0_GPIO, 1);
+
+        imx_iomux_v3_setup_multiple_pads(reset_bdr1_pads, ARRAY_SIZE(reset_bdr1_pads));
+        gpio_direction_output(RESET_BDR1_GPIO, 1);
 
 	boot_select_init();
 #else
