@@ -379,9 +379,9 @@
 #endif
 
 #if defined(CONFIG_ENV_IS_IN_MMC)
-#define CONFIG_ENV_OFFSET		(896 * 1024)
+#define CONFIG_ENV_OFFSET		(12 * 64 * 1024)
 #elif defined(CONFIG_ENV_IS_IN_SPI_FLASH)
-#define CONFIG_ENV_OFFSET              (896 * 1024)
+#define CONFIG_ENV_OFFSET              (768 * 1024)
 #define CONFIG_ENV_SECT_SIZE           (64 * 1024)
 #define CONFIG_ENV_SPI_BUS             CONFIG_SF_DEFAULT_BUS
 #define CONFIG_ENV_SPI_CS              CONFIG_SF_DEFAULT_CS
@@ -391,14 +391,14 @@
 #undef CONFIG_ENV_SIZE
 #define CONFIG_ENV_SIZE                        CONFIG_SYS_FLASH_SECT_SIZE
 #define CONFIG_ENV_SECT_SIZE           CONFIG_SYS_FLASH_SECT_SIZE
-#define CONFIG_ENV_OFFSET              (7 * CONFIG_SYS_FLASH_SECT_SIZE)
+#define CONFIG_ENV_OFFSET              (6 * CONFIG_SYS_FLASH_SECT_SIZE)
 #elif defined(CONFIG_ENV_IS_IN_NAND)
 #undef CONFIG_ENV_SIZE
 #define CONFIG_ENV_OFFSET              (60 << 20)
 #define CONFIG_ENV_SECT_SIZE           (128 << 10)
 #define CONFIG_ENV_SIZE                        CONFIG_ENV_SECT_SIZE
 #elif defined(CONFIG_ENV_IS_IN_SATA)
-#define CONFIG_ENV_OFFSET		(896 * 1024)
+#define CONFIG_ENV_OFFSET		(768 * 1024)
 #define CONFIG_SYS_SATA_ENV_DEV		0
 #define CONFIG_SYS_DCACHE_OFF /* remove when sata driver support cache */
 #endif
