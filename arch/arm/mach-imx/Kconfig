@@ -1,3 +1,12 @@
+config ADVANTECH
+	bool "Support Advantech imx6 projects"
+
+config ADVANTECH_MX8
+	bool "Support Advantech imx8 projects"
+
+config ADV_OTA_SUPPORT
+	bool "Support Advantech OTA feature"
+
 config HAS_CAAM
 	bool
 

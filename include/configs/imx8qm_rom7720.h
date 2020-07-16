@@ -476,4 +476,7 @@
 #include "imx8qm_mek_trusty_xen.h"
 #endif
 
+/* OTA support */
+#include "adv_imx_ota.h"
+
 #endif /* __IMX8QM_ROM7720_H */

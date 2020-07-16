@@ -1176,6 +1176,9 @@ static init_fnc_t init_sequence_r[] = {
 #ifdef CONFIG_BOARD_LATE_INIT
 	board_late_init,
 #endif
+#ifdef CONFIG_ADVANTECH
+	board_set_boot_device,
+#endif
 #ifdef CONFIG_FSL_FASTBOOT
 	initr_fastboot_setup,
 #endif
@@ -1226,9 +1229,6 @@ static init_fnc_t init_sequence_r[] = {
 #endif
 #ifdef CONFIG_FSL_FASTBOOT
 	initr_check_fastboot,
-#endif
-#ifdef CONFIG_ADVANTECH
-	board_set_boot_device,
 #endif
 	run_main_loop,
 };

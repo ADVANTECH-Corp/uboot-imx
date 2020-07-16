@@ -434,4 +434,7 @@
 #include "imx8qxp_mek_android_auto.h"
 #endif
 
+/* OTA support */
+#include "adv_imx_ota.h"
+
 #endif /* __IMX8QXP_ROM5620_H */

@@ -4,8 +4,8 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __IMX8M_EVK_H
-#define __IMX8M_EVK_H
+#ifndef __IMX8MQ_ROM5720_H
+#define __IMX8MQ_ROM5720_H
 
 #include <linux/sizes.h>
 #include <asm/arch/imx-regs.h>
@@ -319,8 +319,11 @@
 #elif defined (CONFIG_ANDROID_THINGS_SUPPORT)
 #include "imx8mq_evk_androidthings.h"
 #endif
-#endif
 
 #define IOMUX_WDOG_TRIG	IMX8MQ_PAD_SAI2_RXC__GPIO4_IO22	// WDOG_TRIG 
 #define WDOG_TRIG	IMX_GPIO_NR(4,22)
 
+/* OTA support */
+#include "adv_imx_ota.h"
+
+#endif /* __IMX8MQ_ROM5720_H */

@@ -1348,9 +1348,30 @@ static int _fastboot_parts_add_ptable_entry(int ptable_index,
 	ptable[ptable_index].length = info.size;
 	ptable[ptable_index].partition_id = mmc_partition_index;
 	ptable[ptable_index].partition_index = mmc_dos_partition_index;
+#ifdef CONFIG_ADV_OTA_SUPPORT
+	switch (mmc_dos_partition_index) {
+	case 1:
+		strcpy(ptable[ptable_index].name, FASTBOOT_PARTITION_BOOT);
+		break;
+	case 2:
+		strcpy(ptable[ptable_index].name, FASTBOOT_PARTITION_SYSTEM);
+		break;
+	case 3:
+		strcpy(ptable[ptable_index].name, FASTBOOT_PARTITION_RECOVERY);
+		break;
+	case 5:
+		strcpy(ptable[ptable_index].name, FASTBOOT_PARTITION_MISC);
+		break;
+	case 6:
+		strcpy(ptable[ptable_index].name, FASTBOOT_PARTITION_CACHE);
+		break;
+	default:
+		break;
+	}
+#else
 	strncpy(ptable[ptable_index].name, (const char *)info.name,
 			sizeof(ptable[ptable_index].name) - 1);
-
+#endif
 #ifdef CONFIG_PARTITION_UUIDS
 	strcpy(ptable[ptable_index].uuid, (const char *)info.uuid);
 #endif
@@ -1875,10 +1896,12 @@ static FbBootMode fastboot_get_bootmode(void)
 	}
 #endif
 
+#ifndef CONFIG_ADV_OTA_SUPPORT //[ADVANTECH] disable clean command
 	/* Clean the mode once its read out,
 	   no matter what in the mode string */
 	memset(command, 0, 32);
 	bcb_write_command(command);
+#endif
 #endif
 	return boot_mode;
 }
@@ -2557,6 +2580,9 @@ int do_boota(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 	ulong image_size;
 	bool check_image_arm64 =  false;
 	int i = 0;
+#ifdef CONFIG_OF_LIBFDT
+	u32 fdt_size = 0;
+#endif /*CONFIG_OF_LIBFDT*/
 
 	for (i = 0; i < argc; i++)
 		printf("%s ", argv[i]);
@@ -2643,18 +2669,46 @@ int do_boota(cmd_tbl_t *cmdtp, int flag, int argc, char * const argv[])
 		display_lock(fastboot_get_lock_stat(), verifyresult);
 #endif
 		/* load the ramdisk file */
+#ifdef CONFIG_ADV_OTA_SUPPORT
+		unsigned sector = pte->start + (hdr->page_size / 512);
+		sector += ALIGN(hdr->kernel_size, hdr->page_size) / 512;
+		if (blk_dread(dev_desc, sector,
+					(hdr->ramdisk_size / 512) + 1,
+					(void *)hdr->ramdisk_addr) < 0) {
+			printf("boota: mmc failed to read ramdisk\n");
+			goto fail;
+		}
+#else
 		memcpy((void *)hdr->ramdisk_addr, (void *)hdr->kernel_addr
 			+ ALIGN(hdr->kernel_size, hdr->page_size), hdr->ramdisk_size);
+#endif
 
 #ifdef CONFIG_OF_LIBFDT
-		u32 fdt_size = 0;
 		/* load the dtb file */
 		if (hdr->second_addr) {
-			u32 zimage_size = ((u32 *)hdrload->kernel_addr)[ZIMAGE_END_ADDR]
-					- ((u32 *)hdrload->kernel_addr)[ZIMAGE_START_ADDR];
-			fdt_size = hdrload->kernel_size - zimage_size;
-			memcpy((void *)(ulong)hdrload->second_addr,
-					(void*)(ulong)hdrload->kernel_addr + zimage_size, fdt_size);
+#ifdef CONFIG_ADV_OTA_SUPPORT
+			fdt_size = hdr->second_size;
+#if 0
+			memcpy((void *)hdr->second_addr, (void *)hdr->kernel_addr
+				+ ALIGN(hdr->kernel_size, hdr->page_size)
+				+ ALIGN(hdr->ramdisk_size, hdr->page_size), fdt_size);
+#else			/* FIXME When image size is larger, it fails to read DTB header from memcpy.
+			         We need to read from disk here. */
+			sector += ALIGN(hdr->ramdisk_size, hdr->page_size) / 512;
+			if (blk_dread(dev_desc, sector,
+						(hdr->second_size / 512) + 1,
+						(void *)hdr->second_addr) < 0) {
+				printf("boota: mmc failed to dtb\n");
+				goto fail;
+			}
+#endif
+#else
+			u32 zimage_size = ((u32 *)hdr->kernel_addr)[ZIMAGE_END_ADDR]
+					- ((u32 *)hdr->kernel_addr)[ZIMAGE_START_ADDR];
+			fdt_size = hdr->kernel_size - zimage_size;
+			memcpy((void *)(ulong)hdr->second_addr,
+					(void*)(ulong)hdr->kernel_addr + zimage_size, fdt_size);
+#endif /* CONFIG_ADV_OTA_SUPPORT */
 		}
 #endif /*CONFIG_OF_LIBFDT*/
 

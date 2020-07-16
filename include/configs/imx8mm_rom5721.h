@@ -4,8 +4,8 @@
  * SPDX-License-Identifier:	GPL-2.0+
  */
 
-#ifndef __IMX8MM_EVK_H
-#define __IMX8MM_EVK_H
+#ifndef __IMX8MM_ROM5721_H
+#define __IMX8MM_ROM5721_H
 
 #include <linux/sizes.h>
 #include <asm/arch/imx-regs.h>
@@ -398,7 +398,6 @@
 #if defined(CONFIG_ANDROID_SUPPORT)
 #include "imx8mm_evk_android.h"
 #endif
-#endif
 
 #define WDOG_TRIG IMX_GPIO_NR(1, 15)
 
@@ -408,3 +407,8 @@
 #define LVDS_RESET_PAD IMX_GPIO_NR(3, 24)
 #define I2S_EN IMX_GPIO_NR(1, 10)
 #define RESET_OUT IMX_GPIO_NR(4, 28)
+
+/* OTA support */
+#include "adv_imx_ota.h"
+
+#endif /* __IMX8MM_ROM5721_H */
