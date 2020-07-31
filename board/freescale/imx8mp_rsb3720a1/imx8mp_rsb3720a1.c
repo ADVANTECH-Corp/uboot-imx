@@ -469,6 +469,19 @@ int board_typec_get_mode(int index)
 #define DISPMIX				13
 #define MIPI				15
 
+#define WDOG_TRIG IMX_GPIO_NR(4, 20)
+
+static iomux_v3_cfg_t wdt_trig[] = {
+	MX8MP_PAD_SAI1_MCLK__GPIO4_IO20 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+static void setup_iomux_wdt(void)
+{
+	imx_iomux_v3_setup_multiple_pads(wdt_trig, ARRAY_SIZE(wdt_trig));
+	gpio_request(WDOG_TRIG, "wdt_trig");
+	gpio_direction_output(WDOG_TRIG, 1);
+}
+
 int board_init(void)
 {
 #ifdef CONFIG_USB_TCPC
@@ -495,6 +508,8 @@ int board_init(void)
 	/* enable the dispmix & mipi phy power domain */
 	call_imx_sip(FSL_SIP_GPC, FSL_SIP_CONFIG_GPC_PM_DOMAIN, DISPMIX, true, 0);
 	call_imx_sip(FSL_SIP_GPC, FSL_SIP_CONFIG_GPC_PM_DOMAIN, MIPI, true, 0);
+
+	setup_iomux_wdt();
 
 	return 0;
 }
