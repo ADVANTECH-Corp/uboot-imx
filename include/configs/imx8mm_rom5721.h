@@ -409,6 +409,8 @@
 #define RESET_OUT IMX_GPIO_NR(4, 28)
 
 /* OTA support */
+#ifndef CONFIG_ANDROID_SUPPORT
 #include "adv_imx_ota.h"
+#endif
 
 #endif /* __IMX8MM_ROM5721_H */

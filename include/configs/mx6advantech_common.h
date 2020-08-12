@@ -440,6 +440,8 @@
 #define CONFIG_FASTBOOT_SATA_NO 8
 
 /* OTA support */
+#ifndef CONFIG_ANDROID_SUPPORT
 #include "adv_imx_ota.h"
+#endif
 
 #endif                         /* __MX6QSABRE_COMMON_CONFIG_H */

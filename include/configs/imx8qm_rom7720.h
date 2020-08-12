@@ -477,6 +477,8 @@
 #endif
 
 /* OTA support */
+#ifndef CONFIG_ANDROID_SUPPORT
 #include "adv_imx_ota.h"
+#endif
 
 #endif /* __IMX8QM_ROM7720_H */

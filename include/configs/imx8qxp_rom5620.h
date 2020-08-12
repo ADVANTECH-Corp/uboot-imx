@@ -435,6 +435,8 @@
 #endif
 
 /* OTA support */
+#ifndef CONFIG_ANDROID_SUPPORT
 #include "adv_imx_ota.h"
+#endif
 
 #endif /* __IMX8QXP_ROM5620_H */

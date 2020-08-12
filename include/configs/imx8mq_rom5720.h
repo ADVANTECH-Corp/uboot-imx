@@ -324,6 +324,8 @@
 #define WDOG_TRIG	IMX_GPIO_NR(4,22)
 
 /* OTA support */
+#ifndef CONFIG_ANDROID_SUPPORT
 #include "adv_imx_ota.h"
+#endif
 
 #endif /* __IMX8MQ_ROM5720_H */
