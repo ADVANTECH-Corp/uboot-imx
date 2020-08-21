@@ -706,6 +706,21 @@ static int mmc_get_boot_dev(void)
 
 int mmc_get_env_dev(void)
 {
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_MX6)
+	int bootdev = (*(int *)0x22200000);
+
+	switch (bootdev) {
+	case 1: // SD
+		return CONFIG_SD_DEV_NUM;
+	case 3: // eMMC
+		return CONFIG_EMMC_DEV_NUM;
+#ifdef CONFIG_CARRIERSD_DEV_NUM
+	case 5: // Carrier SD
+		return CONFIG_CARRIERSD_DEV_NUM;
+#endif
+	}
+	return 0;
+#else
 	int devno = mmc_get_boot_dev();
 #ifdef CONFIG_ANDROID_SUPPORT
 	return board_mmc_get_env_dev(CONFIG_SYS_MMC_ENV_DEV);
@@ -715,6 +730,7 @@ int mmc_get_env_dev(void)
 	    return env_get_ulong("mmcdev", 10, CONFIG_SYS_MMC_ENV_DEV);
 
 	return board_mmc_get_env_dev(devno);
+#endif
 }
 
 #ifdef CONFIG_SYS_MMC_ENV_PART
@@ -791,6 +807,33 @@ const struct boot_mode soc_boot_modes[] = {
 enum boot_device get_boot_device(void)
 {
 	enum boot_device boot_dev = UNKNOWN_BOOT;
+#if defined(CONFIG_ADVANTECH) && defined(CONFIG_MX6)
+	int bootdev = (*(int *)0x22200000);
+
+	switch (bootdev) {
+	case 1: // SD
+		boot_dev = SD1_BOOT;
+		break;
+	case 2: // SATA
+		boot_dev = SATA_BOOT;
+		break;
+	case 3: // eMMC
+		boot_dev = MMC1_BOOT;
+		break;
+	case 4: // SPI
+		boot_dev = SPI_NOR_BOOT;
+		break;
+	case 5: // Carrier SD
+		boot_dev = SD2_BOOT;
+		break;
+	case 6: // USB
+		boot_dev = USB_BOOT;
+		break;
+	default:
+		boot_dev = UNKNOWN_BOOT;
+		break;
+	}
+#else
 	uint soc_sbmr = readl(SRC_BASE_ADDR + 0x4);
 	uint bt_mem_ctl = (soc_sbmr & 0x000000FF) >> 4 ;
 	uint bt_mem_type = (soc_sbmr & 0x00000008) >> 3;
@@ -827,7 +870,7 @@ enum boot_device get_boot_device(void)
 		boot_dev = UNKNOWN_BOOT;
 		break;
 	}
-
+#endif
     return boot_dev;
 }
 

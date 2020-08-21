@@ -132,7 +132,9 @@ void spl_set_header_raw_atf(struct spl_image_info *spl_image);
  * @header image header to parse
  * @return 0 if a header was correctly parsed, -ve on error
  */
-#ifndef CONFIG_ADVANTECH
+#ifdef CONFIG_ADVANTECH
+void spl_parse_image_header(const struct image_header *header);
+#else
 int spl_parse_image_header(struct spl_image_info *spl_image,
 			   const struct image_header *header);
 #endif
