@@ -72,6 +72,12 @@ config TARGET_IMX8MM_ROM5721A1_2G
 	select SUPPORT_SPL
 	select IMX8M_LPDDR4
 
+config TARGET_IMX8MM_ROM5721A1_1G
+	bool "imx8mm rom5721a1 1G"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_LPDDR4
+
 config TARGET_IMX8MQ_ROM5720A1_2G
 	bool "imx8mq rom5720a1 2G"
 	select IMX8MQ
