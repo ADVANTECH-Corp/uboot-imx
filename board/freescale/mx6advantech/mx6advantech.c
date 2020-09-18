@@ -308,8 +308,8 @@ struct fsl_esdhc_cfg usdhc_cfg[3] = {
 	{USDHC4_BASE_ADDR},
 };
 
-#define USDHC2_CD_GPIO	IMX_GPIO_NR(2, 2)
-#define USDHC3_CD_GPIO	IMX_GPIO_NR(2, 0)
+//#define USDHC2_CD_GPIO	IMX_GPIO_NR(2, 2)
+//#define USDHC3_CD_GPIO	IMX_GPIO_NR(2, 0)
 
 int board_mmc_getcd(struct mmc *mmc)
 {
@@ -317,12 +317,16 @@ int board_mmc_getcd(struct mmc *mmc)
 	int ret = 0;
 
 	switch (cfg->esdhc_base) {
+#ifdef USDHC2_CD_GPIO
 	case USDHC2_BASE_ADDR:
 		ret = !gpio_get_value(USDHC2_CD_GPIO);
 		break;
+#endif
+#ifdef USDHC3_CD_GPIO
 	case USDHC3_BASE_ADDR:
 		ret = !gpio_get_value(USDHC3_CD_GPIO);
 		break;
+#endif
 	case USDHC4_BASE_ADDR:
 		ret = 1; /* eMMC/uSDHC4 is always present */
 		break;
@@ -333,6 +337,52 @@ int board_mmc_getcd(struct mmc *mmc)
 
 int board_mmc_init(bd_t *bis)
 {
+	int ret;
+	int i;
+
+	/*
+	 * According to the board_mmc_init() the following map is done:
+	 * (U-Boot device node)    (Physical Port)
+	 * mmc0                    SD2
+	 * mmc1                    SD3
+	 * mmc2                    eMMC
+	 */
+	for (i = 0; i < CONFIG_SYS_FSL_USDHC_NUM; i++) {
+		switch (i) {
+#ifdef USDHC2_CD_GPIO
+		case 0:
+			SETUP_IOMUX_PADS(usdhc2_pads);
+			gpio_request(USDHC2_CD_GPIO, "USDHC2 CD");
+			gpio_direction_input(USDHC2_CD_GPIO);
+			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
+			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
+			break;
+#endif
+#ifdef USDHC3_CD_GPIO
+		case 1:
+			SETUP_IOMUX_PADS(usdhc3_pads);
+			gpio_request(USDHC3_CD_GPIO, "USDHC3 CD");
+			gpio_direction_input(USDHC3_CD_GPIO);
+#ifdef USDHC3_PWREN_GPIO
+			gpio_request(USDHC3_PWREN_GPIO, "USDHC3 PWREN");
+			gpio_direction_output(USDHC3_PWREN_GPIO, 0);
+#endif
+			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
+			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
+			break;
+#endif
+		case 2:
+			SETUP_IOMUX_PADS(usdhc4_pads);
+			usdhc_cfg[i].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
+			ret = fsl_esdhc_initialize(bis, &usdhc_cfg[i]);
+			break;
+		}
+		if (ret)
+			return ret;
+	}
+
+	return 0;
+#if 0
 	struct src *psrc = (struct src *)SRC_BASE_ADDR;
 	unsigned reg = readl(&psrc->sbmr1) >> 11;
 	/*
@@ -343,7 +393,6 @@ int board_mmc_init(bd_t *bis)
 	 * 0x2                  SD2
 	 * 0x3                  SD4
 	 */
-
 	switch (reg & 0x3) {
 	case 0x1:
 		SETUP_IOMUX_PADS(usdhc2_pads);
@@ -366,6 +415,7 @@ int board_mmc_init(bd_t *bis)
 	}
 
 	return fsl_esdhc_initialize(bis, &usdhc_cfg[0]);
+#endif
 }
 #endif
 #endif
@@ -1625,7 +1675,7 @@ static void spl_dram_init(void)
 void board_init_f(ulong dummy)
 {
 	/* DDR initialization */
-	spl_dram_init();
+	//spl_dram_init();
 
 	/* setup AIPS and disable watchdog */
 	arch_cpu_init();
@@ -1647,6 +1697,10 @@ void board_init_f(ulong dummy)
 
 	/* load/boot image from boot device */
 	board_init_r(NULL, 0);
+}
+
+void reset_cpu(ulong addr)
+{
 }
 #endif
 

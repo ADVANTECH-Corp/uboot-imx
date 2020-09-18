@@ -11,6 +11,13 @@
 / {
 	model = "i.MX6 Quad ADVANTECH Smart Device Board";
 	compatible = "fsl,imx6q-sabresd", "fsl,imx6q";
+        aliases {
+                mmc0 = &usdhc2;
+                mmc1 = &usdhc4;
+                mmc2;
+                mmc3;
+        };
+
 };
 
 &uart1 {
