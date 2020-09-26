@@ -1716,6 +1716,11 @@ void board_recovery_setup(void)
 #endif /* CONFIG_AVB_SUPPORT */
 	printf("setup env for recovery..\n");
 	env_set("bootcmd", env_get("bootcmd_android_recovery"));
+#ifdef CONFIG_ADV_OTA_SUPPORT
+	char buf[256];
+	sprintf(buf, "console=%s,%s %s", env_get("console"), env_get("baudrate"), env_get("bootargs"));
+	env_set("bootargs", buf);
+#endif
 }
 #endif /*CONFIG_ANDROID_RECOVERY*/
 #endif /*CONFIG_FSL_FASTBOOT*/
