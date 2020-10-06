@@ -1183,7 +1183,9 @@ static init_fnc_t init_sequence_r[] = {
 #ifdef CONFIG_CMD_NET
 	initr_ethaddr,
 #if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
+#ifndef CONFIG_TARGET_IMX8MM_ROM5721A1_2G /* Temporarily remove for ROM-5721 , we will fix it later */
 	boardcfg_get_mac,	/* Get MAC address from SPI */
+#endif
 #endif
 #endif
 #if defined(CONFIG_GPIO_HOG)
