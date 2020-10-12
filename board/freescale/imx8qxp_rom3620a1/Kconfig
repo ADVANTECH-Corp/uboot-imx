@@ -1,0 +1,14 @@
+if TARGET_IMX8QXP_ROM3620A1_2G
+
+config SYS_BOARD
+	default "imx8qxp_rom3620a1"
+
+config SYS_VENDOR
+	default "freescale"
+
+config SYS_CONFIG_NAME
+	default "imx8qxp_rom3620"
+
+source "board/freescale/common/Kconfig"
+
+endif

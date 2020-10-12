@@ -93,6 +93,12 @@ config TARGET_IMX8QXP_ROM5620A1_2G
 	select SUPPORT_SPL
 	select IMX8QXP
 
+config TARGET_IMX8QXP_ROM3620A1_2G
+        bool "Support i.MX8QXP ROM-3620A1 2G"
+        select BOARD_LATE_INIT
+        select SUPPORT_SPL
+        select IMX8QXP
+
 config TARGET_IMX8QXP_MEK
 	bool "Support i.MX8QXP MEK board"
 	select BOARD_LATE_INIT
@@ -107,5 +113,6 @@ source "board/freescale/imx8qm_mek/Kconfig"
 source "board/freescale/imx8qxp_arm2/Kconfig"
 source "board/freescale/imx8qxp_mek/Kconfig"
 source "board/freescale/imx8qxp_rom5620a1/Kconfig"
+source "board/freescale/imx8qxp_rom3620a1/Kconfig"
 
 endif
