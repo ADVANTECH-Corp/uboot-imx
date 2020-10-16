@@ -13,8 +13,8 @@
 	compatible = "fsl,imx8mp-evk", "fsl,imx8mp";
 
 	chosen {
-		bootargs = "console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200";
-		stdout-path = &uart2;
+		bootargs = "console=ttymxc2,115200 earlycon=ec_imx6q,0x30880000,115200";
+		stdout-path = &uart3;
 	};
 
 	memory@40000000 {
@@ -325,10 +325,10 @@
 	status = "okay";
 };
 
-&uart2 {
+&uart3 {
 	/* console */
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_uart2>;
+	pinctrl-0 = <&pinctrl_uart3>;
 	status = "okay";
 };
 
@@ -514,10 +514,10 @@
 		>;
 	};
 
-	pinctrl_uart2: uart2grp {
+	pinctrl_uart3: uart3grp {
 		fsl,pins = <
-			MX8MP_IOMUXC_UART2_RXD__UART2_DCE_RX	0x49
-			MX8MP_IOMUXC_UART2_TXD__UART2_DCE_TX	0x49
+			MX8MP_IOMUXC_ECSPI1_SCLK__UART3_DCE_RX		0x140
+			MX8MP_IOMUXC_ECSPI1_MOSI__UART3_DCE_TX		0x140
 		>;
 	};
 
