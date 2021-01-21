@@ -19,6 +19,12 @@
 
 #define CONFIG_MXC_UART
 
+/* SATA CONFIG */
+#define CONFIG_SYS_SATA_MAX_DEVICE      1
+#define CONFIG_DWC_AHSATA_PORT_ID       0
+#define CONFIG_DWC_AHSATA_BASE_ADDR     SATA_ARB_BASE_ADDR
+#define CONFIG_LBA48
+
 /* MMC Configs */
 #define CONFIG_SYS_FSL_ESDHC_ADDR      0
 
