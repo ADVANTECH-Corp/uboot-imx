@@ -365,10 +365,11 @@ int checkboard(void)
 #ifdef CONFIG_FSL_HSIO
 
 #define PCIE_PAD_CTRL	((SC_PAD_CONFIG_OD_IN << PADRING_CONFIG_SHIFT))
+#define PCIE_PERST_GPIO IMX_GPIO_NR(4, 0)
 static iomux_cfg_t board_pcie_pins[] = {
 	SC_P_PCIE_CTRL0_CLKREQ_B | MUX_MODE_ALT(0) | MUX_PAD_CTRL(PCIE_PAD_CTRL),
 	SC_P_PCIE_CTRL0_WAKE_B | MUX_MODE_ALT(0) | MUX_PAD_CTRL(PCIE_PAD_CTRL),
-	SC_P_PCIE_CTRL0_PERST_B | MUX_MODE_ALT(0) | MUX_PAD_CTRL(PCIE_PAD_CTRL),
+	SC_P_PCIE_CTRL0_PERST_B | MUX_MODE_ALT(4) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
 };
 
 static void imx8qxp_hsio_initialize(void)
@@ -396,6 +397,9 @@ static void imx8qxp_hsio_initialize(void)
 	LPCG_AllClockOn(HSIO_GPIO_LPCG);
 
 	imx8_iomux_setup_multiple_pads(board_pcie_pins, ARRAY_SIZE(board_pcie_pins));
+
+	gpio_request(PCIE_PERST_GPIO, "pcie_reset");
+	gpio_direction_output(PCIE_PERST_GPIO, 0);
 }
 
 void pci_init_board(void)
