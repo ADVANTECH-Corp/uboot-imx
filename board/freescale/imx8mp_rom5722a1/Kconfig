@@ -1,0 +1,14 @@
+if TARGET_IMX8MP_ROM5722A1_6G
+
+config SYS_BOARD
+	default "imx8mp_rom5722a1"
+
+config SYS_VENDOR
+	default "freescale"
+
+config SYS_CONFIG_NAME
+	default "imx8mp_rom5722"
+
+source "board/freescale/common/Kconfig"
+
+endif
