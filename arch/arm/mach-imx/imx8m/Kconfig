@@ -55,6 +55,12 @@ config TARGET_IMX8MQ_EVK
 	select IMX8MQ
 	select IMX8M_LPDDR4
 
+config TARGET_IMX8MQ_ROM5720A1_2G
+        bool "imx8mq rom5720a1 2G"
+        select IMX8MQ
+        select SUPPORT_SPL
+        select IMX8M_LPDDR4
+
 config TARGET_IMX8MQ_DDR3L_VAL
 	bool "imx8mq_ddr3l_val"
 	select IMX8MQ
@@ -190,5 +196,6 @@ source "board/freescale/imx8mp_evk/Kconfig"
 source "board/toradex/verdin-imx8mm/Kconfig"
 source "board/freescale/imx8mp_rsb3720a1/Kconfig"
 source "board/freescale/imx8mm_rom5721a1/Kconfig"
+source "board/freescale/imx8mq_rom5720a1/Kconfig"
 
 endif
