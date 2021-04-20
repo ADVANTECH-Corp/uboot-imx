@@ -51,10 +51,10 @@
 #define CONFIG_ETHPRIME                 "eth1" /* Set eqos to primary since we use its MDIO */
 
 #define CONFIG_FEC_XCV_TYPE             RGMII
-#define CONFIG_FEC_MXC_PHYADDR          1
+#define CONFIG_FEC_MXC_PHYADDR          4
 #define FEC_QUIRK_ENET_MAC
 
-#define DWC_NET_PHYADDR			1
+#define DWC_NET_PHYADDR			4
 #ifdef CONFIG_DWC_ETH_QOS
 #define CONFIG_SYS_NONCACHED_MEMORY     (1 * SZ_1M)     /* 1M */
 #endif
