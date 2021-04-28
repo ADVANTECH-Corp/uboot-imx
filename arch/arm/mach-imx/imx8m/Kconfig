@@ -184,6 +184,12 @@ config TARGET_IMX8MP_RSB3720A1_4G
         select SUPPORT_SPL
         select IMX8M_LPDDR4
 
+config TARGET_IMX8MP_ROM5722A1_6G
+        bool "Support i.MX8MP ROM5722A1 6G"
+        select IMX8MP
+        select SUPPORT_SPL
+        select IMX8M_LPDDR4
+
 endchoice
 
 source "board/freescale/imx8mq_evk/Kconfig"
@@ -195,6 +201,7 @@ source "board/freescale/imx8mn_evk/Kconfig"
 source "board/freescale/imx8mp_evk/Kconfig"
 source "board/toradex/verdin-imx8mm/Kconfig"
 source "board/freescale/imx8mp_rsb3720a1/Kconfig"
+source "board/freescale/imx8mp_rom5722a1/Kconfig"
 source "board/freescale/imx8mm_rom5721a1/Kconfig"
 source "board/freescale/imx8mq_rom5720a1/Kconfig"
 
