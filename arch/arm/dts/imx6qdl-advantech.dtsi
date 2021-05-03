@@ -320,8 +320,8 @@
 	fsl,spi-num-chipselects = <1>;
 	cs-gpios = <&gpio2 30 0>;
 	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_ecspi1>;
-	status = "disabled";
+	pinctrl-0 = <&pinctrl_ecspi1_cs_0 &pinctrl_ecspi1>;
+	status = "okay";
 
 	flash: m25p80@0 {
 		#address-cells = <1>;
@@ -678,7 +678,6 @@
                                 MX6QDL_PAD_EIM_D17__ECSPI1_MISO 	0x100b1
                                 MX6QDL_PAD_EIM_D18__ECSPI1_MOSI 	0x100b1
                                 MX6QDL_PAD_EIM_D16__ECSPI1_SCLK 	0x100b1
-				MX6QDL_PAD_EIM_EB2__GPIO2_IO30		0x1b0b0
 			>;
 		};
 

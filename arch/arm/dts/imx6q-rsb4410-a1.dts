@@ -20,11 +20,18 @@
 
 };
 
-&uart1 {
-	status = "okay";
+&iomuxc {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_hog>;
+
+	pinctrl_ecspi1_cs_0: ecspi1_cs_grp-0 {
+		fsl,pins = <
+			MX6QDL_PAD_EIM_EB2__GPIO2_IO30		0x80000000	/* ECSPI1_CS0 */
+			>;
+		};
 };
 
-&ecspi1 {
+&uart1 {
 	status = "okay";
 };
 

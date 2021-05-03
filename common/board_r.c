@@ -1181,9 +1181,13 @@ static init_fnc_t init_sequence_r[] = {
 #endif
 	/* PPC has a udelay(20) here dating from 2002. Why? */
 #ifdef CONFIG_CMD_NET
+#ifndef CONFIG_TARGET_MX6QROM7420A1_1G
 	initr_ethaddr,
+#endif
 #if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
+#ifndef CONFIG_TARGET_MX6QROM7420A1_1G
 	boardcfg_get_mac,	/* Get MAC address from SPI */
+#endif
 #endif
 #endif
 #if defined(CONFIG_GPIO_HOG)

@@ -488,6 +488,11 @@ config TARGET_MX6QRSB4411A1_1G
     select TARGET_MX6ADVANTECH_COMMON
     select MX6Q
 
+config TARGET_MX6QROM7420A1_1G
+	bool "Support mx6qrom7420a1 1G"
+    select TARGET_MX6ADVANTECH_COMMON
+    select MX6Q
+
 config TARGET_MX6QPSABRESD
 	bool "mx6qpsabresd"
     select TARGET_MX6SABRESD_COMMON

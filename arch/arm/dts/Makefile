@@ -594,7 +594,8 @@ dtb-$(CONFIG_MX53) += imx53-cx9020.dtb \
 	imx53-m53menlo.dtb
 
 dtb-$(CONFIG_ADVANTECH) += imx6q-rsb4410-a1.dtb \
-	imx6q-rsb4411-a1.dtb 
+	imx6q-rsb4411-a1.dtb \
+	imx6q-rom7420-a1.dtb
 
 ifneq ($(CONFIG_MX6DL)$(CONFIG_MX6QDL)$(CONFIG_MX6S),)
 dtb-y += \
@@ -800,7 +801,6 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
 	imx8mp-ddr4-evk.dtb \
 	imx8mp-evk.dtb \
 	imx8mp-rsb3720-a1.dtb \
-	imx8mp-rom5722-a1.dtb \
 	imx8mm-ddr4-ab2.dtb \
 	imx8mm-rom5721-a1.dtb \
 	imx8mq-rom5720-a1.dtb \

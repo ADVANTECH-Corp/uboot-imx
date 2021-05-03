@@ -12,12 +12,16 @@
 	model = "i.MX6 Quad ADVANTECH Smart Device Board";
 	compatible = "fsl,imx6q-sabresd", "fsl,imx6q";
         aliases {
-                mmc0 = &usdhc3;
+                mmc0 = &usdhc2;
                 mmc1 = &usdhc4;
                 mmc2;
                 mmc3;
         };
 
+};
+
+&ecspi1 {
+	cs-gpios = <&gpio3 19 0>;
 };
 
 &iomuxc {
@@ -26,7 +30,7 @@
 
 	pinctrl_ecspi1_cs_0: ecspi1_cs_grp-0 {
 		fsl,pins = <
-			MX6QDL_PAD_EIM_EB2__GPIO2_IO30		0x80000000	/* ECSPI1_CS0 */
+			MX6QDL_PAD_EIM_D19__GPIO3_IO19		0x80000000	/* ECSPI1_CS1 */
 			>;
 		};
 };
@@ -39,13 +43,8 @@
 	status = "okay";
 };
 
-&usdhc3 {
-        pinctrl-names = "default";
-        pinctrl-0 = <&pinctrl_usdhc3_2>;
-        bus-width = <4>;
-        cd-gpios = <&gpio7 1 GPIO_ACTIVE_LOW>;
-        wp-gpios = <&gpio7 0 GPIO_ACTIVE_HIGH>;
-        status = "okay";
+&usdhc2 {
+	status = "okay";
 };
 
 &usdhc4 {
