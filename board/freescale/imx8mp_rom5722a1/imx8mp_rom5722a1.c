@@ -559,6 +559,19 @@ static void debug_uart_sel(void)
 	}
 }
 
+#define COLD_RST_EN IMX_GPIO_NR(3, 22)
+
+static iomux_v3_cfg_t cold_rst_en_gpio[] = {
+	MX8MP_PAD_SAI5_RXD1__GPIO3_IO22 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+static void cold_rst_en(void)
+{
+	imx_iomux_v3_setup_multiple_pads(cold_rst_en_gpio, ARRAY_SIZE(cold_rst_en_gpio));
+	gpio_request(COLD_RST_EN, "cold_rst_en");
+	gpio_direction_output(COLD_RST_EN, 1);
+}
+
 int board_late_init(void)
 {
 #ifdef CONFIG_ENV_IS_IN_MMC
@@ -570,6 +583,7 @@ int board_late_init(void)
 #endif
 
 	debug_uart_sel();
+	cold_rst_en();
 
 	return 0;
 }
