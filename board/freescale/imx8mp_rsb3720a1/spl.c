@@ -204,6 +204,9 @@ int power_init_board(void)
 	/* set WDOG_B_CFG to cold reset */
 	pmic_reg_write(p, PCA9450_RESET_CTRL, 0xA1);
 
+	/* Forced enable the I2C level translator*/
+	pmic_reg_write(p, PCA9450_CONFIG2, 0x03);
+
 	return 0;
 }
 #endif
