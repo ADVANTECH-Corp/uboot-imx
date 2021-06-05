@@ -331,6 +331,22 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 }
 #endif
 
+#define WDOG_TRIG IMX_GPIO_NR(1, 14)
+
+static iomux_cfg_t wdt_trig[] = {
+	SC_P_ADC_IN4 | MUX_MODE_ALT(4) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
+};
+
+static void setup_iomux_wdt(void)
+{
+	int value = -1;
+
+	imx8_iomux_setup_multiple_pads(wdt_trig, ARRAY_SIZE(wdt_trig));
+	gpio_request(WDOG_TRIG, "wdt_trig");
+	gpio_direction_output(WDOG_TRIG, 1);
+	value = gpio_get_value(WDOG_TRIG);
+}
+
 int board_init(void)
 {
 	board_gpio_init();
@@ -348,6 +364,7 @@ int board_init(void)
 	}
 #endif
 
+	setup_iomux_wdt();
 	return 0;
 }
 
@@ -380,6 +397,30 @@ int ft_board_setup(void *blob, bd_t *bd)
 	return 0;
 }
 #endif
+
+#define DEBUG_UART_SEL IMX_GPIO_NR(0, 27)
+
+static iomux_cfg_t debug_uart_sel_gpio[] = {
+	SC_P_SAI0_RXD | MUX_MODE_ALT(4) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
+};
+
+static void debug_uart_sel(void)
+{
+	int value = -1;
+
+	imx8_iomux_setup_multiple_pads(debug_uart_sel_gpio, ARRAY_SIZE(debug_uart_sel_gpio));
+	gpio_request(DEBUG_UART_SEL, "debug_uart_sel");
+	gpio_direction_input(DEBUG_UART_SEL);
+
+	value = gpio_get_value(DEBUG_UART_SEL);
+
+	/* High: enable debug log. Low: disable debug log. */
+	if(value == 0)
+	{
+		env_set("console", "disabled");
+		env_set("earlycon", "disabled");
+	}
+}
 
 int board_late_init(void)
 {
@@ -424,6 +465,8 @@ int board_late_init(void)
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
 #endif
+
+	debug_uart_sel();
 
 	return 0;
 }

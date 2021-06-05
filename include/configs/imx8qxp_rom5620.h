@@ -11,6 +11,9 @@
 
 #include "imx_env.h"
 
+#define CONFIG_ADVANTECH_MX8
+#define CONFIG_HAS_ETH1
+
 #ifdef CONFIG_SPL_BUILD
 #define CONFIG_SPL_MAX_SIZE				(192 * 1024)
 #define CONFIG_SYS_MONITOR_LEN				(1024 * 1024)
@@ -153,6 +156,11 @@
 	"loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
 	"loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
 	"loadcntr=fatload mmc ${mmcdev}:${mmcpart} ${cntr_addr} ${cntr_file}\0" \
+	"lvds_single0=setenv fdt_file imx8qxp-rom5620-a1-lvds0-auo.dtb; boot\0" \
+	"lvds_single1=setenv fdt_file imx8qxp-rom5620-a1-lvds1-auo.dtb; boot\0" \
+	"lvds_chimei=setenv fdt_file imx8qxp-rom5620-a1-lvds-chimei.dtb; boot\0" \
+	"lvds_dual=setenv fdt_file imx8qxp-rom5620-a1-lvds-dual.dtb; boot\0" \
+	"hdmi_bridge=setenv fdt_file imx8qxp-rom5620-a1-hdmi-bridge.dtb; boot\0" \
 	"auth_os=auth_cntr ${cntr_addr}\0" \
 	"boot_os=booti ${loadaddr} - ${fdt_addr};\0" \
 	"mmcboot=echo Booting from mmc ...; " \
@@ -288,7 +296,7 @@
 
 /* MT35XU512ABA1G12 has only one Die, so QSPI0 B won't work */
 #ifdef CONFIG_FSL_FSPI
-#define FSL_FSPI_FLASH_SIZE		SZ_64M
+#define FSL_FSPI_FLASH_SIZE		SZ_8M
 #define FSL_FSPI_FLASH_NUM		1
 #define FSPI0_BASE_ADDR			0x5d120000
 #define FSPI0_AMBA_BASE			0
@@ -323,11 +331,11 @@
 
 #if (CONFIG_FEC_ENET_DEV == 0)
 #define IMX_FEC_BASE			0x5B040000
-#define CONFIG_FEC_MXC_PHYADDR          0x0
+#define CONFIG_FEC_MXC_PHYADDR          0x4
 #define CONFIG_ETHPRIME                 "eth0"
 #elif (CONFIG_FEC_ENET_DEV == 1)
 #define IMX_FEC_BASE			0x5B050000
-#define CONFIG_FEC_MXC_PHYADDR          0x1
+#define CONFIG_FEC_MXC_PHYADDR          0x6
 #define CONFIG_ETHPRIME                 "eth1"
 #endif
 
