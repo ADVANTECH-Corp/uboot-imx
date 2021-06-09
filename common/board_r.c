@@ -621,12 +621,11 @@ static int board_info_config(void)
 		}
 	}else {
 		printf("SPI Read fail!!\n");
-		return -1;
+		return 0;
 	}
 
-	return 0;
 out:
-	return -1;
+	return 0;
 }
 
 

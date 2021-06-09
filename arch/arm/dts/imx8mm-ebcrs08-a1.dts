@@ -13,8 +13,8 @@
 	compatible = "fsl,imx8mm-evk", "fsl,imx8mm";
 
 	chosen {
-		bootargs = "console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200";
-		stdout-path = &uart2;
+		bootargs = "console=ttymxc3,115200 earlycon=ec_imx6q,0x30A60000,115200";
+		stdout-path = &uart4;
 	};
 
 	leds {
@@ -356,6 +356,12 @@
 	status = "okay";
 };
 
+&uart4 { /* console */
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_uart4>;
+	status = "okay";
+};
+
 &usbotg1 {
 	status = "okay";
 	extcon = <&ptn5110>;
@@ -539,6 +545,13 @@
 		fsl,pins = <
 			MX8MM_IOMUXC_UART2_RXD_UART2_DCE_RX	0x140
 			MX8MM_IOMUXC_UART2_TXD_UART2_DCE_TX	0x140
+		>;
+	};
+
+	pinctrl_uart4: uart4grp {
+		fsl,pins = <
+			MX8MM_IOMUXC_UART4_RXD_UART4_DCE_RX     0x140
+			MX8MM_IOMUXC_UART4_TXD_UART4_DCE_TX     0x140
 		>;
 	};
 
