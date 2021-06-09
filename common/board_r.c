@@ -571,6 +571,65 @@ static int initr_ethaddr(void)
 }
 
 #if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
+
+static int board_info_config(void)
+{
+	unsigned char buf[512];
+	u32 valid;
+	int sn_len,time_len,info_len;
+
+	if(spi_flash_read(flash, CONFIG_SPI_ENV_OFFSET + 8*CONFIG_SPI_ENV_SIZE, sizeof(buf), buf)==0)
+	{
+		valid = is_valid_ethaddr(buf);
+		if (valid)
+			eth_env_set_enetaddr("ethaddr", buf);
+		else {
+			puts("Skipped eth0addr assignment due to invalid,using default!\n");
+			goto out;
+		}
+
+#ifdef CONFIG_HAS_ETH1
+		valid = is_valid_ethaddr(&buf[6]);
+		if (valid)
+			eth_env_set_enetaddr("eth1addr", &buf[6]);
+		else
+			puts("Skipped eth1addr assignment due to invalid,using default!\n");
+#endif
+
+		sn_len = buf[12];
+		time_len = buf[13+sn_len];
+		info_len = buf[14+sn_len+time_len];
+		if(sn_len && (sn_len <= 20)) {
+			buf[13+sn_len] = '\0';
+			env_set("adv.boardsn", (const char *)(buf+13));
+			if(time_len && (time_len == 8)) {
+				buf[14+sn_len+time_len] = '\0';
+				env_set("adv.factorytime", (const char *)(buf+14+sn_len));
+				if(info_len && (info_len <= 0x40)) {
+					buf[15+sn_len+time_len+info_len] = '\0';
+					env_set("adv.hwversion", (const char *)(buf+15+sn_len+time_len));
+				}else
+				env_set("adv.hwversion", NULL);
+			}else {
+				env_set("adv.factorytime", NULL);
+				env_set("adv.hwversion", NULL);
+			}
+		} else {
+			env_set("adv.boardsn", NULL);
+			env_set("adv.factorytime", NULL);
+			env_set("adv.hwversion", NULL);
+		}
+	}else {
+		printf("SPI Read fail!!\n");
+		return -1;
+	}
+
+	return 0;
+out:
+	return -1;
+}
+
+
 #define XMK_STR(x)	#x
 #define MK_STR(x)	XMK_STR(x)
 
@@ -704,10 +763,11 @@ int boardcfg_get_mac(void)
 	if (!flash)
 		return -1;
 
-	rc = get_eth0_mac();
-#ifdef CONFIG_HAS_ETH1
-	rc = get_eth1_mac();
-#endif
+	rc = board_info_config();
+//	rc = get_eth0_mac();
+//#ifdef CONFIG_HAS_ETH1
+//	rc = get_eth1_mac();
+//#endif
 
 	return rc;
 }
