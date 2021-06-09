@@ -1,0 +1,9 @@
+--- arch/arm/mach-imx/imx8m/Kconfig
++++ arch/arm/mach-imx/imx8m/Kconfig
+@@ -202,5 +214,6 @@ source "board/freescale/imx8mp_evk/Kconfig"
+ source "board/toradex/verdin-imx8mm/Kconfig"
+ source "board/freescale/imx8mp_rsb3720a1/Kconfig"
+ source "board/freescale/imx8mm_rom5721a1/Kconfig"
++source "board/freescale/imx8mm_ebcrs08a1/Kconfig"
+ 
+ endif

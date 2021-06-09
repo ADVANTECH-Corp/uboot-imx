@@ -808,7 +808,8 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
 	imx8mq-rom5720-a1.dtb \
 	imx8mm-ab2.dtb \
 	imx8mn-ddr4-ab2.dtb \
-	imx8mn-ab2.dtb
+	imx8mn-ab2.dtb \
+	imx8mm-ebcrs08-a1.dtb
 
 dtb-$(CONFIG_ARCH_IMXRT) += imxrt1050-evk.dtb
 
