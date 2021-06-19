@@ -331,20 +331,35 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 }
 #endif
 
-#define WDOG_TRIG IMX_GPIO_NR(1, 14)
-
 static iomux_cfg_t wdt_trig[] = {
 	SC_P_ADC_IN4 | MUX_MODE_ALT(4) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
 };
 
 static void setup_iomux_wdt(void)
 {
-	int value = -1;
+	int ret;
+	struct gpio_desc desc;
+	struct udevice *dev;
 
 	imx8_iomux_setup_multiple_pads(wdt_trig, ARRAY_SIZE(wdt_trig));
-	gpio_request(WDOG_TRIG, "wdt_trig");
-	gpio_direction_output(WDOG_TRIG, 1);
-	value = gpio_get_value(WDOG_TRIG);
+
+	ret = uclass_get_device_by_seq(UCLASS_GPIO, 1, &dev);
+	if (ret) {
+		printf("%s failed to find GPIO1 device, ret = %d\n", __func__, ret);
+		return;
+	}
+
+	desc.dev = dev;
+	desc.offset = 14;
+
+	ret = dm_gpio_request(&desc, "wdt_trig");
+	if (ret) {
+		printf("%s request wdt_trig failed ret = %d\n", __func__, ret);
+		return;
+	}
+
+	dm_gpio_set_dir_flags(&desc, GPIOD_IS_OUT);
+	dm_gpio_set_value(&desc, 1);
 }
 
 int board_init(void)
@@ -413,7 +428,7 @@ static void debug_uart_sel(void)
 
         ret = uclass_get_device_by_seq(UCLASS_GPIO, 0, &dev);
         if (ret) {
-                printf("%s failed to find GPIO1 device, ret = %d\n", __func__, ret);
+                printf("%s failed to find GPIO0 device, ret = %d\n", __func__, ret);
                 return;
         }
 
