@@ -398,8 +398,6 @@ int ft_board_setup(void *blob, bd_t *bd)
 }
 #endif
 
-#define DEBUG_UART_SEL IMX_GPIO_NR(0, 27)
-
 static iomux_cfg_t debug_uart_sel_gpio[] = {
 	SC_P_SAI0_RXD | MUX_MODE_ALT(4) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
 };
@@ -407,18 +405,37 @@ static iomux_cfg_t debug_uart_sel_gpio[] = {
 static void debug_uart_sel(void)
 {
 	int value = -1;
+	int ret;
+	struct gpio_desc desc;
+	struct udevice *dev;
 
 	imx8_iomux_setup_multiple_pads(debug_uart_sel_gpio, ARRAY_SIZE(debug_uart_sel_gpio));
-	gpio_request(DEBUG_UART_SEL, "debug_uart_sel");
-	gpio_direction_input(DEBUG_UART_SEL);
 
-	value = gpio_get_value(DEBUG_UART_SEL);
+        ret = uclass_get_device_by_seq(UCLASS_GPIO, 0, &dev);
+        if (ret) {
+                printf("%s failed to find GPIO1 device, ret = %d\n", __func__, ret);
+                return;
+        }
+
+        desc.dev = dev;
+        desc.offset = 27;
+
+        ret = dm_gpio_request(&desc, "debug_uart_sel");
+        if (ret) {
+                printf("%s request debug_uart_sel failed ret = %d\n", __func__, ret);
+                return;
+        }
+
+	dm_gpio_set_dir_flags(&desc, GPIOD_IS_IN);
+
+        value = dm_gpio_get_value(&desc);
 
 	/* High: enable debug log. Low: disable debug log. */
 	if(value == 0)
 	{
 		env_set("console", "disabled");
 		env_set("earlycon", "disabled");
+		env_set("mmcargs", "setenv bootargs console=${console},${baudrate} earlycon=${earlycon},${baudrate} root=${mmcroot}");
 	}
 }
 
