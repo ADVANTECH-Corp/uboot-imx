@@ -196,12 +196,12 @@
 	"loadhdprx=fatload mmc ${mmcdev}:${mmcpart} ${hdprx_addr} ${hdprx_file}\0" \
 	"boot_os=booti ${loadaddr} - ${fdt_addr};\0" \
 	"loadcntr=fatload mmc ${mmcdev}:${mmcpart} ${cntr_addr} ${cntr_file}\0" \
-	"lvds_single0=setenv fdt_file imx8qm-rom7720-a1_lvds0.dtb; boot\0" \
-	"lvds_single1=setenv fdt_file imx8qm-rom7720-a1_lvds1.dtb; boot\0" \
-	"lvds_dual=setenv fdt_file imx8qm-rom7720-a1_lvds_dual.dtb; boot\0" \
-	"hdmi_lvds0=setenv fdt_file imx8qm-rom7720-a1_hdmi_lvds0.dtb; boot\0" \
-	"hdmi_lvds1=setenv fdt_file imx8qm-rom7720-a1_hdmi_lvds1.dtb; boot\0" \
-	"hdmi_lvds_dual=setenv fdt_file imx8qm-rom7720-a1_hdmi_lvds_dual.dtb; boot\0" \
+	"lvds_single0=setenv fdt_file imx8qm-rom7720-a1-lvds0.dtb; boot\0" \
+	"lvds_single1=setenv fdt_file imx8qm-rom7720-a1-lvds1.dtb; boot\0" \
+	"lvds_dual=setenv fdt_file imx8qm-rom7720-a1-lvds-dual.dtb; boot\0" \
+	"hdmi_lvds0=setenv fdt_file imx8qm-rom7720-a1-hdmi-lvds0.dtb; boot\0" \
+	"hdmi_lvds1=setenv fdt_file imx8qm-rom7720-a1-hdmi-lvds1.dtb; boot\0" \
+	"hdmi_lvds_dual=setenv fdt_file imx8qm-rom7720-a1-hdmi-lvds-dual.dtb; boot\0" \
 	"auth_os=auth_cntr ${cntr_addr}\0" \
 	"mmcboot=echo Booting from mmc ...; " \
 		"if run loadhdp; then; hdp load ${hdp_addr}; fi;" \
