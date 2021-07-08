@@ -778,6 +778,7 @@ dtb-$(CONFIG_ARCH_IMX8) += \
 	fsl-imx8dx-17x17-val.dtb \
 	fsl-imx8qxp-mek-auto.dtb \
 	imx8qxp-rom5620-a1.dtb \
+	imx8qxp-rom3620-a1.dtb \
 	fsl-imx8dx-mek.dtb \
 	fsl-imx8dxl-phantom-mek.dtb \
 	fsl-imx8dxl-evk.dtb \
