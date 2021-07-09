@@ -362,6 +362,37 @@ static void setup_iomux_wdt(void)
 	dm_gpio_set_value(&desc, 1);
 }
 
+static iomux_cfg_t pcie_reset[] = {
+        SC_P_PCIE_CTRL0_PERST_B | MUX_MODE_ALT(4) | MUX_PAD_CTRL(GPIO_PAD_CTRL),
+};
+
+static void setup_iomux_pcie_reset(void)
+{
+        int ret;
+        struct gpio_desc desc;
+        struct udevice *dev;
+
+        imx8_iomux_setup_multiple_pads(pcie_reset, ARRAY_SIZE(pcie_reset));
+
+        ret = uclass_get_device_by_seq(UCLASS_GPIO, 4, &dev);
+        if (ret) {
+                printf("%s failed to find GPIO4 device, ret = %d\n", __func__, ret);
+                return;
+        }
+
+        desc.dev = dev;
+        desc.offset = 0;
+
+        ret = dm_gpio_request(&desc, "pcie_reset");
+        if (ret) {
+                printf("%s request pcie_reset failed ret = %d\n", __func__, ret);
+                return;
+        }
+
+        dm_gpio_set_dir_flags(&desc, GPIOD_IS_OUT);
+        dm_gpio_set_value(&desc, 0);
+}
+
 int board_init(void)
 {
 	board_gpio_init();
@@ -380,6 +411,7 @@ int board_init(void)
 #endif
 
 	setup_iomux_wdt();
+	setup_iomux_pcie_reset();
 	return 0;
 }
 
