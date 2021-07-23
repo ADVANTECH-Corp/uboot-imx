@@ -1,0 +1,53 @@
+// SPDX-License-Identifier: GPL-2.0+
+//
+// Copyright 2012 Freescale Semiconductor, Inc.
+// Copyright 2011 Linaro Ltd.
+
+/dts-v1/;
+
+#include "imx6q.dtsi"
+#include "imx6qdl-advantech.dtsi"
+
+/ {
+	model = "i.MX6 Quad ADVANTECH Smart Device Board";
+	compatible = "fsl,imx6q-sabresd", "fsl,imx6q";
+        aliases {
+                mmc0 = &usdhc3;
+                mmc1 = &usdhc4;
+                mmc2;
+                mmc3;
+        };
+
+};
+
+&iomuxc {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_hog>;
+
+	pinctrl_ecspi1_cs_0: ecspi1_cs_grp-0 {
+		fsl,pins = <
+			MX6QDL_PAD_EIM_EB2__GPIO2_IO30		0x80000000	/* ECSPI1_CS0 */
+			>;
+		};
+};
+
+&uart1 {
+	status = "okay";
+};
+
+&fec {
+	status = "okay";
+};
+
+&usdhc3 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_usdhc3_2>;
+        bus-width = <4>;
+        cd-gpios = <&gpio7 1 GPIO_ACTIVE_LOW>;
+        wp-gpios = <&gpio7 0 GPIO_ACTIVE_HIGH>;
+        status = "okay";
+};
+
+&usdhc4 {
+	status = "okay";
+};

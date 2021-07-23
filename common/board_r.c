@@ -80,6 +80,21 @@
 #ifdef CONFIG_FSL_FASTBOOT
 #include <fb_fsl.h>
 #endif
+#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
+#include <version.h>
+#include <spi_flash.h>
+
+#define CONFIG_SPI_ENV_OFFSET	(768 * 1024)
+#define CONFIG_SPI_ENV_SIZE	(8 * 1024)
+
+struct boardcfg_t {
+    unsigned char mac[6];
+    unsigned char sn[10];
+    unsigned char Manufacturing_Time[14];
+};
+
+static struct spi_flash *flash;
+#endif /* (CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8) */
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -494,6 +509,148 @@ static int initr_ethaddr(void)
 
 	return 0;
 }
+#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
+#define XMK_STR(x)	#x
+#define MK_STR(x)	XMK_STR(x)
+
+static int get_eth0_mac(void)
+{
+	int rc = 0;
+	struct boardcfg_t boardcfg;
+	char print_buf[32];
+	uint64_t macaddr = 0;
+
+	if(spi_flash_read(flash, CONFIG_SPI_ENV_OFFSET + 8*CONFIG_SPI_ENV_SIZE, sizeof(boardcfg), &boardcfg)==0) {
+
+		/*printf("offset=%d\n", CONFIG_SPI_ENV_OFFSET+ 8*CONFIG_SPI_ENV_SIZE);*/
+
+		/*printf("0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X\n",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);*/
+
+
+		macaddr = ((uint64_t)boardcfg.mac[0] << 40)
+			+ ((uint64_t)boardcfg.mac[1] << 32)
+			+ ((uint64_t)boardcfg.mac[2] << 24)
+			+ ((uint64_t)boardcfg.mac[3] << 16)
+			+ ((uint64_t)boardcfg.mac[4] << 8)
+			+ boardcfg.mac[5];
+		/* printf ("MAC addr =%012llX\n", macaddr); */
+
+		if( (macaddr==0) || (macaddr==0xFFFFFFFFFFFFull) ) {
+			printf("eth0 MAC address is invailed !!\n");
+			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE0");
+			printf("Use default MAC adderss:%s\n",print_buf);
+			env_set("ethaddr",print_buf);
+			return rc;
+		}
+	} else {
+		printf("SPI Read fail!!\n");
+		rc = -1;
+	}
+
+	if (rc==0) {
+		sprintf(print_buf, "0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);
+		printf ("eth0 MAC addr = %s\n", print_buf);
+
+		if( (env_get("ethaddr") == NULL) ||
+			(strcmp (env_get("ethaddr"),print_buf) != 0) ||
+			(strcmp (env_get("ethaddr"),MK_STR(CONFIG_ETHADDR)) == 0) ) {
+			env_set("ethaddr", print_buf);
+		}
+	}
+
+	return rc;
+}
+
+#ifdef CONFIG_HAS_ETH1
+static int get_eth1_mac(void)
+{
+	int rc = 0;
+	struct boardcfg_t boardcfg;
+	char print_buf[32];
+	uint64_t macaddr = 0;
+
+	if(spi_flash_read(flash, CONFIG_SPI_ENV_OFFSET + 8*CONFIG_SPI_ENV_SIZE + 1024, sizeof(boardcfg), &boardcfg)==0) {
+
+		/*printf("offset=%d\n", CONFIG_SPI_ENV_OFFSET+ 8*CONFIG_SPI_ENV_SIZE);*/
+
+		/*printf("0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X\n",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);*/
+
+
+		macaddr = ((uint64_t)boardcfg.mac[0] << 40)
+			+ ((uint64_t)boardcfg.mac[1] << 32)
+			+ ((uint64_t)boardcfg.mac[2] << 24)
+			+ ((uint64_t)boardcfg.mac[3] << 16)
+			+ ((uint64_t)boardcfg.mac[4] << 8)
+			+ boardcfg.mac[5];
+		/* printf ("MAC addr =%012llX\n", macaddr); */
+
+		if( (macaddr==0) || (macaddr==0xFFFFFFFFFFFFull) ) {
+			printf("eth1 MAC address is invailed !!\n");
+			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE0");
+			printf("Use default MAC adderss:%s\n",print_buf);
+			env_set("eth1addr",print_buf);
+			return rc;
+		}
+	} else {
+		printf("SPI Read fail!!\n");
+		rc = -1;
+	}
+
+	if (rc==0) {
+		sprintf(print_buf, "0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);
+		printf ("eth1 MAC addr = %s\n", print_buf);
+
+		if( (env_get("eth1addr") == NULL) ||
+			(strcmp (env_get("eth1addr"),print_buf) != 0) ||
+			(strcmp (env_get("eth1addr"),MK_STR(CONFIG_ETH1ADDR)) == 0) ) {
+			env_set("eth1addr", print_buf);
+		}
+	}
+
+	return rc;
+}
+#endif
+
+int boardcfg_get_mac(void)
+{
+	int rc = 0;
+	flash = spi_flash_probe(CONFIG_SF_DEFAULT_BUS, CONFIG_SF_DEFAULT_CS,
+				CONFIG_SF_DEFAULT_SPEED, CONFIG_SF_DEFAULT_MODE);
+	if (!flash)
+		return -1;
+
+	rc = get_eth0_mac();
+#ifdef CONFIG_HAS_ETH1
+	rc = get_eth1_mac();
+#endif
+
+	return rc;
+}
+#endif /* (CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8) */
 #endif /* CONFIG_CMD_NET */
 
 #ifdef CONFIG_CMD_KGDB
@@ -620,6 +777,162 @@ static int initr_check_spl_recovery(void)
 	return 0;
 }
 #endif
+#ifdef CONFIG_ADVANTECH
+int check_emmc_exist(void)
+{
+        struct mmc *mmc = find_mmc_device(CONFIG_EMMC_DEV_NUM);
+        int result=0;
+        if (mmc) {
+                result = mmc_init(mmc);
+                if(result != 0) {
+                        printf("*** emmc cannot init, emmc device doesn't exist\n");
+                        return 0;
+                }
+                return 1;
+        } else{
+                return 0;
+        }
+}
+
+int board_set_boot_device(void)
+{
+	char buf[256];
+	char advboot_version[128];
+	char uboot_version[128];
+	char *pch,*s;
+	 
+	int dev = (*(int *)0x22200000);
+	int emmc_exist = 0;
+
+	/* log uboot version */
+	strncpy(advboot_version, (void *)0x22300000, 128);
+
+	if ((strstr(advboot_version,"advantech") == NULL) && (strstr(advboot_version,"LIV") == NULL))
+#ifdef CONFIG_ANDROID_SUPPORT
+		strcpy(advboot_version, "NA");
+#else
+		strcpy(advboot_version, "");
+#endif
+
+	pch=strchr(version_string,'2');
+	if (pch!=NULL)
+	{
+		s=strchr(pch,' ');
+		strncpy(uboot_version, pch, s-pch);
+		uboot_version[s-pch]='\0';
+	}
+
+	sprintf(buf, "advboot_version=%s uboot_version=%s", advboot_version, uboot_version);
+#ifdef CONFIG_ANDROID_SUPPORT
+	env_set("bootargs_adv", buf);
+#else
+	env_set("bootargs", buf);
+#endif
+
+	// check emmc exists or not
+	emmc_exist = check_emmc_exist();
+
+	switch(dev)
+	{
+#ifdef CONFIG_ANDROID_SUPPORT
+	/* Android */
+		case 1:
+		default:
+			/* booting from SD*/
+			printf("booting from SD\n");
+			sprintf(buf, "%s androidboot.selinux=disabled", env_get("bootargs_adv"));
+			env_set("bootargs_adv", buf);
+			env_set("bootargs", "console=ttymxc0,115200");
+			env_set("fastboot_dev", "mmc0");
+			env_set("bootcmd", "boota mmc0");
+			break;
+		case 2:
+			/* booting from SATA*/
+			printf("booting from SATA\n");
+			sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=sata", env_get("bootargs_adv"));
+			env_set("bootargs_adv", buf);
+			env_set("fastboot_dev", "sata");
+			env_set("bootcmd", "boota sata");
+			break;
+		case 3:
+			/* booting from iNAND*/
+			printf("booting from iNAND\n");
+			sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=emmc", env_get("bootargs_adv"));
+			env_set("bootargs_adv", buf);
+			env_set("fastboot_dev", "mmc1");
+			env_set("bootcmd", "boota mmc1");
+			break;
+#ifdef CONFIG_SPI_BOOT_SUPPORT
+		case 4:
+			/* booting from SPI*/
+			printf("booting from SPI -> kernel boot form EMMC\n");
+			sprintf(buf, "%s androidboot.selinux=disabled androidboot.fs=emmc", env_get("bootargs_adv"));
+			env_set("bootargs_adv", buf);
+			if(emmc_exist) {
+				env_set("fastboot_dev", "mmc1");
+				env_set("bootcmd", "boota mmc1");
+			}
+			break;
+#endif
+#else
+	/* Linux */
+		case 1:
+		default:
+			/* booting from SD*/
+			printf("booting from SD\n");
+			env_set("mmcdev", "0");
+			if(emmc_exist) {
+				sprintf(buf, "/dev/mmcblk1p2 rootwait rw");
+				env_set("mmcroot",buf);
+			}
+			break;
+		case 2:
+			/* booting from SATA*/
+			printf("booting from SATA\n");
+			sprintf(buf, "fatload sata 0:1 ${loadaddr} ${image}");
+			env_set("loadimage", buf);
+			sprintf(buf, "fatload sata 0:1 ${fdt_addr} ${fdt_file}");
+			env_set("loadfdt", buf);
+			sprintf(buf, "fatload sata 0:1 ${loadaddr} ${script}");
+			env_set("loadbootscript", buf);
+			sprintf(buf, "/dev/sda2 rootwait rw");
+			env_set("sataroot", buf);
+			sprintf(buf, "setenv bootargs console=${console},${baudrate} ${smp} root=${sataroot} ${bootargs}");
+			env_set("sataargs", buf);
+			sprintf(buf, "dcache off; sata init; run loadimage; run loadbootscript; run sataargs; run loadfdt; bootz ${loadaddr} - ${fdt_addr}");
+			env_set("bootcmd", buf);
+			break;
+		case 3:
+			/* booting from iNAND*/
+			printf("booting from iNAND\n");
+			env_set("mmcdev", MK_STR(CONFIG_EMMC_DEV_NUM));
+			break;
+#ifdef CONFIG_SPI_BOOT
+		case 4:
+			/* booting from SPI*/
+			printf("booting from SPI -> kernel boot form EMMC\n");
+			if(emmc_exist) 	env_set("mmcdev", MK_STR(CONFIG_EMMC_DEV_NUM));
+			break;
+#endif
+#if defined(USDHC2_CD_GPIO) && defined(USDHC3_CD_GPIO)
+		case 5:
+			/* booting from Carrier SD*/
+			printf("booting from Carrier SD\n");
+			env_set("mmcdev", MK_STR(CONFIG_CARRIERSD_DEV_NUM));
+			sprintf(buf, "/dev/mmcblk2p2 rootwait rw");
+			env_set("mmcroot",buf);
+                        break;
+#endif
+#endif /*CONFIG_ANDROID_SUPPORT*/
+	}
+
+	/*record ddr bit, 32 or 64 bit*/
+	sprintf(buf, "%d", *(unsigned int *)0x22500000);
+	env_set("ddr_bit", buf);
+
+	return 0;
+}
+#endif /* CONFIG_ADVANTECH */
 
 static int run_main_loop(void)
 {
@@ -794,13 +1107,23 @@ static init_fnc_t init_sequence_r[] = {
 #endif
 	/* PPC has a udelay(20) here dating from 2002. Why? */
 #ifdef CONFIG_CMD_NET
+#ifndef CONFIG_TARGET_MX6QROM7420A1_1G
 	initr_ethaddr,
+#endif
+#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
+#ifndef CONFIG_TARGET_MX6QROM7420A1_1G
+	boardcfg_get_mac,	/* Get MAC address from SPI */
+#endif
+#endif
 #endif
 #if defined(CONFIG_GPIO_HOG)
 	gpio_hog_probe_all,
 #endif
 #ifdef CONFIG_BOARD_LATE_INIT
 	board_late_init,
+#endif
+#ifdef CONFIG_ADVANTECH
+	board_set_boot_device,
 #endif
 #ifdef CONFIG_FSL_FASTBOOT
 	initr_fastboot_setup,

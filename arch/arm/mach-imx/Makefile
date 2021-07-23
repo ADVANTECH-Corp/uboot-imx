@@ -32,7 +32,11 @@ endif
 ifeq ($(SOC),$(filter $(SOC),mx7 mx6 mxs mx7ulp imx8m imx8 imxrt))
 obj-y	+= misc.o
 obj-$(CONFIG_CMD_PRIBLOB) += priblob.o
+ifdef CONFIG_ADVANTECH
+obj-$(CONFIG_SPL_BUILD)        += spl_advantech.o
+else
 obj-$(CONFIG_SPL_BUILD)	+= spl.o
+endif
 endif
 ifeq ($(SOC),$(filter $(SOC),imx8m imx8))
 obj-y	+= dt_optee.o

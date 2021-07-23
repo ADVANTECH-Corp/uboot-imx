@@ -1,3 +1,5 @@
+config ADVANTECH
+        bool "Support Advantech imx6 projects"
 config HAS_CAAM
 	bool
 
