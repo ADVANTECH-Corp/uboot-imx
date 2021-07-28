@@ -56,6 +56,9 @@
 
 #endif
 
+#define CONFIG_PCA9538_BUS 3
+#define CONFIG_PCA9538_ADDR 0x70
+
 #define CONFIG_CMD_READ
 #define CONFIG_SERIAL_TAG
 #define CONFIG_FASTBOOT_USB_DEV 0
@@ -134,7 +137,7 @@
 	"mmcpart=" __stringify(CONFIG_SYS_MMC_IMG_LOAD_PART) "\0" \
 	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
 	"mmcautodetect=yes\0" \
-	"mmcargs=setenv bootargs ${jh_clk} console=${console} root=${mmcroot}\0 " \
+	"mmcargs=setenv bootargs ${jh_clk} console=${console} root=${mmcroot}; run rst_pca9538\0 " \
 	"loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
 	"bootscript=echo Running bootscript from mmc ...; " \
 		"source\0" \
@@ -170,7 +173,8 @@
 			"else " \
 				"echo WARN: Cannot load the DT; " \
 			"fi; " \
-		"fi;\0"
+		"fi;\0" \
+	"rst_pca9538=i2c dev " __stringify(CONFIG_PCA9538_BUS) " ;i2c mw " __stringify(CONFIG_PCA9538_ADDR) " 0x03 0x00;i2c mw " __stringify(CONFIG_PCA9538_ADDR) " 0x01 0x00\0" 
 
 #define CONFIG_BOOTCOMMAND \
 	   "mmc dev ${mmcdev}; if mmc rescan; then " \

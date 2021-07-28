@@ -336,6 +336,12 @@
 		#gpio-cells = <2>;
 	};
 };
+&i2c4 {
+        clock-frequency = <100000>;
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_i2c4>;
+        status = "okay";
+};
 
 &sai3 {
 	pinctrl-names = "default";
@@ -487,6 +493,12 @@
 		>;
 	};
 
+        pinctrl_i2c4: i2c4grp {
+                fsl,pins = <
+                        MX8MM_IOMUXC_I2C4_SCL_I2C4_SCL                  0x400001c3      /* I2C_GP_CK */
+                        MX8MM_IOMUXC_I2C4_SDA_I2C4_SDA                  0x400001c3      /* I2C_GP_DAT */
+                >;
+        };
 	pinctrl_i2c1_gpio: i2c1grp-gpio {
 		fsl,pins = <
 			MX8MM_IOMUXC_I2C1_SCL_GPIO5_IO14        		0x1c3
