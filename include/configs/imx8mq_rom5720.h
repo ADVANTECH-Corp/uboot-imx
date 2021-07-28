@@ -45,6 +45,8 @@
 #define CONFIG_POWER_PFUZE100_I2C_ADDR 0x08
 #endif
 
+#define CONFIG_PCA9538_BUS 2
+#define CONFIG_PCA9538_ADDR 0x70
 #define CONFIG_REMAKE_ELF
 
 /* ENET Config */
@@ -105,7 +107,7 @@
 	"hdmi1280=setenv videores 1280x720@60;boot\0" \
 	"hdmi3840p24=setenv videores 3840x2160@60;boot\0" \
 	"hdmi4096=setenv videores 4096x2160@60;boot\0" \
-	"mmcargs=setenv bootargs ${jh_clk} console=${console} modprobe.blacklist=${modprobe.blacklist} root=${mmcroot} video=HDMI-A-1:${videores}\0 " \
+	"mmcargs=setenv bootargs ${jh_clk} console=${console} modprobe.blacklist=${modprobe.blacklist} root=${mmcroot} video=HDMI-A-1:${videores}; run rst_pca9538\0 " \
 	"loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
 	"bootscript=echo Running bootscript from mmc ...; " \
 		"source\0" \
@@ -141,7 +143,8 @@
 			"fi; " \
 		"else " \
 			"booti; " \
-		"fi;\0"
+		"fi;\0" \
+	"rst_pca9538=i2c dev " __stringify(CONFIG_PCA9538_BUS) " ;i2c mw " __stringify(CONFIG_PCA9538_ADDR) " 0x03 0x00;i2c mw " __stringify(CONFIG_PCA9538_ADDR) " 0x01 0x00\0" 
 
 #define CONFIG_BOOTCOMMAND \
 	   "mmc dev ${mmcdev}; if mmc rescan; then " \
