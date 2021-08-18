@@ -1346,6 +1346,8 @@ usb_modify_speed:
 #endif
 
 	cleanup_nodes_for_efi(blob);
+	if (CONFIG_IS_ENABLED(IMX8MM) || CONFIG_IS_ENABLED(IMX8MN))
+		cleanup_nodes_for_efi(blob);
 
 	delete_u_boot_nodes(blob);
 

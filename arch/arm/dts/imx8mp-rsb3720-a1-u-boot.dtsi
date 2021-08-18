@@ -32,6 +32,24 @@
 
 };
 
+&usb3_0 {
+	dma-ranges = <0x40000000 0x40000000 0xc0000000>;
+	/delete-property/ power-domains;
+};
+
+&usb3_1 {
+	dma-ranges = <0x40000000 0x40000000 0xc0000000>;
+	/delete-property/ power-domains;
+};
+
+&usb_dwc3_0 {
+	compatible = "fsl,imx8mq-dwc3", "snps,dwc3";
+};
+
+&usb_dwc3_1 {
+	compatible = "fsl,imx8mq-dwc3", "snps,dwc3";
+};
+
 &osc_32k {
 	u-boot,dm-spl;
 	u-boot,dm-pre-reloc;
