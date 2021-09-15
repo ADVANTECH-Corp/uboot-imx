@@ -118,6 +118,18 @@ config TARGET_IMX8MM_EBCRS08A1_1G
         select SUPPORT_SPL
         select IMX8M_LPDDR4
 
+config TARGET_IMX8MM_EBCRS08A2_2G
+	bool "imx8mm ebcrs08a2 2G"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_LPDDR4
+
+config TARGET_IMX8MM_EBCRS08A2_1G
+	bool "imx8mm ebcrs08a2 1G"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_LPDDR4
+
 config TARGET_IMX8MM_DDR4_EVK
 	bool "imx8mm DDR4 EVK board"
 	select IMX8MM
@@ -217,5 +229,6 @@ source "board/freescale/imx8mp_rom5722a1/Kconfig"
 source "board/freescale/imx8mm_rom5721a1/Kconfig"
 source "board/freescale/imx8mq_rom5720a1/Kconfig"
 source "board/freescale/imx8mm_ebcrs08a1/Kconfig"
+source "board/freescale/imx8mm_ebcrs08a2/Kconfig"
 
 endif

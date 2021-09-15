@@ -19,6 +19,14 @@
 #define CONFIG_SYS_UBOOT_BASE	\
 	(QSPI0_AMBA_BASE + CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR * 512)
 
+#if defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_1G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_2G)
+#define CONFIG_ADV_CONSOLE	ttymxc1
+#define CONFIG_ADV_CONSOLE_ADDR	0x30890000	
+#else
+#define CONFIG_ADV_CONSOLE      ttymxc3
+#define CONFIG_ADV_CONSOLE_ADDR 0x30A60000
+#endif
+
 #ifdef CONFIG_SPL_BUILD
 #define CONFIG_SPL_STACK		0x920000
 #define CONFIG_SPL_BSS_START_ADDR	0x910000
@@ -107,8 +115,8 @@
 	"fdt_addr=0x43000000\0"			\
 	"fdt_high=0xffffffffffffffff\0" \
 	"mtdparts=" MFG_NAND_PARTITION "\0" \
-	"console=ttymxc3,115200 earlycon=ec_imx6q,0x30A60000,115200\0" \
-	"bootargs=console=ttymxc3,115200 earlycon=ec_imx6q,0x30A60000,115200 ubi.mtd=nandrootfs "  \
+	"console="__stringify(CONFIG_ADV_CONSOLE)",115200 earlycon=ec_imx6q,__stringify(CONFIG_ADV_CONSOLE_ADDR),115200\0" \
+	"bootargs=console="__stringify(CONFIG_ADV_CONSOLE)",115200 earlycon=ec_imx6q,__stringify(CONFIG_ADV_CONSOLE_ADDR),115200 ubi.mtd=nandrootfs "  \
 		"root=ubi0:nandrootfs rootfstype=ubifs "		     \
 		MFG_NAND_PARTITION \
 		"\0" \
@@ -123,7 +131,7 @@
 	"script=boot.scr\0" \
 	"image=Image\0" \
 	"splashimage=0x50000000\0" \
-	"console=ttymxc3,115200\0" \
+	"console="__stringify(CONFIG_ADV_CONSOLE)",115200\0" \
 	"fdt_addr=0x43000000\0"			\
 	"fdt_high=0xffffffffffffffff\0"		\
 	"boot_fit=no\0" \
@@ -212,16 +220,20 @@
 
 #define CONFIG_SYS_SDRAM_BASE           0x40000000
 #define PHYS_SDRAM                      0x40000000
-#if defined(CONFIG_TARGET_IMX8MM_EBCRS08A1_2G)
+#if defined(CONFIG_TARGET_IMX8MM_EBCRS08A1_2G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_2G)
 #define PHYS_SDRAM_SIZE			0x80000000 /* 2GB DDR */
-#elif defined(CONFIG_TARGET_IMX8MM_EBCRS08A1_1G)
+#elif defined(CONFIG_TARGET_IMX8MM_EBCRS08A1_1G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_1G)
 #define PHYS_SDRAM_SIZE			0x40000000 /* 1GB DDR */
 #endif
 
 #define CONFIG_SYS_MEMTEST_START	PHYS_SDRAM
 #define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MEMTEST_START + (PHYS_SDRAM_SIZE >> 1))
 
-#define CONFIG_MXC_UART_BASE		UART4_BASE_ADDR
+#if defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_1G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_2G)
+#define CONFIG_MXC_UART_BASE		UART2_BASE_ADDR
+#else
+#define CONFIG_MXC_UART_BASE            UART4_BASE_ADDR
+#endif
 
 /* Monitor Command Prompt */
 #define CONFIG_SYS_PROMPT_HUSH_PS2	"> "
