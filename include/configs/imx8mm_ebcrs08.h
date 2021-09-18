@@ -19,14 +19,6 @@
 #define CONFIG_SYS_UBOOT_BASE	\
 	(QSPI0_AMBA_BASE + CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR * 512)
 
-#if defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_1G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_2G)
-#define CONFIG_ADV_CONSOLE	ttymxc1
-#define CONFIG_ADV_CONSOLE_ADDR	0x30890000	
-#else
-#define CONFIG_ADV_CONSOLE      ttymxc3
-#define CONFIG_ADV_CONSOLE_ADDR 0x30A60000
-#endif
-
 #ifdef CONFIG_SPL_BUILD
 #define CONFIG_SPL_STACK		0x920000
 #define CONFIG_SPL_BSS_START_ADDR	0x910000
@@ -109,29 +101,47 @@
 
 /* Initial environment variables */
 #if defined(CONFIG_NAND_BOOT)
+#if defined(CONFIG_TARGET_IMX8MM_EBCRS08A1_1G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A1_2G)
 #define CONFIG_EXTRA_ENV_SETTINGS \
 	CONFIG_MFG_ENV_SETTINGS \
 	"splashimage=0x50000000\0" \
 	"fdt_addr=0x43000000\0"			\
 	"fdt_high=0xffffffffffffffff\0" \
 	"mtdparts=" MFG_NAND_PARTITION "\0" \
-	"console="__stringify(CONFIG_ADV_CONSOLE)",115200 earlycon=ec_imx6q,__stringify(CONFIG_ADV_CONSOLE_ADDR),115200\0" \
-	"bootargs=console="__stringify(CONFIG_ADV_CONSOLE)",115200 earlycon=ec_imx6q,__stringify(CONFIG_ADV_CONSOLE_ADDR),115200 ubi.mtd=nandrootfs "  \
+	"console=ttymxc3,115200 earlycon=ec_imx6q,0x30A60000,115200\0" \
+	"bootargs=console=ttymxc3,115200 earlycon=ec_imx6q,0x30A60000,115200 ubi.mtd=nandrootfs "  \
 		"root=ubi0:nandrootfs rootfstype=ubifs "		     \
 		MFG_NAND_PARTITION \
 		"\0" \
 	"bootcmd=nand read ${loadaddr} 0x5000000 0x2000000;"\
 		"nand read ${fdt_addr} 0x7000000 0x100000;"\
 		"booti ${loadaddr} - ${fdt_addr}"
+#elif defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_1G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_2G)
+#define CONFIG_EXTRA_ENV_SETTINGS \
+	CONFIG_MFG_ENV_SETTINGS \
+	"splashimage=0x50000000\0" \
+	"fdt_addr=0x43000000\0"                 \
+	"fdt_high=0xffffffffffffffff\0" \
+	"mtdparts=" MFG_NAND_PARTITION "\0" \
+	"console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200\0" \
+	"bootargs=console=ttymxc1,115200 earlycon=ec_imx6q,0x30890000,115200 ubi.mtd=nandrootfs "  \
+		"root=ubi0:nandrootfs rootfstype=ubifs "                     \
+		MFG_NAND_PARTITION \
+		"\0" \
+	"bootcmd=nand read ${loadaddr} 0x5000000 0x2000000;"\
+		"nand read ${fdt_addr} 0x7000000 0x100000;"\
+		"booti ${loadaddr} - ${fdt_addr}"
+#endif
 
 #else
+#if defined(CONFIG_TARGET_IMX8MM_EBCRS08A1_1G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A1_2G)
 #define CONFIG_EXTRA_ENV_SETTINGS		\
 	CONFIG_MFG_ENV_SETTINGS \
 	JAILHOUSE_ENV \
 	"script=boot.scr\0" \
 	"image=Image\0" \
 	"splashimage=0x50000000\0" \
-	"console="__stringify(CONFIG_ADV_CONSOLE)",115200\0" \
+	"console=ttymxc3,115200\0" \
 	"fdt_addr=0x43000000\0"			\
 	"fdt_high=0xffffffffffffffff\0"		\
 	"boot_fit=no\0" \
@@ -179,6 +189,63 @@
 				"echo WARN: Cannot load the DT; " \
 			"fi; " \
 		"fi;\0"
+#elif defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_1G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_2G)
+#define CONFIG_EXTRA_ENV_SETTINGS               \
+        CONFIG_MFG_ENV_SETTINGS \
+        JAILHOUSE_ENV \
+        "script=boot.scr\0" \
+        "image=Image\0" \
+        "splashimage=0x50000000\0" \
+        "console=ttymxc1,115200\0" \
+        "fdt_addr=0x43000000\0"                 \
+        "fdt_high=0xffffffffffffffff\0"         \
+        "boot_fit=no\0" \
+        "fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
+        "initrd_addr=0x43800000\0"              \
+        "initrd_high=0xffffffffffffffff\0" \
+        "mmcdev="__stringify(CONFIG_SYS_MMC_ENV_DEV)"\0" \
+        "mmcpart=" __stringify(CONFIG_SYS_MMC_IMG_LOAD_PART) "\0" \
+        "mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
+        "mmcautodetect=yes\0" \
+        "mmcargs=setenv bootargs ${jh_clk} console=${console} root=${mmcroot}\0 " \
+        "loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${script};\0" \
+        "bootscript=echo Running bootscript from mmc ...; " \
+                "source\0" \
+        "loadimage=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${image}\0" \
+        "loadfdt=fatload mmc ${mmcdev}:${mmcpart} ${fdt_addr} ${fdt_file}\0" \
+        "mmcboot=echo Booting from mmc ...; " \
+                "run mmcargs; " \
+                "if test ${boot_fit} = yes || test ${boot_fit} = try; then " \
+                        "bootm ${loadaddr}; " \
+                "else " \
+                        "if run loadfdt; then " \
+                                "booti ${loadaddr} - ${fdt_addr}; " \
+                        "else " \
+                                "echo WARN: Cannot load the DT; " \
+                        "fi; " \
+                "fi;\0" \
+        "netargs=setenv bootargs ${jh_clk} console=${console} " \
+                "root=/dev/nfs " \
+                "ip=dhcp nfsroot=${serverip}:${nfsroot},v3,tcp\0" \
+        "netboot=echo Booting from net ...; " \
+                "run netargs;  " \
+                "if test ${ip_dyn} = yes; then " \
+                        "setenv get_cmd dhcp; " \
+                "else " \
+                        "setenv get_cmd tftp; " \
+                "fi; " \
+                "${get_cmd} ${loadaddr} ${image}; " \
+                "if test ${boot_fit} = yes || test ${boot_fit} = try; then " \
+                        "bootm ${loadaddr}; " \
+                "else " \
+                        "if ${get_cmd} ${fdt_addr} ${fdt_file}; then " \
+                                "booti ${loadaddr} - ${fdt_addr}; " \
+                        "else " \
+                                "echo WARN: Cannot load the DT; " \
+                        "fi; " \
+                "fi;\0"
+#endif
+
 
 #define CONFIG_BOOTCOMMAND \
 	   "mmc dev ${mmcdev}; if mmc rescan; then " \
@@ -229,10 +296,10 @@
 #define CONFIG_SYS_MEMTEST_START	PHYS_SDRAM
 #define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MEMTEST_START + (PHYS_SDRAM_SIZE >> 1))
 
-#if defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_1G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_2G)
-#define CONFIG_MXC_UART_BASE		UART2_BASE_ADDR
-#else
-#define CONFIG_MXC_UART_BASE            UART4_BASE_ADDR
+#if defined(CONFIG_TARGET_IMX8MM_EBCRS08A1_1G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A1_2G)
+#define CONFIG_MXC_UART_BASE		UART4_BASE_ADDR
+#elif defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_1G) || defined(CONFIG_TARGET_IMX8MM_EBCRS08A2_2G)
+#define CONFIG_MXC_UART_BASE            UART2_BASE_ADDR
 #endif
 
 /* Monitor Command Prompt */
