@@ -294,4 +294,8 @@
 #include "imx8mp_rsb3720a1_android.h"
 #endif
 
+
+/* OTA support */
+#include "adv_imx_ota.h"
+
 #endif /* __IMX8MP_RSB3720_H */

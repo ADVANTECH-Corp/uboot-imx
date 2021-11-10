@@ -113,11 +113,12 @@ static FbBootMode fastboot_get_bootmode(void)
 		boot_mode = BOOTMODE_RECOVERY_BCB_CMD;
 	}
 #endif
-
+#ifndef CONFIG_ADV_OTA_SUPPORT //[ADVANTECH] disable clean command
 	/* Clean the mode once its read out,
 	   no matter what in the mode string */
 	memset(command, 0, 32);
 	bcb_write_command(command);
+#endif
 #endif
 	return boot_mode;
 }

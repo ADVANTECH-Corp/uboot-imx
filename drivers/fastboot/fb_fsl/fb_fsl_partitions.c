@@ -106,9 +106,30 @@ static int _fastboot_parts_add_ptable_entry(int ptable_index,
 	ptable[ptable_index].length = info.size;
 	ptable[ptable_index].partition_id = mmc_partition_index;
 	ptable[ptable_index].partition_index = mmc_dos_partition_index;
+#ifdef CONFIG_ADV_OTA_SUPPORT
+	switch (mmc_dos_partition_index) {
+	case 1:
+		strcpy(ptable[ptable_index].name, FASTBOOT_PARTITION_BOOT);
+		break;
+	case 2:
+		strcpy(ptable[ptable_index].name, FASTBOOT_PARTITION_SYSTEM);
+		break;
+	case 3:
+		strcpy(ptable[ptable_index].name, FASTBOOT_PARTITION_RECOVERY);
+		break;
+	case 5:
+		strcpy(ptable[ptable_index].name, FASTBOOT_PARTITION_MISC);
+		break;
+	case 6:
+		strcpy(ptable[ptable_index].name, FASTBOOT_PARTITION_CACHE);
+		break;
+	default:
+		break;
+	}
+#else
 	strncpy(ptable[ptable_index].name, (const char *)info.name,
 			sizeof(ptable[ptable_index].name) - 1);
-
+#endif
 #ifdef CONFIG_PARTITION_UUIDS
 	strcpy(ptable[ptable_index].uuid, (const char *)info.uuid);
 #endif

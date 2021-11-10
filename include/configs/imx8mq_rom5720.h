@@ -256,4 +256,7 @@
 #define IOMUX_WDOG_TRIG	IMX8MQ_PAD_SAI2_RXC__GPIO4_IO22	// WDOG_TRIG 
 #define WDOG_TRIG	IMX_GPIO_NR(4,22)
 
+/* OTA support */
+#include "adv_imx_ota.h"
+
 #endif
