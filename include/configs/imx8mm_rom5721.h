@@ -316,4 +316,7 @@
 #define I2S_EN IMX_GPIO_NR(1, 10)
 #define RESET_OUT IMX_GPIO_NR(4, 28)
 
+/* OTA support */
+#include "adv_imx_ota.h"
+
 #endif

@@ -284,4 +284,7 @@
 #define CONFIG_VIDEO_BMP_LOGO
 #endif
 
+/* OTA support */
+#include "adv_imx_ota.h"
+
 #endif /* __IMX8MP_ROM5722_H */
