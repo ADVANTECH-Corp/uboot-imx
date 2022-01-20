@@ -721,6 +721,38 @@ int fw_env_set(int argc, char *argv[], struct env_opts *opts)
 	return ret;
 }
 
+/**
+ * fw_env_default() - default environment
+ *
+ * Return:
+ *  0 on success, -1 on failure (modifies errno)
+ */
+int fw_env_default(struct env_opts *opts)
+{
+	if (!opts)
+		opts = &default_opts;
+
+	if (fw_env_open(opts)) {
+		fprintf(stderr, "Error: environment not initialized\n");
+		return -1;
+	}
+
+	/*
+	 * Clear CRC
+	 */
+	*environment.crc = 0x00;
+
+	/* write environment to flash */
+	if (flash_io(O_RDWR)) {
+		fprintf(stderr,
+			"Error: can't write fw_env to flash\n");
+			return -1;
+	}
+	fw_env_close(opts);
+
+	return 0;
+}
+
 /*
  * Parse  a file  and configure the u-boot variables.
  * The script file has a very simple format, as follows:
