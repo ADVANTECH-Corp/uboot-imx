@@ -76,6 +76,7 @@ obj-$(CONFIG_FSL_MEMAC) += fm/memac_phy.o
 obj-$(CONFIG_VSC9953) += vsc9953.o
 obj-$(CONFIG_PIC32_ETH) += pic32_mdio.o pic32_eth.o
 obj-$(CONFIG_DWC_ETH_QOS) += dwc_eth_qos.o
+obj-y += rtl8367/
 obj-$(CONFIG_FSL_PFE) += pfe_eth/
 obj-$(CONFIG_SNI_AVE) += sni_ave.o
 obj-y += ti/

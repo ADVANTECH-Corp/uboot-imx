@@ -1,3 +1,4 @@
+
 /* SPDX-License-Identifier: GPL-2.0+ */
 /*
  * Copyright 2019 NXP
@@ -108,7 +109,7 @@
 	"script=boot.scr\0" \
 	"image=Image\0" \
 	"splashimage=0x50000000\0" \
-	"console=ttymxc2,115200\0" \
+	"console=ttymxc1,115200\0" \
 	"fdt_addr=0x43000000\0"			\
 	"fdt_high=0xffffffffffffffff\0"		\
 	"boot_fit=no\0" \
@@ -198,9 +199,12 @@
 #define CONFIG_SYS_SDRAM_BASE		0x40000000
 #define PHYS_SDRAM			0x40000000
 #if defined(CONFIG_TARGET_IMX8MP_RSB3720A1_6G)
-#define PHYS_SDRAM_SIZE			0xC0000000	/* 3 GB */
-#define PHYS_SDRAM_2			0x100000000
-#define PHYS_SDRAM_2_SIZE		0xC0000000      /* 3 GB */
+//#define PHYS_SDRAM_SIZE			0xC0000000	/* 3 GB */
+//#define PHYS_SDRAM_2			0x100000000
+//#define PHYS_SDRAM_2_SIZE		0xC0000000      /* 3 GB */
+#define PHYS_SDRAM_SIZE               0x40000000      /* 1 GB */
+#define PHYS_SDRAM_2                  0x80000000
+#define PHYS_SDRAM_2_SIZE             0x40000000      /* 1 GB */
 #elif defined(CONFIG_TARGET_IMX8MP_RSB3720A1_4G)
 #define PHYS_SDRAM_SIZE			0x80000000      /* 2 GB */
 #define PHYS_SDRAM_2			0xC0000000
@@ -219,7 +223,7 @@
 #define CONFIG_SYS_MEMTEST_END		(CONFIG_SYS_MEMTEST_START + \
 					(PHYS_SDRAM_SIZE >> 1))
 
-#define CONFIG_MXC_UART_BASE		UART3_BASE_ADDR
+#define CONFIG_MXC_UART_BASE		UART2_BASE_ADDR
 
 /* Monitor Command Prompt */
 #define CONFIG_SYS_PROMPT_HUSH_PS2	"> "
@@ -295,3 +299,8 @@
 #endif
 
 #endif /* __IMX8MP_RSB3720_H */
+#define SWITCH_PWR IMX_GPIO_NR(1, 10)
+#define SWITCH_RESET IMX_GPIO_NR(4, 2)
+#define DEBUG_UART_SEL IMX_GPIO_NR(4, 1)
+#define WDOG_TRIG IMX_GPIO_NR(4, 20)
+#define WDOG_ENABLE IMX_GPIO_NR(4, 29)

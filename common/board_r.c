@@ -69,19 +69,11 @@
 #endif
 #if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
 #include <version.h>
-#include <spi_flash.h>
+#include <fs.h>
+#include <string.h>
 
-#define CONFIG_SPI_ENV_OFFSET	(768 * 1024)
-#define CONFIG_SPI_ENV_SIZE	(8 * 1024)
 
-struct boardcfg_t {
-    unsigned char mac[6];
-    unsigned char sn[10];
-    unsigned char Manufacturing_Time[14];
-};
-
-static struct spi_flash *flash;
-#endif /* (CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8) */
+#endif
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -570,147 +562,104 @@ static int initr_ethaddr(void)
 	return 0;
 }
 
-#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
-#define XMK_STR(x)	#x
-#define MK_STR(x)	XMK_STR(x)
+#if defined (CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8) 
 
-static int get_eth0_mac(void)
+static int get_eth_mac(void)
 {
-	int rc = 0;
-	struct boardcfg_t boardcfg;
-	char print_buf[32];
-	uint64_t macaddr = 0;
+	char interface[10];
+	char mac[32];
+	char *fs_argv[5]={"fatload","mmc","2:1","80800000","macfile"};	
 
-	if(spi_flash_read(flash, CONFIG_SPI_ENV_OFFSET + 8*CONFIG_SPI_ENV_SIZE, sizeof(boardcfg), &boardcfg)==0) {
+	
+	/*
+		fs_argv= "fatload mmc 2:1 addr macfile" 
+		macaddress.conf:
+		eth1=0x00:0x04:0x9F:0x01:0x30:0xE1	
+		eth0=0x00:0x04:0x9F:0x01:0x30:0xE2
+	*/
+	memset(0x80800000,0,100);
+	printf("%s %s %s %s %s\n",fs_argv[0],fs_argv[1],fs_argv[2],fs_argv[3],fs_argv[4]);
+	
+	//load /run/media/mmcblk2p1/macfile to RAM adrress 0x80800000
+	do_fat_fsload(NULL,0,5,fs_argv);
 
-		/*printf("offset=%d\n", CONFIG_SPI_ENV_OFFSET+ 8*CONFIG_SPI_ENV_SIZE);*/
+	char *p=(char *)0x80800000;
+	int len=strlen(p);
 
-		/*printf("0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X\n",
-						boardcfg.mac[0],
-						boardcfg.mac[1],
-						boardcfg.mac[2],
-						boardcfg.mac[3],
-						boardcfg.mac[4],
-						boardcfg.mac[5]);*/
+	printf("read macfile size=%d:\n%s\n",len,p);	
+	
+	char *start,*mid,*end;
+	start=p;
 
+	
+	while(start+1<p+len)
+	{
+		mid=strchr(start,'=');
+		end=strchr(start,'\n');
+		strncpy(interface,start,mid-start);
+		interface[mid-start]='\0';
+		strncpy(mac,mid+1,end-mid-1);
+		mac[end-mid-1]='\0';
 
-		macaddr = ((uint64_t)boardcfg.mac[0] << 40)
-			+ ((uint64_t)boardcfg.mac[1] << 32)
-			+ ((uint64_t)boardcfg.mac[2] << 24)
-			+ ((uint64_t)boardcfg.mac[3] << 16)
-			+ ((uint64_t)boardcfg.mac[4] << 8)
-			+ boardcfg.mac[5];
-		/* printf ("MAC addr =%012llX\n", macaddr); */
-
-		if( (macaddr==0) || (macaddr==0xFFFFFFFFFFFFull) ) {
-			printf("eth0 MAC address is invailed !!\n");
-			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE0");
-			printf("Use default MAC adderss:%s\n",print_buf);
-			env_set("ethaddr",print_buf);
-			return rc;
+		start=end+1;
+		
+		//if macaddress is invalid,use the default macaddress
+		if(strcmp(mac,"0xff:0xff:0xff:0xff:0xff:0xff")==0 || strcmp(mac,"0xFF:0xFF:0xFF:0xFF:0xFF:0xFF")==0 || strcmp(mac,"0x00:0x00:0x00:0x00:0x00:0x00")==0)
+		{
+			if(strcmp(interface,"eth0")==0)
+			{
+				env_set("ethaddr","0x00:0x04:0x9F:0x01:0x30:0xE0");
+				printf("%s macaddr is invalid using default macaddr:0x00:0x04:0x9F:0x01:0x30:0xE0\n",interface);
+			}
+				
+			else if(strcmp(interface,"eth1")==0)
+			{
+				env_set("eth1addr","0x00:0x04:0x9F:0x01:0x30:0xE1");
+				printf("%s macaddr is invalid using default macaddr:0x00:0x04:0x9F:0x01:0x30:0xE0\n",interface);
+			}
 		}
-	} else {
-		printf("SPI Read fail!!\n");
-		rc = -1;
-	}
-
-	if (rc==0) {
-		sprintf(print_buf, "0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X",
-						boardcfg.mac[0],
-						boardcfg.mac[1],
-						boardcfg.mac[2],
-						boardcfg.mac[3],
-						boardcfg.mac[4],
-						boardcfg.mac[5]);
-		printf ("eth0 MAC addr = %s\n", print_buf);
-
-		if( (env_get("ethaddr") == NULL) ||
-			(strcmp (env_get("ethaddr"),print_buf) != 0) ||
-			(strcmp (env_get("ethaddr"),MK_STR(CONFIG_ETHADDR)) == 0) ) {
-			env_set("ethaddr", print_buf);
+		else
+		{
+			//if interface is not set or current interface's macaddress is not equal to the new macaddress,then set the new address
+			if(strcmp(env_get("ethaddr"),mac)!=0||strcmp(env_get("eth1addr"),mac)!=0 )
+			{
+				if(strcmp(interface,"eth0")==0)
+				{	
+					env_set("ethaddr",mac);	
+					printf("set eth0:%s = %s\n",interface,mac);
+				}
+				else if(strcmp(interface,"eth1")==0)
+				{
+					env_set("eth1addr",mac);	
+					printf("set env1:%s = %s\n",interface,mac);
+				}
+			}	
 		}
 	}
-
-	return rc;
+	if(env_get("ethaddr") == NULL)
+	{
+		printf("eth0 macaddr is invalid using default macaddr:0x00:0x04:0x9F:0x01:0x30:0xE0\n");
+		env_set("ethaddr","0x00:0x04:0x9F:0x01:0x30:0xE0");
+	}
+	if(env_get("eth1addr") == NULL)
+	{
+		printf("eth1 macaddr is invalid using default macaddr:0x00:0x04:0x9F:0x01:0x30:0xE1\n");
+		env_set("eth1addr","0x00:0x04:0x9F:0x01:0x30:0xE1");
+	}
+	return 0;
 }
-
-#ifdef CONFIG_HAS_ETH1
-static int get_eth1_mac(void)
-{
-	int rc = 0;
-	struct boardcfg_t boardcfg;
-	char print_buf[32];
-	uint64_t macaddr = 0;
-
-	if(spi_flash_read(flash, CONFIG_SPI_ENV_OFFSET + 8*CONFIG_SPI_ENV_SIZE + 1024, sizeof(boardcfg), &boardcfg)==0) {
-
-		/*printf("offset=%d\n", CONFIG_SPI_ENV_OFFSET+ 8*CONFIG_SPI_ENV_SIZE);*/
-
-		/*printf("0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X\n",
-						boardcfg.mac[0],
-						boardcfg.mac[1],
-						boardcfg.mac[2],
-						boardcfg.mac[3],
-						boardcfg.mac[4],
-						boardcfg.mac[5]);*/
-
-
-		macaddr = ((uint64_t)boardcfg.mac[0] << 40)
-			+ ((uint64_t)boardcfg.mac[1] << 32)
-			+ ((uint64_t)boardcfg.mac[2] << 24)
-			+ ((uint64_t)boardcfg.mac[3] << 16)
-			+ ((uint64_t)boardcfg.mac[4] << 8)
-			+ boardcfg.mac[5];
-		/* printf ("MAC addr =%012llX\n", macaddr); */
-
-		if( (macaddr==0) || (macaddr==0xFFFFFFFFFFFFull) ) {
-			printf("eth1 MAC address is invailed !!\n");
-			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE0");
-			printf("Use default MAC adderss:%s\n",print_buf);
-			env_set("eth1addr",print_buf);
-			return rc;
-		}
-	} else {
-		printf("SPI Read fail!!\n");
-		rc = -1;
-	}
-
-	if (rc==0) {
-		sprintf(print_buf, "0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X",
-						boardcfg.mac[0],
-						boardcfg.mac[1],
-						boardcfg.mac[2],
-						boardcfg.mac[3],
-						boardcfg.mac[4],
-						boardcfg.mac[5]);
-		printf ("eth1 MAC addr = %s\n", print_buf);
-
-		if( (env_get("eth1addr") == NULL) ||
-			(strcmp (env_get("eth1addr"),print_buf) != 0) ||
-			(strcmp (env_get("eth1addr"),MK_STR(CONFIG_ETH1ADDR)) == 0) ) {
-			env_set("eth1addr", print_buf);
-		}
-	}
-
-	return rc;
-}
-#endif
-
+	
+	
+	
 int boardcfg_get_mac(void)
 {
 	int rc = 0;
-	flash = spi_flash_probe(CONFIG_SF_DEFAULT_BUS, CONFIG_SF_DEFAULT_CS,
-				CONFIG_SF_DEFAULT_SPEED, CONFIG_SF_DEFAULT_MODE);
-	if (!flash)
-		return -1;
 
-	rc = get_eth0_mac();
-#ifdef CONFIG_HAS_ETH1
-	rc = get_eth1_mac();
-#endif
+	rc = get_eth_mac();
 
 	return rc;
 }
+
 #endif /* (CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8) */
 #endif /* CONFIG_CMD_NET */
 
@@ -871,7 +820,6 @@ int check_emmc_exist(void)
                 return 0;
         }
 }
-
 int board_set_boot_device(void)
 {
 	char buf[256];

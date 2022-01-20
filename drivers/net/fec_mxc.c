@@ -25,7 +25,7 @@
 #include <asm/arch/imx-regs.h>
 #include <asm/mach-imx/sys_proto.h>
 #include <asm-generic/gpio.h>
-
+#include <rtl8367/api_sys.h>
 #include "fec_mxc.h"
 #include <eth_phy.h>
 #include <asm/arch/sys_proto.h>
@@ -1336,14 +1336,23 @@ static void fec_gpio_reset(struct fec_priv *priv)
 	}
 }
 #endif
-
+static iomux_v3_cfg_t const switch_init_pads[] = {
+	MX8MP_PAD_SAI1_RXD2__GPIO4_IO04  | MUX_PAD_CTRL(PAD_CTL_DSE6|PAD_CTL_ODE|PAD_CTL_FSEL3),
+	MX8MP_PAD_SAI1_RXD3__GPIO4_IO05  | MUX_PAD_CTRL(PAD_CTL_DSE6|PAD_CTL_ODE|PAD_CTL_FSEL3),
+};
+#define SWITCH_CLK   IMX_GPIO_NR(4, 4)
+#define SWITCH_SDA   IMX_GPIO_NR(4, 5)
+		
+struct gpio_desc reset_gpio;
 static int fecmxc_probe(struct udevice *dev)
 {
 	struct eth_pdata *pdata = dev_get_platdata(dev);
 	struct fec_priv *priv = dev_get_priv(dev);
 	struct mii_dev *bus = NULL;
 	uint32_t start;
-	int ret;
+	int ret,ret2;
+	char *env_buf;
+	switch_test_info_t switch_test;
 
 #ifdef CONFIG_MX6
 	if (mx6_enet_fused((uint32_t)priv->eth)) {
@@ -1352,6 +1361,35 @@ static int fecmxc_probe(struct udevice *dev)
 	}
 #endif
 
+		imx_iomux_v3_setup_multiple_pads(switch_init_pads, ARRAY_SIZE(switch_init_pads));		
+
+		ret = 	gpio_request(SWITCH_CLK, "switch_clk");
+        
+		ret2 = 	gpio_request(SWITCH_SDA, "switch_sda");
+		if (ret || ret2) {
+	    	printf("i2c bus  at, fail to request scl/sda gpio\n");
+	                        //return -EINVAL;
+	    }
+		
+		gpio_direction_output(SWITCH_CLK,1);
+        gpio_direction_output(SWITCH_SDA,1);
+		adv_set_i2c(SWITCH_CLK,SWITCH_SDA);
+		switch_test.test_port_number=-1;
+		switch_test.test_full_100=0;
+		if(env_get("switch_test_port") != NULL)
+		{
+			env_buf=env_get("switch_test_port");
+			if(env_buf[0]>='0'&&env_buf[0]<='4')
+				switch_test.test_port_number=env_buf[0]-'0';
+		}
+		if(env_get("switch_test_100M") != NULL)
+		{
+			env_buf=env_get("switch_test_100M");
+			if(env_buf[0]=='1')
+				switch_test.test_full_100=1;
+		}	
+		rtl8367_switch_init(switch_test);
+		
 	if (IS_ENABLED(CONFIG_IMX8)) {
 		struct clk clk_2x_txclk;
 		ret = clk_get_by_name(dev, "ipg", &priv->ipg_clk);
@@ -1512,7 +1550,7 @@ static int fecmxc_probe(struct udevice *dev)
 		break;
 	}
 
-	ret = fec_phy_init(priv, dev);
+	//ret = fec_phy_init(priv, dev);
 	if (ret)
 		goto err_phy;
 

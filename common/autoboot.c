@@ -251,9 +251,16 @@ static int abortboot_single_key(int bootdelay)
 {
 	int abort = 0;
 	unsigned long ts;
-
+	char *env_buf;
 	printf("Hit any key to stop autoboot: %2d ", bootdelay);
-
+	
+	if(env_get("console") != NULL)
+	{
+		env_buf=env_get("console");
+		if(env_buf[0]=='d')
+			return 0;
+	}
+	
 	/*
 	 * Check if key already pressed
 	 */
