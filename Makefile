@@ -735,7 +735,6 @@ libs-y += drivers/gpio/
 libs-y += drivers/i2c/
 libs-y += drivers/net/
 libs-y += drivers/net/phy/
-libs-y += drivers/net/rtl8367/rtl8367.lib
 libs-y += drivers/power/ \
 	drivers/power/domain/ \
 	drivers/power/fuel_gauge/ \
