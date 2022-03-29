@@ -104,22 +104,23 @@
 };
 
 &fec1 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_fec1>;
-	phy-mode = "rgmii-id";
-	phy-handle = <&ethphy0>;
-	fsl,magic-packet;
-	status = "okay";
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_fec1>;
+        phy-mode = "rgmii-id";
+        phy-handle = <&ethphy0>;
+        fsl,magic-packet;
+        status = "okay";
 
-	mdio {
-		#address-cells = <1>;
-		#size-cells = <0>;
+        mdio {
+                #address-cells = <1>;
+                #size-cells = <0>;
 
-		ethphy0: ethernet-phy@0 {
-			compatible = "ethernet-phy-ieee802.3-c22";
-			reg = <0>;
-		};
-	};
+                ethphy0: ethernet-phy@1 {
+                        compatible = "ethernet-phy-ieee802.3-c22";
+                        reg = <1>;
+                        eee-broken-1000t;
+                };
+        };
 };
 
 &flexspi {
@@ -446,6 +447,7 @@
 			MX8MM_IOMUXC_ENET_RX_CTL_ENET1_RGMII_RX_CTL	0x91
 			MX8MM_IOMUXC_ENET_TX_CTL_ENET1_RGMII_TX_CTL	0x1f
 			MX8MM_IOMUXC_SAI2_RXC_GPIO4_IO22		0x19
+			MX8MM_IOMUXC_SPDIF_TX_GPIO5_IO3                 0x159
 		>;
 	};
 
