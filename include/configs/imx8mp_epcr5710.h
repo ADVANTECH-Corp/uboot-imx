@@ -301,4 +301,7 @@
 #define WDOG_TRIG IMX_GPIO_NR(4, 20)
 #define WDOG_ENABLE IMX_GPIO_NR(4, 29)
 
+/* OTA support */
+#include "adv_imx_ota.h"
+
 #endif /* __IMX8MP_EPCR5710_H */
