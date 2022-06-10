@@ -7,7 +7,11 @@
 #
 
 ifdef CONFIG_SPL_BUILD
+ifdef CONFIG_ADVANTECH
+obj-$(CONFIG_SPL_FRAMEWORK) += spl_advantech.o
+else
 obj-$(CONFIG_$(SPL_TPL_)FRAMEWORK) += spl.o
+endif
 obj-$(CONFIG_$(SPL_TPL_)BOOTROM_SUPPORT) += spl_bootrom.o
 obj-$(CONFIG_$(SPL_TPL_)LOAD_FIT) += spl_fit.o
 obj-$(CONFIG_$(SPL_TPL_)LEGACY_IMAGE_SUPPORT) += spl_legacy.o
@@ -20,7 +24,11 @@ obj-$(CONFIG_$(SPL_TPL_)ONENAND_SUPPORT) += spl_onenand.o
 endif
 obj-$(CONFIG_$(SPL_TPL_)UBI) += spl_ubi.o
 obj-$(CONFIG_$(SPL_TPL_)NET_SUPPORT) += spl_net.o
+ifdef CONFIG_ADVANTECH
+obj-$(CONFIG_$(SPL_TPL_)MMC_SUPPORT) += spl_mmc_advantech.o
+else
 obj-$(CONFIG_$(SPL_TPL_)MMC_SUPPORT) += spl_mmc.o
+endif
 obj-$(CONFIG_$(SPL_TPL_)ATF) += spl_atf.o
 obj-$(CONFIG_$(SPL_TPL_)OPTEE) += spl_optee.o
 obj-$(CONFIG_$(SPL_TPL_)OPENSBI) += spl_opensbi.o

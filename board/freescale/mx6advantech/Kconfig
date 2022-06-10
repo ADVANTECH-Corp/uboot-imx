@@ -1,0 +1,16 @@
+config SYS_BOARD
+	default "mx6advantech"
+
+config SYS_VENDOR
+	default "freescale"
+
+config SYS_TEXT_BASE
+	default 0x26800000
+
+if TARGET_MX6QRSB4411A1_1G
+config SYS_CONFIG_NAME
+	default "mx6rsb4411"
+endif
+
+
+
