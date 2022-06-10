@@ -485,6 +485,8 @@ config TARGET_MX6QSABRESD
     select FSL_BLOB
     select MISC
     select ARCH_MISC_INIT
+    select RNG_SELF_TEST
+
 config TARGET_MX6QRSB4411A1_1G
 	bool "Support mx6qrsb4411a1 1G"
     select TARGET_MX6ADVANTECH_COMMON
