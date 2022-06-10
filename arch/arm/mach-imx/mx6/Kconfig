@@ -474,7 +474,6 @@ config TARGET_MX6QSABRESD
     select FSL_BLOB
     select MISC
     select ARCH_MISC_INIT
-    select RNG_SELF_TEST
 
 config TARGET_MX6QPSABRESD
 	bool "mx6qpsabresd"
