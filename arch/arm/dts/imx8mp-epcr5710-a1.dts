@@ -73,9 +73,9 @@
 		#address-cells = <1>;
 		#size-cells = <0>;
 
-		ethphy0: ethernet-phy@1 {
+		ethphy0: ethernet-phy@0 {
 			compatible = "ethernet-phy-ieee802.3-c22";
-			reg = <1>;
+			reg = <0>;
 			eee-broken-1000t;
 		};
 	};
@@ -87,7 +87,7 @@
 	phy-mode = "rgmii-id";
 	phy-handle = <&ethphy1>;
 	fsl,magic-packet;
-	status = "okay";
+	status = "disabled";
 
 	mdio {
 		#address-cells = <1>;
