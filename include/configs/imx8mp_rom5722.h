@@ -61,9 +61,9 @@
 #define CONFIG_ETHPRIME                 "eth1" /* Set eqos to primary since we use its MDIO */
 
 #define CONFIG_FEC_XCV_TYPE             RGMII
-#define CONFIG_FEC_MXC_PHYADDR          4
+#define CONFIG_FEC_MXC_PHYADDR          1
 
-#define DWC_NET_PHYADDR			4
+#define DWC_NET_PHYADDR			1
 
 #define PHY_ANEG_TIMEOUT 20000
 
