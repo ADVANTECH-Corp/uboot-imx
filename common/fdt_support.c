@@ -278,6 +278,19 @@ int fdt_chosen(void *fdt)
 	int   err;
 	char  *str;		/* used to set string properties */
 
+#ifdef	CONFIG_ADVANTECH_MX8
+	char command_line[512];
+
+	if(env_get("uart_mode")){
+		str = env_get("bootargs");
+		memset(command_line,0,sizeof(command_line));
+		memcpy(command_line,str,strlen(str));
+		strcat(command_line, " uart_mode=");
+		strcat(command_line, env_get("uart_mode"));
+		env_set("bootargs", command_line);
+	}
+#endif
+
 	err = fdt_check_header(fdt);
 	if (err < 0) {
 		printf("fdt_chosen: %s\n", fdt_strerror(err));
