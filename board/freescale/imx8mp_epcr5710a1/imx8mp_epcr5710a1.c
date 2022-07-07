@@ -27,6 +27,10 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define UART_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_FSEL1)
 #define WDOG_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_ODE | PAD_CTL_PUE | PAD_CTL_PE)
+#define RECOVERY_KEY_PRESSED_VALUE	0
+#define RECOVERY_KEY_GPIO_GROUP	4
+#define RECOVERY_KEY_GPIO_NUM	0
+
 
 static iomux_v3_cfg_t const uart_pads[] = {
 	MX8MP_PAD_UART2_RXD__UART2_DCE_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
@@ -39,6 +43,9 @@ static iomux_v3_cfg_t const wdog_pads[] = {
 static iomux_v3_cfg_t debug_uart_sel_gpio[] = {
 	MX8MP_PAD_SAI1_RXC__GPIO4_IO01 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
+static iomux_v3_cfg_t iomux_recovery_gpio[] = {
+	MX8MP_PAD_SAI1_RXFS__GPIO4_IO00 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	};
 static void debug_uart_sel(void)
 {
 	int value = -1;
@@ -52,7 +59,27 @@ static void debug_uart_sel(void)
 	if(value == 0)
 		env_set("console", "disabled");
 }
+static int get_recovery_key_pressed(void)
+{
+	int value = -1;
+	imx_iomux_v3_setup_multiple_pads(iomux_recovery_gpio, ARRAY_SIZE(iomux_recovery_gpio));
+	gpio_request(IMX_GPIO_NR(RECOVERY_KEY_GPIO_GROUP, RECOVERY_KEY_GPIO_NUM), "recovery_key");
+	gpio_direction_input(IMX_GPIO_NR(RECOVERY_KEY_GPIO_GROUP, RECOVERY_KEY_GPIO_NUM));
+	value = gpio_get_value(IMX_GPIO_NR(RECOVERY_KEY_GPIO_GROUP, RECOVERY_KEY_GPIO_NUM));
+	if(value==RECOVERY_KEY_PRESSED_VALUE)
+	{
+		value=1;
+		printf("******Recovery_key_pressing******\n");
+		printf("******Recovery-key-value==%d**** \r\n",value);
+	}
+	else
+	{
+		value=0;
+	}
 
+	return value;
+
+}
 
 static iomux_v3_cfg_t const switch_en_pads[] = {
 	MX8MP_PAD_SAI1_RXD0__GPIO4_IO02  | MUX_PAD_CTRL(NO_PAD_CTRL),
@@ -606,7 +633,10 @@ ulong board_get_usable_ram_top(ulong total_size)
 #ifdef CONFIG_ANDROID_RECOVERY
 int is_recovery_key_pressing(void)
 {
-	return 0; /*TODO*/
+	int value=-1;
+
+	value=get_recovery_key_pressed();
+	return value; /*TODO*/
 }
 #endif /*CONFIG_ANDROID_RECOVERY*/
 #endif /*CONFIG_FSL_FASTBOOT*/
