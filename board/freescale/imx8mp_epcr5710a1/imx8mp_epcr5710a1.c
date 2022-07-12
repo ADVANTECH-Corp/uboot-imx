@@ -27,10 +27,6 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define UART_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_FSEL1)
 #define WDOG_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_ODE | PAD_CTL_PUE | PAD_CTL_PE)
-#define RECOVERY_KEY_PRESSED_VALUE	0
-#define RECOVERY_KEY_GPIO_GROUP	4
-#define RECOVERY_KEY_GPIO_NUM	0
-
 
 static iomux_v3_cfg_t const uart_pads[] = {
 	MX8MP_PAD_UART2_RXD__UART2_DCE_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
@@ -45,7 +41,8 @@ static iomux_v3_cfg_t debug_uart_sel_gpio[] = {
 };
 static iomux_v3_cfg_t iomux_recovery_gpio[] = {
 	MX8MP_PAD_SAI1_RXFS__GPIO4_IO00 | MUX_PAD_CTRL(NO_PAD_CTRL),
-	};
+};
+
 static void debug_uart_sel(void)
 {
 	int value = -1;
@@ -63,22 +60,18 @@ static int get_recovery_key_pressed(void)
 {
 	int value = -1;
 	imx_iomux_v3_setup_multiple_pads(iomux_recovery_gpio, ARRAY_SIZE(iomux_recovery_gpio));
-	gpio_request(IMX_GPIO_NR(RECOVERY_KEY_GPIO_GROUP, RECOVERY_KEY_GPIO_NUM), "recovery_key");
-	gpio_direction_input(IMX_GPIO_NR(RECOVERY_KEY_GPIO_GROUP, RECOVERY_KEY_GPIO_NUM));
-	value = gpio_get_value(IMX_GPIO_NR(RECOVERY_KEY_GPIO_GROUP, RECOVERY_KEY_GPIO_NUM));
-	if(value==RECOVERY_KEY_PRESSED_VALUE)
+	gpio_request(RECOVERY_GPIO_KEY, "recovery_key");
+	gpio_direction_input(RECOVERY_GPIO_KEY);
+	value = gpio_get_value(RECOVERY_GPIO_KEY);
+	if(value==RECOVERY_KEY_PRESSED)
 	{
-		value=1;
-		printf("******Recovery_key_pressing******\n");
-		printf("******Recovery-key-value==%d**** \r\n",value);
+		printf("******Recovery_key_pressed******\n");
+		return 1;
 	}
 	else
 	{
-		value=0;
+		return 0;
 	}
-
-	return value;
-
 }
 
 static iomux_v3_cfg_t const switch_en_pads[] = {
@@ -564,12 +557,13 @@ static iomux_v3_cfg_t wdt_trig[] = {
 
 static void setup_iomux_wdt(void)
 {
-		imx_iomux_v3_setup_multiple_pads(wdt_trig, ARRAY_SIZE(wdt_trig));
-        gpio_request(WDOG_ENABLE, "wdt_en");
-        gpio_direction_output(WDOG_ENABLE,0);
-        gpio_request(WDOG_TRIG, "wdt_trig");
-        gpio_direction_output(WDOG_TRIG,1);
-
+	imx_iomux_v3_setup_multiple_pads(wdt_trig, ARRAY_SIZE(wdt_trig));
+	gpio_request(WDOG_ENABLE, "wdt_en");
+	gpio_direction_output(WDOG_ENABLE,0);
+	gpio_request(WDOG_TRIG, "wdt_trig");
+	gpio_direction_output(WDOG_TRIG,0);
+	mdelay(10);
+	gpio_direction_output(WDOG_TRIG,1);
 }
 
 int board_init(void)
@@ -633,10 +627,7 @@ ulong board_get_usable_ram_top(ulong total_size)
 #ifdef CONFIG_ANDROID_RECOVERY
 int is_recovery_key_pressing(void)
 {
-	int value=-1;
-
-	value=get_recovery_key_pressed();
-	return value; /*TODO*/
+	return get_recovery_key_pressed();
 }
 #endif /*CONFIG_ANDROID_RECOVERY*/
 #endif /*CONFIG_FSL_FASTBOOT*/

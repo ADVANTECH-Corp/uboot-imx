@@ -299,6 +299,8 @@
 #define DEBUG_UART_SEL IMX_GPIO_NR(4, 1)
 #define WDOG_TRIG IMX_GPIO_NR(4, 20)
 #define WDOG_ENABLE IMX_GPIO_NR(4, 29)
+#define RECOVERY_GPIO_KEY IMX_GPIO_NR(4, 0)
+#define RECOVERY_KEY_PRESSED	0
 
 /* OTA support */
 #include "adv_imx_ota.h"
