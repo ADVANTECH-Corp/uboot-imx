@@ -110,7 +110,24 @@ static struct fsl_esdhc_cfg usdhc_cfg[2] = {
 	{USDHC2_BASE_ADDR, 0, 4},
 	{USDHC3_BASE_ADDR, 0, 8},
 };
+static iomux_v3_cfg_t debug_uart_sel_gpio[] = {
+	MX8MP_PAD_SAI1_RXC__GPIO4_IO01 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+static int debug_uart_log_off_spl(void)
+{
+	int value = -1;
 
+	imx_iomux_v3_setup_multiple_pads(debug_uart_sel_gpio, ARRAY_SIZE(debug_uart_sel_gpio));
+	gpio_request(DEBUG_UART_SEL, "debug_uart_sel");
+	gpio_direction_input(DEBUG_UART_SEL);
+
+	value = gpio_get_value(DEBUG_UART_SEL);
+	// printf("**debug_uart_log-value==%d**",value);
+	if(value == 0){
+		gd->flags |=( GD_FLG_DISABLE_CONSOLE | GD_FLG_SILENT );
+	}
+	return 0;
+}
 int board_mmc_init(bd_t *bis)
 {
 	int i, ret;
@@ -254,7 +271,7 @@ void board_init_f(ulong dummy)
 	arch_cpu_init();
 
 	board_early_init_f();
-
+	debug_uart_log_off_spl();
 	timer_init();
 
 	preloader_console_init();

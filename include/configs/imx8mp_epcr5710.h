@@ -299,7 +299,7 @@
 #define WDOG_ENABLE IMX_GPIO_NR(4, 29)
 #define RECOVERY_GPIO_KEY IMX_GPIO_NR(4, 0)
 #define RECOVERY_KEY_PRESSED	0
-
+#define CONFIG_DISABLE_CONSOLE
 /* OTA support */
 #include "adv_imx_ota.h"
 
