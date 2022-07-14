@@ -32,6 +32,10 @@ static iomux_v3_cfg_t const uart_pads[] = {
 	MX8MP_PAD_UART2_RXD__UART2_DCE_RX | MUX_PAD_CTRL(UART_PAD_CTRL),
 	MX8MP_PAD_UART2_TXD__UART2_DCE_TX | MUX_PAD_CTRL(UART_PAD_CTRL),
 };
+static iomux_v3_cfg_t const uart_gpio_pads[] = {
+	MX8MP_PAD_UART2_RXD__GPIO5_IO24 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	MX8MP_PAD_UART2_TXD__GPIO5_IO25 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
 
 static iomux_v3_cfg_t const wdog_pads[] = {
 	MX8MP_PAD_GPIO1_IO02__WDOG1_WDOG_B  | MUX_PAD_CTRL(WDOG_PAD_CTRL),
@@ -55,6 +59,7 @@ static void debug_uart_sel(void)
 	/* High: enable debug log. Low: disable debug log. */
 	if(value == 0)
 		env_set("console", "disabled");
+	gpio_free(DEBUG_UART_SEL);
 }
 static int get_recovery_key_pressed(void)
 {
@@ -72,6 +77,26 @@ static int get_recovery_key_pressed(void)
 	{
 		return 0;
 	}
+}
+
+static int check_debug_uart_mode(void)
+{
+	int value = -1;
+	struct gpio_regs *regs;
+	u32 l;
+	regs = (struct gpio_regs *)GPIO4_BASE_ADDR;
+	
+	imx_iomux_v3_setup_multiple_pads(debug_uart_sel_gpio, ARRAY_SIZE(debug_uart_sel_gpio));
+	l = readl(&regs->gpio_dir);
+	l &= ~(1 << 1);//gpio4_01
+	writel(l, &regs->gpio_dir);
+	value = (readl(&regs->gpio_dr) >> 1) & 0x01;
+	if(value == 0){
+		imx_iomux_v3_setup_multiple_pads(uart_gpio_pads, ARRAY_SIZE(uart_gpio_pads));
+		gd->flags |=( GD_FLG_DISABLE_CONSOLE | GD_FLG_SILENT );
+	}
+
+	return 0;
 }
 
 #ifdef CONFIG_NAND_MXS
@@ -93,6 +118,7 @@ int board_early_init_f(void)
 	imx_iomux_v3_setup_multiple_pads(uart_pads, ARRAY_SIZE(uart_pads));
 
 	init_uart_clk(1);
+	check_debug_uart_mode();
 
 	return 0;
 }
