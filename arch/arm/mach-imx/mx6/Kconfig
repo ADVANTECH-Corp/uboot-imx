@@ -485,6 +485,16 @@ config TARGET_MX6QSABRESD
     select FSL_BLOB
     select MISC
     select ARCH_MISC_INIT
+
+config TARGET_MX6QRSB3430A1_1G
+    bool "Support mx6qrsb3430a1 1G"
+    select TARGET_MX6ADVANTECH_COMMON
+    depends on MX6Q
+    select FSL_CAAM
+    select FSL_BLOB
+    select MISC
+    select ARCH_MISC_INIT
+
 config TARGET_MX6QRSB4411A1_1G
 	bool "Support mx6qrsb4411a1 1G"
     select TARGET_MX6ADVANTECH_COMMON
