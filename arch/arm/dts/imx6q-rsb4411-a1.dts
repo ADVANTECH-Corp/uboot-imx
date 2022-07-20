@@ -9,34 +9,45 @@
 #include "imx6qdl-advantech.dtsi"
 
 / {
-	model = "i.MX6 Quad ADVANTECH Smart Device Board";
+	model = "i.MX6 Quad Advantech Device Board";
 	compatible = "fsl,imx6q-sabresd", "fsl,imx6q";
-        aliases {
-                mmc0 = &usdhc3;
-                mmc1 = &usdhc4;
-                mmc2;
-                mmc3;
-        };
-
 };
 
 &iomuxc {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_hog>;
-
 	pinctrl_ecspi1_cs_0: ecspi1_cs_grp-0 {
 		fsl,pins = <
-			MX6QDL_PAD_EIM_EB2__GPIO2_IO30		0x80000000	/* ECSPI1_CS0 */
-			>;
-		};
+			MX6QDL_PAD_EIM_EB2__GPIO2_IO30          0x80000000      /* ECSPI1_CS0 */
+		>;
+	};
+
+	pinctrl_usdhc3_2: usdhc3grp2 {
+		fsl,pins = <
+			MX6QDL_PAD_SD3_CMD__SD3_CMD    0x17059
+			MX6QDL_PAD_SD3_CLK__SD3_CLK    0x10059
+			MX6QDL_PAD_SD3_DAT0__SD3_DATA0 0x17059
+			MX6QDL_PAD_SD3_DAT1__SD3_DATA1 0x17059
+			MX6QDL_PAD_SD3_DAT2__SD3_DATA2 0x17059
+			MX6QDL_PAD_SD3_DAT3__SD3_DATA3 0x17059
+			MX6QDL_PAD_SD3_DAT4__GPIO7_IO01         0x80000000      /* SD3_CD */
+			MX6QDL_PAD_SD3_DAT5__GPIO7_IO00         0x80000000      /* SD3_WP */
+		>;
+	};
 };
 
-&uart1 {
+&ecspi1 {
+	fsl,spi-num-chipselects = <1>;
+	cs-gpios = <&gpio2 30 0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi1_cs_0 &pinctrl_ecspi1>;
 	status = "okay";
-};
 
-&fec {
-	status = "okay";
+	flash: m25p80@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "st,m25p32", "jedec,spi-nor";
+		spi-max-frequency = <20000000>;
+		reg = <0>;
+	};
 };
 
 &usdhc3 {
@@ -48,6 +59,43 @@
         status = "okay";
 };
 
-&usdhc4 {
+&battery {
+	offset-charger = <1900>;
+	offset-discharger = <1694>;
+	offset-usb-charger = <1685>;
+};
+
+&ldb {
+	lvds-channel@0 {
+		crtc = "ipu2-di0";
+	};
+
+	lvds-channel@1 {
+		crtc = "ipu2-di1";
+	};
+};
+
+&mxcfb1 {
 	status = "okay";
+};
+
+&mxcfb2 {
+	status = "okay";
+};
+
+&mxcfb3 {
+	status = "okay";
+};
+
+&mxcfb4 {
+	status = "okay";
+};
+
+&sata {
+	status = "okay";
+};
+
+&ipu1_csi1_from_mipi_vc1 {
+	clock-lanes = <0>;
+	data-lanes = <1 2>;
 };

@@ -67,13 +67,33 @@ DECLARE_GLOBAL_DATA_PTR;
 	PAD_CTL_SPEED_MED | PAD_CTL_DSE_40ohm | PAD_CTL_HYS |	\
 	PAD_CTL_ODE | PAD_CTL_SRE_FAST)
 
+/* Improve RGMII_TXCLK Duty cycle from HW Cindy */
+#ifdef CONFIG_ADVANTECH
+#define DISABLE_PAD_CTL_PKE 0xFEFFF
+#define ENET_PAD_CTRL  (PAD_CTL_PUE |				\
+	PAD_CTL_PUS_100K_UP | PAD_CTL_SPEED_MED |		\
+	PAD_CTL_DSE_40ohm | PAD_CTL_HYS) & DISABLE_PAD_CTL_PKE
+#else
 #define EPDC_PAD_CTRL    (PAD_CTL_PKE | PAD_CTL_SPEED_MED |	\
 	PAD_CTL_DSE_40ohm | PAD_CTL_HYS)
+#endif
 
 #define OTG_ID_PAD_CTRL (PAD_CTL_PKE | PAD_CTL_PUE |		\
 	PAD_CTL_PUS_47K_UP  | PAD_CTL_SPEED_LOW |		\
 	PAD_CTL_DSE_80ohm   | PAD_CTL_SRE_FAST  | PAD_CTL_HYS)
 
+#ifdef CONFIG_ADVANTECH
+int enable_AXI_cache(void)
+{
+	struct iomuxc_base_regs *const iomuxc_regs
+		= (struct iomuxc_base_regs *) IOMUXC_BASE_ADDR;
+
+	writel(0xF00000CF, &iomuxc_regs->gpr[4]);
+	writel(0x007F007F, &iomuxc_regs->gpr[6]);
+	writel(0x007F007F, &iomuxc_regs->gpr[7]);
+	return 0;
+}
+#endif
 
 #define I2C_PMIC	1
 
@@ -81,9 +101,75 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define KEY_VOL_UP	IMX_GPIO_NR(1, 4)
 
+#ifdef CONFIG_ADVANTECH
+void tune_ddr(void)
+{
+#if defined(CONFIG_TARGET_MX6ROM7420A1_2G) || defined(CONFIG_TARGET_MX6ROM7420A1_1G)
+  /* add for ROM-7420 Quar Core 2G booted failed from advload V2.330 */
+  unsigned int *ADD_MMDC_P1_MPWLDECTRL0;
+  unsigned int *ADD_MMDC_P1_MPWLDECTRL1;
+  char advboot_version[128];
+  char* pch = NULL;
+  ADD_MMDC_P1_MPWLDECTRL0 = (unsigned int *)MX6_MMDC_P1_MPWLDECTRL0;
+  ADD_MMDC_P1_MPWLDECTRL1 = (unsigned int *)MX6_MMDC_P1_MPWLDECTRL1; 
+
+	strncpy(advboot_version, (void *)0x22300000, 128);
+	pch = strstr (advboot_version, "rom7420_2G");
+	
+	if (pch != NULL || gd->ram_size == (2u * 1024 * 1024 * 1024))
+	{
+	  *ADD_MMDC_P1_MPWLDECTRL0 = 0x001F001F;
+	  *ADD_MMDC_P1_MPWLDECTRL1 = 0x001F001F;
+	}
+#endif
+}
+#endif  
+
 int dram_init(void)
 {
+#ifdef CONFIG_ADVANTECH
+	char *under_line_1, *under_line_2, *under_line_3;
+	char memory_size[30];
+	char advboot_version[128];
+
+	/* Read memory size sent from Adv-Boot */
+	gd->ram_size = (*(unsigned int *)0x22400000);
+	if (gd->ram_size != (2u * 1024 * 1024 * 1024) &&
+		gd->ram_size != (1u * 1024 * 1024 * 1024) &&
+		gd->ram_size != (512 * 1024 * 1024))
+	{
+		strncpy(advboot_version, (void *)0x22300000, 128);
+	
+		under_line_1 = strchr(advboot_version,'_');
+		under_line_2 = strchr(under_line_1+1,'_');
+		under_line_3 = strchr(under_line_2+1,'_');
+		
+		strncpy(memory_size, under_line_2+1, under_line_3-under_line_2-1);
+		memory_size[under_line_3-under_line_2]='\0';		
+
+		if (0 == strcmp(memory_size, "2G"))
+		{
+			gd->ram_size = (2u * 1024 * 1024 * 1024);
+		}
+		else if (0 == strcmp(memory_size, "1G"))
+		{
+			gd->ram_size = (1u * 1024 * 1024 * 1024);
+		}
+		else if (0 == strcmp(memory_size, "512M"))
+		{
+			gd->ram_size = (512 * 1024 * 1024);
+		}
+		else
+		{		
+			gd->ram_size = PHYS_SDRAM_SIZE;
+		}
+	}
+
+  
+  tune_ddr();
+#else
 	gd->ram_size = imx_ddr_size();
+#endif
 	return 0;
 }
 
@@ -91,6 +177,13 @@ static iomux_v3_cfg_t const uart1_pads[] = {
 	IOMUX_PADS(PAD_CSI0_DAT10__UART1_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
 	IOMUX_PADS(PAD_CSI0_DAT11__UART1_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
 };
+
+#ifdef	ADV_ENABLE_UART2
+static iomux_v3_cfg_t const uart2_pads[] = {
+	IOMUX_PADS(PAD_EIM_D26__UART2_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
+	IOMUX_PADS(PAD_EIM_D27__UART2_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
+};
+#endif
 
 #ifdef CONFIG_MXC_SPI
 static iomux_v3_cfg_t const ecspi1_pads[] = {
@@ -100,11 +193,7 @@ static iomux_v3_cfg_t const ecspi1_pads[] = {
 	IOMUX_PADS(PAD_EIM_EB2__ECSPI1_SS0 | MUX_PAD_CTRL(NO_PAD_CTRL)),
 };
 
-//static void setup_spi(void)
-//{
-//	SETUP_IOMUX_PADS(ecspi1_pads);
-//}
-void setup_spinor(void)
+static void setup_spinor(void)
 {
 	SETUP_IOMUX_PADS(ecspi1_pads);
 }
@@ -310,6 +399,9 @@ static iomux_v3_cfg_t const usdhc3_pads[] = {
 	IOMUX_PADS(PAD_SD3_DAT6__SD3_DATA6 | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
 	IOMUX_PADS(PAD_SD3_DAT7__SD3_DATA7 | MUX_PAD_CTRL(USDHC_PAD_CTRL)),
 	IOMUX_PADS(PAD_NANDF_D0__GPIO2_IO00    | MUX_PAD_CTRL(NO_PAD_CTRL)), /* CD */
+#ifdef USDHC3_PWREN_GPIO
+	IOMUX_PADS(PAD_NANDF_D2__GPIO2_IO02    | MUX_PAD_CTRL(NO_PAD_CTRL)), /* PWREN */
+#endif
 };
 
 static iomux_v3_cfg_t const usdhc4_pads[] = {
@@ -330,9 +422,6 @@ struct fsl_esdhc_cfg usdhc_cfg[3] = {
 	{USDHC3_BASE_ADDR},
 	{USDHC4_BASE_ADDR},
 };
-
-//#define USDHC2_CD_GPIO	IMX_GPIO_NR(2, 2)
-//#define USDHC3_CD_GPIO	IMX_GPIO_NR(2, 0)
 
 int board_mmc_getcd(struct mmc *mmc)
 {
@@ -405,40 +494,6 @@ int board_mmc_init(struct bd_info *bis)
 	}
 
 	return 0;
-#if 0
-	struct src *psrc = (struct src *)SRC_BASE_ADDR;
-	unsigned reg = readl(&psrc->sbmr1) >> 11;
-	/*
-	 * Upon reading BOOT_CFG register the following map is done:
-	 * Bit 11 and 12 of BOOT_CFG register can determine the current
-	 * mmc port
-	 * 0x1                  SD1
-	 * 0x2                  SD2
-	 * 0x3                  SD4
-	 */
-	switch (reg & 0x3) {
-	case 0x1:
-		SETUP_IOMUX_PADS(usdhc2_pads);
-		usdhc_cfg[0].esdhc_base = USDHC2_BASE_ADDR;
-		usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC2_CLK);
-		gd->arch.sdhc_clk = usdhc_cfg[0].sdhc_clk;
-		break;
-	case 0x2:
-		SETUP_IOMUX_PADS(usdhc3_pads);
-		usdhc_cfg[0].esdhc_base = USDHC3_BASE_ADDR;
-		usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC3_CLK);
-		gd->arch.sdhc_clk = usdhc_cfg[0].sdhc_clk;
-		break;
-	case 0x3:
-		SETUP_IOMUX_PADS(usdhc4_pads);
-		usdhc_cfg[0].esdhc_base = USDHC4_BASE_ADDR;
-		usdhc_cfg[0].sdhc_clk = mxc_get_clock(MXC_ESDHC4_CLK);
-		gd->arch.sdhc_clk = usdhc_cfg[0].sdhc_clk;
-		break;
-	}
-
-	return fsl_esdhc_initialize(bis, &usdhc_cfg[0]);
-#endif
 }
 #endif
 #endif
@@ -891,6 +946,13 @@ int board_early_init_f(void)
 	setup_display();
 #endif
 
+#ifdef CONFIG_ADVANTECH
+	enable_AXI_cache();
+#endif
+#ifdef CONFIG_SYS_USE_SPINOR
+        setup_spinor();
+#endif
+
 #ifdef CONFIG_CMD_SATA
         setup_sata();
 #endif
@@ -1004,17 +1066,79 @@ void setup_iomux_m2()
 #endif
 }
 #endif
+
+#ifdef CONFIG_SUPPORT_C8051_SEQUENCE
+#define GPIO_DR		0x00000000	/* data register */
+#define GPIO_GDIR	0x00000004	/* direction register */
+
+static void mx6_pwm_event(void)
+{
+	//2K PWM for 8051
+	int reg;
+	int i = 0;
+	imx_iomux_v3_setup_pad(MX6_PAD_SD3_DAT0__GPIO7_IO04 | MUX_PAD_CTRL(NO_PAD_CTRL));
+	imx_iomux_v3_setup_pad(MX6_PAD_SD3_DAT1__GPIO7_IO05 | MUX_PAD_CTRL(NO_PAD_CTRL));
+
+	/* rx */
+	reg = readl(GPIO7_BASE_ADDR + GPIO_GDIR);
+	reg |= (1 << 5);
+	writel(reg, GPIO7_BASE_ADDR + GPIO_GDIR);
+
+	reg = readl(GPIO7_BASE_ADDR + GPIO_DR);
+	reg |= 0x0000020;
+	writel(reg, GPIO7_BASE_ADDR + GPIO_DR);
+	udelay(1000);
+
+	reg = readl(GPIO7_BASE_ADDR + GPIO_DR);
+	reg &= ~0x0000020;
+	writel(reg, GPIO7_BASE_ADDR + GPIO_DR);
+	udelay(2000);
+
+    /* tx */
+	reg = readl(GPIO7_BASE_ADDR + GPIO_GDIR);
+	reg |= (1 << 4);
+	writel(reg, GPIO7_BASE_ADDR + GPIO_GDIR);
+
+	for(i=0;i < 20; i++){
+		reg = readl(GPIO7_BASE_ADDR + GPIO_DR);
+		reg &= ~0x0000010;
+		writel(reg, GPIO7_BASE_ADDR + GPIO_DR);
+		udelay(225);
+
+		reg = readl(GPIO7_BASE_ADDR + GPIO_DR);
+		reg |= 0x00000010;
+		writel(reg, GPIO7_BASE_ADDR + GPIO_DR);
+		udelay(225);
+    }
+}
+#endif
+
 int board_init(void)
 {
 	/* address of boot parameters */
 	gd->bd->bi_boot_params = PHYS_SDRAM + 0x100;
+#ifdef CONFIG_SUPPORT_C8051_SEQUENCE
+	mx6_pwm_event();
+#endif
+
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_SUPPORT_LVDS)
+       setup_lvds_init();
+#endif
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_PCIE_POWER)
+	setup_iomux_pcie_power();
+#endif
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_PCIE_RESET)
+	setup_iomux_pcie_reset();
+#endif
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_M2_SLOT)
+	setup_iomux_m2();
+#endif
 
 #if defined(CONFIG_DM_REGULATOR)
 	regulators_enable_boot_on(false);
 #endif
 
 #ifdef CONFIG_MXC_SPI
-//	setup_spi();
 	setup_spinor();
 #endif
 
@@ -1034,9 +1158,17 @@ int board_init(void)
 	setup_fec();
 #endif
 
+#ifdef CONFIG_ADVANTECH
+#ifndef CONFIG_MX6QP
+	writel(0x514201F0, 0x021B0400);
+	writel(0x514201F0, 0x021B4400);
+#endif
+#endif
+
 	return 0;
 }
 
+#ifndef CONFIG_ADVANTECH
 #ifdef CONFIG_POWER
 int power_init_board(void)
 {
@@ -1209,6 +1341,7 @@ int power_init_board(void)
 	return 0;
 }
 #endif
+#endif /* CONFIG_ADVANTECH */
 
 #ifdef CONFIG_LDO_BYPASS_CHECK
 #ifdef CONFIG_POWER
@@ -1407,7 +1540,7 @@ static const struct boot_mode board_boot_modes[] = {
 	{"sd2",	 MAKE_CFGVAL(0x40, 0x28, 0x00, 0x00)},
 	{"sd3",	 MAKE_CFGVAL(0x40, 0x30, 0x00, 0x00)},
 	/* 8 bit bus width */
-	{"emmc", MAKE_CFGVAL(0x60, 0x58, 0x00, 0x00)},
+	{"emmc", MAKE_CFGVAL(0x40, 0x38, 0x00, 0x00)},
 	{NULL,	 0},
 };
 #endif
@@ -1445,7 +1578,6 @@ int board_late_init(void)
 
 	return 0;
 }
-
 
 #ifdef CONFIG_FSL_FASTBOOT
 #ifdef CONFIG_ANDROID_RECOVERY
@@ -1807,9 +1939,6 @@ static void spl_dram_init(void)
 
 void board_init_f(ulong dummy)
 {
-	/* DDR initialization */
-	//spl_dram_init();
-
 	/* setup AIPS and disable watchdog */
 	arch_cpu_init();
 
@@ -1819,11 +1948,22 @@ void board_init_f(ulong dummy)
 	/* iomux and setup of i2c */
 	board_early_init_f();
 
+#ifdef	DIGITAL_OUTPUT
+	setup_do_init();
+#endif
+
 	/* setup GP timer */
 	timer_init();
 
 	/* UART clocks enabled and gd valid - init serial console */
 	preloader_console_init();
+
+	/* DDR initialization */
+#if defined (CONFIG_ADVANTECH)	
+	//spl_dram_init();
+#else
+	spl_dram_init();
+#endif
 
 	/* Clear the BSS. */
 	memset(__bss_start, 0, __bss_end - __bss_start);

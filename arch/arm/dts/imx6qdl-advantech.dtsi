@@ -27,7 +27,7 @@
 		fsl,dcm_always_high;
 		fsl,dc_valid;
 		fsl,usb_valid;
-		status = "disabled";
+		status = "okay";
 	};
 
 	hannstar_cabc {
@@ -104,6 +104,7 @@
 			regulator-max-microvolt = <3300000>;
 			gpio = <&gpio2 31 0>;
 			startup-delay-us = <500>;
+			regulator-always-on;
 			enable-active-high;
 		};
 
@@ -235,7 +236,7 @@
 		default_ifmt = "RGB565";
 		pinctrl-names = "default";
 		pinctrl-0 = <&pinctrl_ipu1>;
-		status = "disabled";
+		status = "okay";
 	};
 
 	backlight {
@@ -243,7 +244,7 @@
 		pwms = <&pwm1 0 5000000>;
 		brightness-levels = <0 4 8 16 32 64 128 255>;
 		default-brightness-level = <7>;
-		status = "disabled";
+		status = "okay";
 	};
 
 	leds {
@@ -263,7 +264,7 @@
 		ipu_id = <0>;
 		csi_id = <0>;
 		mclk_source = <0>;
-		status = "disabled";
+		status = "okay";
 	};
 
 	v4l2_cap_1 {
@@ -271,12 +272,12 @@
 		ipu_id = <0>;
 		csi_id = <1>;
 		mclk_source = <0>;
-		status = "disabled";
+		status = "okay";
 	};
 
 	v4l2_out {
 		compatible = "fsl,mxc_v4l2_output";
-		status = "disabled";
+		status = "okay";
 	};
 };
 
@@ -300,13 +301,13 @@
 };
 
 &mipi_csi {
-	status = "disabled";
+	status = "okay";
 };
 
 &audmux {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_audmux>;
-	status = "disabled";
+	status = "okay";
 };
 
 &clks {
@@ -314,22 +315,6 @@
 			  <&clks IMX6QDL_CLK_LDB_DI1_SEL>;
 	assigned-clock-parents = <&clks IMX6QDL_CLK_PLL2_PFD0_352M>,
 				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>;
-};
-
-&ecspi1 {
-	fsl,spi-num-chipselects = <1>;
-	cs-gpios = <&gpio2 30 0>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_ecspi1_cs_0 &pinctrl_ecspi1>;
-	status = "okay";
-
-	flash: m25p80@0 {
-		#address-cells = <1>;
-		#size-cells = <1>;
-		compatible = "st,m25p32", "jedec,spi-nor";
-		spi-max-frequency = <20000000>;
-		reg = <0>;
-	};
 };
 
 &fec {
@@ -359,36 +344,36 @@
 &dcic1 {
 	dcic_id = <0>;
 	dcic_mux = "dcic-hdmi";
-	status = "disabled";
+	status = "okay";
 };
 
 &dcic2 {
 	dcic_id = <1>;
 	dcic_mux = "dcic-lvds1";
-	status = "disabled";
+	status = "okay";
 };
 
 &hdmi_audio {
-	status = "disabled";
+	status = "okay";
 };
 
 &hdmi_cec {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_hdmi_cec>;
-	status = "disabled";
+	status = "okay";
 };
 
 &hdmi_core {
 	ipu_id = <0>;
 	disp_id = <0>;
-	status = "disabled";
+	status = "okay";
 };
 
 &hdmi_video {
 	fsl,phy_reg_vlev = <0x0294>;
 	fsl,phy_reg_cksymtx = <0x800d>;
 	HDMI-supply = <&reg_hdmi>;
-	status = "disabled";
+	status = "okay";
 };
 
 &i2c1 {
@@ -398,7 +383,7 @@
 	pinctrl-1 = <&pinctrl_i2c1_gpio>;
 	scl-gpios = <&gpio5 27 GPIO_ACTIVE_HIGH>;
 	sda-gpios = <&gpio5 26 GPIO_ACTIVE_HIGH>;
-	status = "disabled";
+	status = "okay";
 
 	codec: wm8962@1a {
 		compatible = "wlf,wm8962";
@@ -460,7 +445,7 @@
 	pinctrl-1 = <&pinctrl_i2c2_gpio>;
 	scl-gpios = <&gpio4 12 GPIO_ACTIVE_HIGH>;
 	sda-gpios = <&gpio4 13 GPIO_ACTIVE_HIGH>;
-	status = "disabled";
+	status = "okay";
 
 	egalax_ts@04 {
 		compatible = "eeti,egalax_ts";
@@ -610,7 +595,7 @@
 	pinctrl-1 = <&pinctrl_i2c3_gpio>;
 	scl-gpios = <&gpio1 3 GPIO_ACTIVE_HIGH>;
 	sda-gpios = <&gpio1 6 GPIO_ACTIVE_HIGH>;
-	status = "disabled";
+	status = "okay";
 
 	egalax_ts@04 {
 		compatible = "eeti,egalax_ts";
@@ -657,7 +642,6 @@
 				MX6QDL_PAD_ENET_TXD1__GPIO1_IO29 0x80000000
 				MX6QDL_PAD_EIM_D22__GPIO3_IO22  0x80000000
 				MX6QDL_PAD_ENET_CRS_DV__GPIO1_IO25 0x80000000
-				MX6QDL_PAD_EIM_D26__GPIO3_IO26 0x80000000
 				MX6QDL_PAD_EIM_CS1__GPIO2_IO24 0x80000000
 				MX6QDL_PAD_ENET_RXD0__GPIO1_IO27 0x80000000
 				MX6QDL_PAD_EIM_A25__GPIO5_IO02 0x80000000
@@ -686,9 +670,9 @@
 
 		pinctrl_ecspi1: ecspi1grp {
 			fsl,pins = <
-                                MX6QDL_PAD_EIM_D17__ECSPI1_MISO 	0x100b1
-                                MX6QDL_PAD_EIM_D18__ECSPI1_MOSI 	0x100b1
-                                MX6QDL_PAD_EIM_D16__ECSPI1_SCLK 	0x100b1
+				MX6QDL_PAD_EIM_D16__ECSPI1_SCLK	0x100b1
+				MX6QDL_PAD_EIM_D17__ECSPI1_MISO	0x100b1
+				MX6QDL_PAD_EIM_D18__ECSPI1_MOSI	0x100b1
 			>;
 		};
 
@@ -956,19 +940,6 @@
 			>;
 		};
 
-                pinctrl_usdhc3_2: usdhc3grp-2 {
-                        fsl,pins = <
-                                MX6QDL_PAD_SD3_CMD__SD3_CMD    0x17059
-                                MX6QDL_PAD_SD3_CLK__SD3_CLK    0x10059
-                                MX6QDL_PAD_SD3_DAT0__SD3_DATA0 0x17059
-                                MX6QDL_PAD_SD3_DAT1__SD3_DATA1 0x17059
-                                MX6QDL_PAD_SD3_DAT2__SD3_DATA2 0x17059
-                                MX6QDL_PAD_SD3_DAT3__SD3_DATA3 0x17059
-				MX6QDL_PAD_SD3_DAT4__GPIO7_IO01         0x80000000      /* SD3_CD */
-                                MX6QDL_PAD_SD3_DAT5__GPIO7_IO00         0x80000000      /* SD3_WP */
-                        >;
-                };
-
 		pinctrl_usdhc4: usdhc4grp {
 			fsl,pins = <
 				MX6QDL_PAD_SD4_CMD__SD4_CMD		0x17059
@@ -1001,12 +972,12 @@
 };
 
 &ldb {
-	status = "disabled";
+	status = "okay";
 
 	lvds-channel@0 {
 		fsl,data-mapping = "spwg";
 		fsl,data-width = <18>;
-		status = "disabled";
+		status = "okay";
 
 		display-timings {
 			native-mode = <&timing0>;
@@ -1028,7 +999,7 @@
 		fsl,data-mapping = "spwg";
 		fsl,data-width = <18>;
 		primary;
-		status = "disabled";
+		status = "okay";
 
 		display-timings {
 			native-mode = <&timing1>;
@@ -1048,7 +1019,7 @@
 };
 
 &mipi_csi {
-	status = "disabled";
+	status = "okay";
 	ipu_id = <0>;
 	csi_id = <1>;
 	v_channel = <0>;
@@ -1062,20 +1033,20 @@
 	disp-power-on-supply = <&reg_mipi_dsi_pwr_on>;
 	reset-gpios = <&gpio6 11 GPIO_ACTIVE_LOW>;
 	reset-delay-us = <50>;
-	status = "disabled";
+	status = "okay";
 };
 
 &pcie {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_pcie>;
 	reset-gpio = <&gpio7 12 GPIO_ACTIVE_LOW>;
-	status = "disabled";
+	status = "okay";
 };
 
 &pwm1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_pwm1>;
-	status = "disabled";
+	status = "okay";
 };
 
 &reg_arm {
@@ -1091,7 +1062,7 @@
 };
 
 &snvs_poweroff {
-	status = "disabled";
+	status = "okay";
 };
 
 &ssi2 {
@@ -1102,18 +1073,18 @@
 				 <&clks IMX6QDL_CLK_PLL4>,
 				 <&clks IMX6QDL_CLK_PLL4_AUDIO_DIV>;
 	assigned-clock-rates = <737280000>, <0>, <0>;
-	status = "disabled";
+	status = "okay";
 };
 
 &uart1 {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_uart1>;
-	status = "disabled";
+	status = "okay";
 };
 
 &usbh1 {
 	vbus-supply = <&reg_usb_h1_vbus>;
-	status = "disabled";
+	status = "okay";
 };
 
 &usbotg {
@@ -1124,7 +1095,7 @@
 	srp-disable;
 	hnp-disable;
 	adp-disable;
-	status = "disabled";
+	status = "okay";
 };
 
 &usbphy1 {
@@ -1144,7 +1115,7 @@
 	no-1-8-v;
 	keep-power-in-suspend;
 	enable-sdio-wakeup;
-	status = "disabled";
+	status = "okay";
 };
 
 &usdhc3 {
@@ -1156,7 +1127,7 @@
 	no-1-8-v;
 	keep-power-in-suspend;
 	enable-sdio-wakeup;
-	status = "disabled";
+	status = "okay";
 };
 
 &usdhc4 {
@@ -1166,7 +1137,7 @@
 	non-removable;
 	no-1-8-v;
 	keep-power-in-suspend;
-	status = "disabled";
+	status = "okay";
 };
 
 &wdog1 {
@@ -1177,5 +1148,5 @@
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_wdog>;
 	fsl,ext-reset-output;
-	status = "disabled";
+	status = "okay";
 };

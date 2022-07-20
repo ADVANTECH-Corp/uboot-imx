@@ -18,6 +18,10 @@
 #define CONSOLE_DEV		"ttymxc0"
 #define CONFIG_MMCROOT			"/dev/mmcblk0p2"  /* SDHC2 */
 
+#if defined(CONFIG_DEFAULT_FDT_FILE)
+#undef CONFIG_DEFAULT_FDT_FILE
+#endif
+
 #if defined(CONFIG_TARGET_MX6QRSB4411A1_512M) || defined(CONFIG_TARGET_MX6QRSB4411A2_512M)
 #define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
 #elif defined(CONFIG_TARGET_MX6QRSB4411A1_1G) || defined(CONFIG_TARGET_MX6QRSB4411A2_1G)
@@ -26,7 +30,31 @@
 #define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
 #endif
 
+#if defined(CONFIG_TARGET_MX6QRSB4411A1_1G) || defined(CONFIG_TARGET_MX6QRSB4411A1_2G) || defined(CONFIG_TARGET_MX6DLRSB4411A1_2G)
+#if defined(CONFIG_MX6QP)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rsb4411-a1.dtb"
+#elif defined(CONFIG_MX6Q)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6q-rsb4411-a1.dtb"
+#elif defined(CONFIG_MX6DL)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb4411-a1.dtb"
+#elif defined(CONFIG_MX6S)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb4411-a1.dtb"
+#endif
+#elif defined(CONFIG_TARGET_MX6QRSB4411A2_1G)
+#if defined(CONFIG_MX6QP)
+#define CONFIG_DEFAULT_FDT_FILE "imx6qp-rsb4411-a2.dtb"
+#elif defined(CONFIG_MX6Q)
+#define CONFIG_DEFAULT_FDT_FILE "imx6q-rsb4411-a2.dtb"
+#elif defined(CONFIG_MX6DL)
+#define CONFIG_DEFAULT_FDT_FILE "imx6dl-rsb4411-a2.dtb"
+#elif defined(CONFIG_MX6S)
+#define CONFIG_DEFAULT_FDT_FILE "imx6dl-rsb4411-a2.dtb"
+#endif
+#endif
+
 #include "mx6advantech_common.h"
+/* don't use pmic */
+#undef CONFIG_LDO_BYPASS_CHECK
 
 /* Falcon Mode */
 #define CONFIG_SPL_FS_LOAD_ARGS_NAME	"args"
@@ -91,6 +119,17 @@
 #endif /* CONFIG_SPLASH_SCREEN && CONFIG_MXC_EPDC */
 #endif
 
+/* uncomment for SECURE mode support */
+/* #define CONFIG_SECURE_BOOT */
+
+#ifdef CONFIG_SECURE_BOOT
+#ifndef CONFIG_CSF_SIZE
+#define CONFIG_CSF_SIZE 0x4000
+#endif
+#endif
+
+/* #define CONFIG_MFG_IGNORE_CHECK_SECURE_BOOT */
+
 #define CONFIG_SUPPORT_LVDS
 #ifdef CONFIG_SUPPORT_LVDS
 #define IOMUX_LCD_BKLT_PWM 	MX6_PAD_GPIO_1__GPIO1_IO01
@@ -100,6 +139,19 @@
 #define LCD_BKLT_EN 		IMX_GPIO_NR(4, 6)
 #define LCD_VDD_EN 		IMX_GPIO_NR(4, 7)	
 #endif
+
+#ifdef CONFIG_ANDROID_SUPPORT
+#ifdef CONFIG_VIDEO
+#define CONFIG_VIDEO_MXS
+#endif
+#endif
+
+#define SPI1_CS0                IMX_GPIO_NR(2,30)
+#define IOMUX_SPI_SCLK          MX6_PAD_EIM_D16__ECSPI1_SCLK
+#define IOMUX_SPI_MISO          MX6_PAD_EIM_D17__ECSPI1_MISO
+#define IOMUX_SPI_MOSI          MX6_PAD_EIM_D18__ECSPI1_MOSI
+#define IOMUX_SPI_CS0           MX6_PAD_EIM_EB2__ECSPI1_SS0
+
 #define USDHC3_CD_GPIO          IMX_GPIO_NR(7, 1)
 
 #define CONFIG_PCIE_RESET

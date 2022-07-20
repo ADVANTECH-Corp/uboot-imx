@@ -13,14 +13,10 @@
 #include "mx6_common.h"
 #include "imx_env.h"
 
+#define CONFIG_ADVANTECH
 
 /* Size of malloc() pool */
 #define CONFIG_SYS_MALLOC_LEN		(16 * SZ_1M)
-/* SATA CONFIG */
-#define CONFIG_SYS_SATA_MAX_DEVICE      1
-#define CONFIG_DWC_AHSATA_PORT_ID       0
-#define CONFIG_DWC_AHSATA_BASE_ADDR     SATA_ARB_BASE_ADDR
-#define CONFIG_LBA48
 
 /* MMC Configs */
 #define CONFIG_SYS_FSL_ESDHC_ADDR      0
@@ -28,6 +24,8 @@
 #define CONFIG_FEC_MXC
 #define CONFIG_FEC_XCV_TYPE		RGMII
 #define CONFIG_ETHPRIME			"eth0"
+
+#define CONFIG_FEC_MXC_PHYADDR		4
 
 #define CONFIG_PHY_ATHEROS
 
@@ -51,11 +49,11 @@
 	CONFIG_MFG_ENV_SETTINGS_DEFAULT \
 	"initrd_addr=0x12C00000\0" \
 	"initrd_high=0xffffffff\0" \
-	"emmc_dev=2\0"\
-	"sd_dev=1\0" \
+	"emmc_dev=3\0"\
+	"sd_dev=2\0" \
 	"weim_uboot=0x08001000\0"\
 	"weim_base=0x08000000\0"\
-	"spi_bus=1\0"\
+	"spi_bus=0\0"\
 	"spi_uboot=0x400\0" \
 	"mtdparts=" MFG_NAND_PARTITION \
 	"\0"\
@@ -118,13 +116,47 @@
 		CONFIG_MFG_ENV_SETTINGS \
 		TEE_ENV \
 		"image=zImage\0" \
-		"fdt_file=undefined\0" \
+		"fdt_file=" __stringify(CONFIG_DEFAULT_DEVICE_TREE)".dtb\0" \
 		"fdt_addr=0x18000000\0" \
 		"fdt_high=0xffffffff\0"   \
 		"splashimage=0x28000000\0" \
 		"tee_addr=0x20000000\0" \
 		"tee_file=undefined\0" \
-		"fdt_file=" __stringify(CONFIG_DEFAULT_DEVICE_TREE)".dtb\0" \
+		"findfdt="\
+			"if test $fdt_file = undefined; then " \
+				"if test $board_name = SABREAUTO && test $board_rev = MX6QP; then " \
+					"setenv fdt_file imx6qp-sabreauto.dtb; fi; " \
+				"if test $board_name = SABREAUTO && test $board_rev = MX6Q; then " \
+					"setenv fdt_file imx6q-sabreauto.dtb; fi; " \
+				"if test $board_name = SABREAUTO && test $board_rev = MX6DL; then " \
+					"setenv fdt_file imx6dl-sabreauto.dtb; fi; " \
+				"if test $board_name = SABRESD && test $board_rev = MX6QP; then " \
+					"setenv fdt_file imx6qp-sabresd.dtb; fi; " \
+				"if test $board_name = SABRESD && test $board_rev = MX6Q; then " \
+					"setenv fdt_file imx6q-sabresd.dtb; fi; " \
+				"if test $board_name = SABRESD && test $board_rev = MX6DL; then " \
+					"setenv fdt_file imx6dl-sabresd.dtb; fi; " \
+				"if test $fdt_file = undefined; then " \
+					"echo WARNING: Could not determine dtb to use; " \
+				"fi; " \
+			"fi;\0" \
+		"findtee="\
+			"if test $tee_file = undefined; then " \
+				"if test $board_name = SABREAUTO && test $board_rev = MX6QP; then " \
+					"setenv tee_file uTee-6qpauto; fi; " \
+				"if test $board_name = SABREAUTO && test $board_rev = MX6Q; then " \
+					"setenv tee_file uTee-6qauto; fi; " \
+				"if test $board_name = SABREAUTO && test $board_rev = MX6DL; then " \
+					"setenv tee_file uTee-6dlauto; fi; " \
+				"if test $board_name = SABRESD && test $board_rev = MX6QP; then " \
+					"setenv tee_file uTee-6qpsdb; fi; " \
+				"if test $board_name = SABRESD && test $board_rev = MX6Q; then " \
+					"setenv tee_file uTee-6qsdb; fi; " \
+				"if test $board_name = SABRESD && test $board_rev = MX6DL; then " \
+					"setenv tee_file uTee-6dlsdb; fi; " \
+				"if test $tee_file = undefined; then " \
+					"echo WARNING: Could not determine tee to use; fi; " \
+			"fi;\0" \
 		"bootargs=console=" CONSOLE_DEV ",115200 \0"\
 		"bootargs_sata=setenv bootargs ${bootargs} " \
 			"root=/dev/sda2 rootwait rw \0" \
@@ -148,7 +180,7 @@
 	"epdc_waveform=epdc_splash.bin\0" \
 	"script=boot.scr\0" \
 	"image=zImage\0" \
-	"fdt_file=" CONFIG_DEFAULT_FDT_FILE "\0" \
+	"fdt_file=" __stringify(CONFIG_DEFAULT_DEVICE_TREE)".dtb\0" \
 	"fdt_addr=0x18000000\0" \
 	"tee_addr=0x20000000\0" \
 	"tee_file=undefined\0" \
@@ -164,7 +196,6 @@
 	"splashimage=0x28000000\0" \
 	"mmcdev=" __stringify(CONFIG_SYS_MMC_ENV_DEV) "\0" \
 	"mmcpart=1\0" \
-	"fdt_file=" __stringify(CONFIG_DEFAULT_DEVICE_TREE)".dtb\0" \
 	"finduuid=part uuid mmc ${mmcdev}:2 uuid\0" \
 	"mmcroot=" CONFIG_MMCROOT " rootwait rw\0" \
 	"mmcautodetect=yes\0" \
@@ -274,6 +305,17 @@
 #define CONFIG_SYS_INIT_SP_ADDR \
 	(CONFIG_SYS_INIT_RAM_ADDR + CONFIG_SYS_INIT_SP_OFFSET)
 
+#ifdef CONFIG_CMD_SF
+
+#ifdef CONFIG_ADVANTECH
+#define CONFIG_FSL_SF		1
+#define CONFIG_SPI_FLASH_CS	0
+#define IMX_CSPI_VER_2_3	1
+#define CONFIG_IMX_ECSPI
+#endif /* CONFIG_ADVANTECH */
+
+#endif
+
 #ifdef CONFIG_MTD_NOR_FLASH
 #define CONFIG_SYS_FLASH_BASE           WEIM_ARB_BASE_ADDR
 #define CONFIG_SYS_FLASH_SECT_SIZE      (128 * 1024)
@@ -297,15 +339,36 @@
 #endif
 
 #if defined(CONFIG_ENV_IS_IN_MMC)
+#undef CONFIG_ENV_OFFSET
+#define CONFIG_ENV_OFFSET		(12 * 64 * 1024)
 #elif defined(CONFIG_ENV_IS_IN_SPI_FLASH)
-//#define CONFIG_ENV_SPI_BUS             CONFIG_SF_DEFAULT_BUS
-//#define CONFIG_ENV_SPI_CS              CONFIG_SF_DEFAULT_CS
-//#define CONFIG_ENV_SPI_MODE            CONFIG_SF_DEFAULT_MODE
-//#define CONFIG_ENV_SPI_MAX_HZ          CONFIG_SF_DEFAULT_SPEED
+#undef CONFIG_ENV_OFFSET
+#undef CONFIG_ENV_SECT_SIZE
+#define CONFIG_ENV_OFFSET              (768 * 1024)
+#define CONFIG_ENV_SECT_SIZE           (64 * 1024)
+#define CONFIG_ENV_SPI_BUS             CONFIG_SF_DEFAULT_BUS
+#define CONFIG_ENV_SPI_CS              CONFIG_SF_DEFAULT_CS
+#define CONFIG_ENV_SPI_MODE            CONFIG_SF_DEFAULT_MODE
+#define CONFIG_ENV_SPI_MAX_HZ          CONFIG_SF_DEFAULT_SPEED
 #elif defined(CONFIG_ENV_IS_IN_FLASH)
+#undef CONFIG_ENV_SIZE
+#undef CONFIG_ENV_OFFSET
+#undef CONFIG_ENV_SECT_SIZE
+#define CONFIG_ENV_SIZE                        CONFIG_SYS_FLASH_SECT_SIZE
+#define CONFIG_ENV_SECT_SIZE           CONFIG_SYS_FLASH_SECT_SIZE
+#define CONFIG_ENV_OFFSET              (6 * CONFIG_SYS_FLASH_SECT_SIZE)
 #elif defined(CONFIG_ENV_IS_IN_NAND)
+#undef CONFIG_ENV_SIZE
+#undef CONFIG_ENV_OFFSET
+#undef CONFIG_ENV_SECT_SIZE
+#define CONFIG_ENV_OFFSET              (60 << 20)
+#define CONFIG_ENV_SECT_SIZE           (128 << 10)
+#define CONFIG_ENV_SIZE                        CONFIG_ENV_SECT_SIZE
 #elif defined(CONFIG_ENV_IS_IN_SATA)
+#undef CONFIG_ENV_OFFSET
+#define CONFIG_ENV_OFFSET		(768 * 1024)
 #define CONFIG_SYS_SATA_ENV_DEV		0
+#define CONFIG_SYS_DCACHE_OFF /* remove when sata driver support cache */
 #endif
 
 /* I2C Configs */
@@ -328,14 +391,6 @@
 #define CONFIG_POWER_PFUZE100_I2C_ADDR 0x08
 #endif
 
-/* Framebuffer */
-#define CONFIG_VIDEO_BMP_RLE8
-#define CONFIG_BMP_16BPP
-#define CONFIG_VIDEO_LOGO
-#define CONFIG_VIDEO_BMP_LOGO
-#define CONFIG_IMX_HDMI
-#define CONFIG_IMX_VIDEO_SKIP
-
 #if defined(CONFIG_ANDROID_SUPPORT)
 #include "mx6sabreandroid_common.h"
 #else
@@ -346,4 +401,6 @@
 #define	CONFIG_EMMC_DEV_NUM	1
 #define	CONFIG_SD_DEV_NUM	0
 #define	CONFIG_SATA_DEV_NUM	0
+
+#define CONFIG_FASTBOOT_SATA_NO 8
 #endif                         /* __MX6QSABRE_COMMON_CONFIG_H */
