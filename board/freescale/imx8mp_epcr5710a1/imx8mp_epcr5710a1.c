@@ -79,6 +79,17 @@ static int get_recovery_key_pressed(void)
 	}
 }
 
+static iomux_v3_cfg_t const switch_en_pads[] = {
+	MX8MP_PAD_GPIO1_IO10__GPIO1_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+static void setup_iomux_switch_booting(void)
+{
+	imx_iomux_v3_setup_multiple_pads(switch_en_pads, ARRAY_SIZE(switch_en_pads));
+	gpio_request(SWITCH_PWR, "switch_power");
+	gpio_direction_output(SWITCH_PWR,1);
+	printf("switch booting\n");
+}
+
 static int check_debug_uart_mode(void)
 {
 	int value = -1;
@@ -191,7 +202,7 @@ static int setup_fec(void)
 	struct iomuxc_gpr_base_regs *gpr =
 		(struct iomuxc_gpr_base_regs *)IOMUXC_GPR_BASE_ADDR;
 
-	//setup_iomux_switch_booting();
+	setup_iomux_switch_booting();
 	//setup_iomux_fec();
 
 	/* Enable RGMII TX clk output */
