@@ -306,15 +306,8 @@
 #include "imx8mm_evk_android.h"
 #endif
 
-
 #define WDOG_TRIG IMX_GPIO_NR(1, 15)
-
 #define WDOG_ENABLE IMX_GPIO_NR(1, 9)
-#define DEBUG_UART_SEL IMX_GPIO_NR(4, 1)
-#define LVDS_STBY_PAD IMX_GPIO_NR(3, 23)
-#define LVDS_RESET_PAD IMX_GPIO_NR(3, 24)
-#define I2S_EN IMX_GPIO_NR(1, 10)
-#define RESET_OUT IMX_GPIO_NR(4, 28)
 
 /* OTA support */
 #include "adv_imx_ota.h"
