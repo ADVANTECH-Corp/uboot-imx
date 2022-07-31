@@ -61,9 +61,16 @@ static void debug_uart_sel(void)
 		env_set("console", "disabled");
 	gpio_free(DEBUG_UART_SEL);
 }
+static void mmc_set_env_dev_mmc1(void)
+{
+		struct bootrom_sw_info **p =
+		(struct bootrom_sw_info **)(ulong)ROM_SW_INFO_ADDR;
+		(*p)->boot_dev_instance=1;
+}
 static int get_recovery_key_pressed(void)
 {
 	int value = -1;
+	char cmd[32];
 	imx_iomux_v3_setup_multiple_pads(iomux_recovery_gpio, ARRAY_SIZE(iomux_recovery_gpio));
 	gpio_request(RECOVERY_GPIO_KEY, "recovery_key");
 	gpio_direction_input(RECOVERY_GPIO_KEY);
@@ -71,6 +78,16 @@ static int get_recovery_key_pressed(void)
 	if(value==RECOVERY_KEY_PRESSED)
 	{
 		printf("******Recovery_key_pressed******\n");
+
+		env_set("mmcdev", "1");
+		env_set("mmcroot", "/dev/mmcblk1p2");
+		env_set("fastboot_dev", "mmc1") ;
+
+		sprintf(cmd, "mmc dev %d", 1);
+		run_command(cmd, 0);
+
+		mmc_set_env_dev_mmc1();
+	
 		return 1;
 	}
 	else
