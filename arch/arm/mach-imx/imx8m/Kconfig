@@ -117,6 +117,26 @@ config TARGET_IMX8MM_DDR4_EVK
 	select MISC
 	select SPL_CRYPTO_SUPPORT if SPL
 
+config TARGET_IMX8MM_ROM5721A1_2G
+        bool "imx8mm rom5721a1 2G"
+        select IMX8MM
+        select SUPPORT_SPL
+        select IMX8M_LPDDR4
+        select FSL_CAAM
+        select FSL_BLOB
+        select MISC
+        select SPL_CRYPTO_SUPPORT if SPL
+
+config TARGET_IMX8MM_ROM5721A1_1G
+        bool "imx8mm rom5721a1 1G"
+        select IMX8MM
+        select SUPPORT_SPL
+        select IMX8M_LPDDR4
+        select FSL_CAAM
+        select FSL_BLOB
+        select MISC
+        select SPL_CRYPTO_SUPPORT if SPL
+
 config TARGET_IMX8MN_EVK
 	bool "imx8mn LPDDR4 EVK board"
 	select IMX8MN
@@ -237,6 +257,7 @@ source "board/freescale/imx8mq_evk/Kconfig"
 source "board/freescale/imx8mq_val/Kconfig"
 source "board/freescale/imx8mm_evk/Kconfig"
 source "board/freescale/imx8mm_val/Kconfig"
+source "board/freescale/imx8mm_rom5721a1/Kconfig"
 source "board/freescale/imx8mn_evk/Kconfig"
 source "board/freescale/imx8mp_evk/Kconfig"
 source "board/freescale/imx8mp_rsb3720a1/Kconfig"
