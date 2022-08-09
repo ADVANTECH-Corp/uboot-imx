@@ -46,6 +46,9 @@ static iomux_v3_cfg_t debug_uart_sel_gpio[] = {
 static iomux_v3_cfg_t iomux_recovery_gpio[] = {
 	MX8MP_PAD_SAI1_RXFS__GPIO4_IO00 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
+static iomux_v3_cfg_t uart_en_gpio[] = {
+	MX8MP_PAD_SAI2_TXFS__GPIO4_IO24 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
 
 static void debug_uart_sel(void)
 {
@@ -119,12 +122,17 @@ static int check_debug_uart_mode(void)
 	l &= ~(1 << 1);//gpio4_01
 	writel(l, &regs->gpio_dir);
 	value = (readl(&regs->gpio_dr) >> 1) & 0x01;
-	if(value == 0){
-		imx_iomux_v3_setup_multiple_pads(uart_gpio_pads, ARRAY_SIZE(uart_gpio_pads));
-		gd->flags |=( GD_FLG_DISABLE_CONSOLE | GD_FLG_SILENT );
+	if(DEBUG_UART_ACTIVE == value) {
+		imx_iomux_v3_setup_multiple_pads(uart_en_gpio, ARRAY_SIZE(uart_en_gpio));
+		l = readl(&regs->gpio_dir);
+		l |= (1 << 24);//gpio4_24 output
+		writel(l, &regs->gpio_dir);
+		l = readl(&regs->gpio_dr);
+		l |= (1 << 24);//gpio4_24 H
+		writel(l, &regs->gpio_dr);
 	}
 
-	return 0;
+	return value;
 }
 
 #ifdef CONFIG_NAND_MXS
@@ -143,10 +151,13 @@ int board_early_init_f(void)
 
 	set_wdog_reset(wdog);
 
-	imx_iomux_v3_setup_multiple_pads(uart_pads, ARRAY_SIZE(uart_pads));
-
+	if(DEBUG_UART_ACTIVE != check_debug_uart_mode()){
+		imx_iomux_v3_setup_multiple_pads(uart_gpio_pads, ARRAY_SIZE(uart_gpio_pads));
+		gd->flags |=( GD_FLG_DISABLE_CONSOLE | GD_FLG_SILENT );
+	} else {
+		imx_iomux_v3_setup_multiple_pads(uart_pads, ARRAY_SIZE(uart_pads));
+	}
 	init_uart_clk(1);
-	check_debug_uart_mode();
 
 	return 0;
 }
