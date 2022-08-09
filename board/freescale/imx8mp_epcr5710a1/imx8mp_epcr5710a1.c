@@ -17,6 +17,7 @@
 #include <asm/arch/clock.h>
 #include <spl.h>
 #include <asm/mach-imx/dma.h>
+#include <asm/mach-imx/boot_mode.h>
 #include <power/pmic.h>
 #include "../common/tcpc.h"
 #include <usb.h>
@@ -66,9 +67,8 @@ static void debug_uart_sel(void)
 }
 static void mmc_set_env_dev_mmc1(void)
 {
-		struct bootrom_sw_info **p =
-		(struct bootrom_sw_info **)(ulong)ROM_SW_INFO_ADDR;
-		(*p)->boot_dev_instance=1;
+	struct bootrom_sw_info **p = (struct bootrom_sw_info **)(ulong)ROM_SW_INFO_ADDR;
+	(*p)->boot_dev_instance = BOOT_TYPE_SD;
 }
 static int get_recovery_key_pressed(void)
 {
