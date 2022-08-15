@@ -91,7 +91,7 @@ static int get_recovery_key_pressed(void)
 
 		mmc_set_env_dev_mmc1();
 	
-		return 1;
+		return 0;
 	}
 	else
 	{
