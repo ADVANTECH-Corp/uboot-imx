@@ -309,6 +309,8 @@
 #define WDOG_TRIG IMX_GPIO_NR(1, 15)
 #define WDOG_ENABLE IMX_GPIO_NR(1, 9)
 
+#define ADV_AUTO_PROBE_THERMAL_TRIPS
+
 /* OTA support */
 #include "adv_imx_ota.h"
 

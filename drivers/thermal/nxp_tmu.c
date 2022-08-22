@@ -373,10 +373,19 @@ static int nxp_tmu_bind(struct udevice *dev)
 	return 0;
 }
 
+#if defined(CONFIG_ADVANTECH_MX8) && defined(ADV_AUTO_PROBE_THERMAL_TRIPS)
+extern u32 get_cpu_temp_grade(int *minc, int *maxc);
+int g_cpu_thermal_trip1 = -1;
+#endif
+
 static int nxp_tmu_parse_fdt(struct udevice *dev)
 {
 	int ret;
 	int trips_np;
+
+#if defined(CONFIG_ADVANTECH_MX8) && defined(ADV_AUTO_PROBE_THERMAL_TRIPS)
+	int minc, maxc;
+#endif
 
 	struct nxp_tmu_plat *pdata = dev_get_platdata(dev);
 	struct fdtdec_phandle_args args;
@@ -424,6 +433,14 @@ static int nxp_tmu_parse_fdt(struct udevice *dev)
 				pdata->alert = fdtdec_get_int(gd->fdt_blob, trips_np, "temperature", 80);
 		}
 	}
+
+
+#if defined(CONFIG_ADVANTECH_MX8) && defined(ADV_AUTO_PROBE_THERMAL_TRIPS)
+	get_cpu_temp_grade(&minc, &maxc);
+	pdata->alert = maxc * 1000;
+	pdata->critical = maxc * 1000;
+	g_cpu_thermal_trip1 = pdata->critical;
+#endif
 
 	debug("id %d polling_delay %d, critical %d, alert %d\n",
 		pdata->id, pdata->polling_delay, pdata->critical, pdata->alert);
