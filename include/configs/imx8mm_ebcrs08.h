@@ -63,10 +63,6 @@
 #define IMX_FEC_BASE			0x30BE0000
 #endif
 
-#ifdef CONFIG_NAND_BOOT
-#define MFG_NAND_PARTITION "mtdparts=gpmi-nand:64m(nandboot),16m(nandfit),32m(nandkernel),16m(nanddtb),8m(nandtee),-(nandrootfs)"
-#endif
-
 #ifdef CONFIG_DISTRO_DEFAULTS
 #define BOOT_TARGET_DEVICES(func) \
 	func(MMC, mmc, 1) \
@@ -267,5 +263,8 @@
 #ifdef CONFIG_ANDROID_SUPPORT
 #include "imx8mm_evk_android.h"
 #endif
+
+#define WDOG_TRIG IMX_GPIO_NR(1, 15)
+#define WDOG_ENABLE IMX_GPIO_NR(1, 9)
 
 #endif
