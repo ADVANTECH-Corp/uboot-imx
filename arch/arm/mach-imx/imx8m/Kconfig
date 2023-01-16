@@ -208,6 +208,12 @@ config TARGET_IMX8MP_ROM5722A1_6G
         select SUPPORT_SPL
         select IMX8M_LPDDR4
 
+config TARGET_IMX8MP_ROM5722A1_4G
+        bool "Support i.MX8MP ROM5722A1 4G"
+        select IMX8MP
+        select SUPPORT_SPL
+        select IMX8M_LPDDR4
+
 config TARGET_IMX8MP_ROM5722A1_2G
         bool "Support i.MX8MP ROM5722A1 2G"
         select IMX8MP
