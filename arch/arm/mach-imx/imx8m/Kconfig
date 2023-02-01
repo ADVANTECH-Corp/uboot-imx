@@ -226,6 +226,12 @@ config TARGET_IMX8MM_RSB3730A1_2G
 	select SUPPORT_SPL
 	select IMX8M_LPDDR4
 
+config TARGET_IMX8MM_RSB3730A2_2G
+	bool "imx8mm rsb3730a2 2G"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_LPDDR4
+
 endchoice
 
 source "board/freescale/imx8mq_evk/Kconfig"
@@ -241,6 +247,6 @@ source "board/freescale/imx8mp_epcr5710a1/Kconfig"
 source "board/freescale/imx8mp_rom5722a1/Kconfig"
 source "board/freescale/imx8mm_rom5721a1/Kconfig"
 source "board/freescale/imx8mq_rom5720a1/Kconfig"
-source "board/freescale/imx8mm_rsb3730a1/Kconfig"
+source "board/freescale/imx8mm_rsb3730/Kconfig"
 
 endif

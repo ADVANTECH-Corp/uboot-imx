@@ -1,6 +1,6 @@
-if TARGET_IMX8MM_RSB3730A1_2G || TARGET_IMX8MM_RSB3730A1_1G
+if TARGET_IMX8MM_RSB3730A1_2G || TARGET_IMX8MM_RSB3730A2_2G || TARGET_IMX8MM_RSB3730A2_4G
 config SYS_BOARD
-        default "imx8mm_rsb3730a1"
+        default "imx8mm_rsb3730"
 
 config SYS_VENDOR
         default "freescale"
