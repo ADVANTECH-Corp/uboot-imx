@@ -9,7 +9,7 @@
 #include "imx8mm.dtsi"
 
 / {
-	model = "NXP i.MX8MM RSB3730";
+	model = "NXP i.MX8MM RSB3730A2";
 	compatible = "fsl,imx8mm-evk", "fsl,imx8mm";
 
 	chosen {
