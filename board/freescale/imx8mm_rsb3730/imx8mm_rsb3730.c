@@ -84,7 +84,42 @@ int board_early_init_f(void)
 	return 0;
 }
 
-void setup_iomux_wdt()
+static iomux_v3_cfg_t const lvds_pads[] = {
+	IMX8MM_PAD_SAI3_RXFS_GPIO4_IO28 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	IMX8MM_PAD_SD1_STROBE_GPIO2_IO11 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	IMX8MM_PAD_GPIO1_IO12_GPIO1_IO12 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	IMX8MM_PAD_GPIO1_IO14_GPIO1_IO14 | MUX_PAD_CTRL(NO_PAD_CTRL),
+	IMX8MM_PAD_SAI3_RXD_GPIO4_IO30 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+static void setup_iomux_lvds(void)
+{
+#ifdef CONFIG_TARGET_IMX8MM_RSB3730A2_2G
+	imx_iomux_v3_setup_multiple_pads(lvds_pads, ARRAY_SIZE(lvds_pads));
+#endif
+#ifdef LVDS_1V8_EN_PAD
+	gpio_request(LVDS_1V8_EN_PAD, "LVDS_1V8_EN_PAD");
+	gpio_direction_output(LVDS_1V8_EN_PAD, 1);
+#endif
+#ifdef LVDS_CORE_EN_PAD
+	gpio_request(LVDS_CORE_EN_PAD, "LVDS_CORE_EN_PAD");
+	gpio_direction_output(LVDS_CORE_EN_PAD, 1);
+#endif
+#ifdef LVDS_STBY_PAD
+	gpio_request(LVDS_STBY_PAD, "LVDS_STBY");
+	gpio_direction_output(LVDS_STBY_PAD, 1);
+	udelay(100);	//for lvds bridge init sequence
+#endif
+#ifdef LVDS_RESET_PAD
+	gpio_request(LVDS_RESET_PAD, "LVDS_RESET");
+	gpio_direction_output(LVDS_RESET_PAD, 1);
+#endif
+#ifdef LVDS_VDD_EN_PAD
+	gpio_request(LVDS_VDD_EN_PAD, "LVDS_VDD_EN_PAD");
+	gpio_direction_output(LVDS_VDD_EN_PAD, 1);
+#endif
+}
+
+static void setup_iomux_wdt()
 {
         imx_iomux_v3_setup_pad(IMX8MM_PAD_GPIO1_IO15_GPIO1_IO15| MUX_PAD_CTRL(NO_PAD_CTRL));
         imx_iomux_v3_setup_pad(IMX8MM_PAD_GPIO1_IO09_GPIO1_IO9| MUX_PAD_CTRL(NO_PAD_CTRL));
@@ -178,6 +213,7 @@ int board_init(void)
 	call_imx_sip(FSL_SIP_GPC, FSL_SIP_CONFIG_GPC_PM_DOMAIN, DISPMIX, true, 0);
 	call_imx_sip(FSL_SIP_GPC, FSL_SIP_CONFIG_GPC_PM_DOMAIN, MIPI, true, 0);
 
+	setup_iomux_lvds();
 	setup_iomux_wdt();
 	return 0;
 }
