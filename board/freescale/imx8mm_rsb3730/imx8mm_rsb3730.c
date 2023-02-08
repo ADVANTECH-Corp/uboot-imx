@@ -89,7 +89,6 @@ static iomux_v3_cfg_t const lvds_pads[] = {
 	IMX8MM_PAD_SD1_STROBE_GPIO2_IO11 | MUX_PAD_CTRL(NO_PAD_CTRL),
 	IMX8MM_PAD_GPIO1_IO12_GPIO1_IO12 | MUX_PAD_CTRL(NO_PAD_CTRL),
 	IMX8MM_PAD_GPIO1_IO14_GPIO1_IO14 | MUX_PAD_CTRL(NO_PAD_CTRL),
-	IMX8MM_PAD_SAI3_RXD_GPIO4_IO30 | MUX_PAD_CTRL(NO_PAD_CTRL),
 };
 static void setup_iomux_lvds(void)
 {
@@ -112,10 +111,6 @@ static void setup_iomux_lvds(void)
 #ifdef LVDS_RESET_PAD
 	gpio_request(LVDS_RESET_PAD, "LVDS_RESET");
 	gpio_direction_output(LVDS_RESET_PAD, 1);
-#endif
-#ifdef LVDS_VDD_EN_PAD
-	gpio_request(LVDS_VDD_EN_PAD, "LVDS_VDD_EN_PAD");
-	gpio_direction_output(LVDS_VDD_EN_PAD, 1);
 #endif
 }
 
