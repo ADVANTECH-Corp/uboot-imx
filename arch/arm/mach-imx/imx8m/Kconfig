@@ -232,6 +232,12 @@ config TARGET_IMX8MM_RSB3730A2_2G
 	select SUPPORT_SPL
 	select IMX8M_LPDDR4
 
+config TARGET_IMX8MM_RSB3730A2_4G
+	bool "imx8mm rsb3730a2 4G"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_LPDDR4
+
 endchoice
 
 source "board/freescale/imx8mq_evk/Kconfig"
