@@ -215,6 +215,7 @@ int board_init(void)
 
 int board_late_init(void)
 {
+	int id;
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
 #endif
@@ -223,6 +224,24 @@ int board_late_init(void)
 	env_set("board_name", "EVK");
 	env_set("board_rev", "iMX8MM");
 #endif
+
+	gpio_request(BOARD_ID3, "BOARD_ID3");
+	gpio_request(BOARD_ID2, "BOARD_ID2");
+	gpio_request(BOARD_ID1, "BOARD_ID1");
+	gpio_direction_input(BOARD_ID3);
+	gpio_direction_input(BOARD_ID2);
+	gpio_direction_input(BOARD_ID1);
+	id = gpio_get_value(BOARD_ID3);
+	id = (id<<1)|gpio_get_value(BOARD_ID2);
+	id = (id<<1)|gpio_get_value(BOARD_ID1);
+	printf("HW BOARD ID:%d\n",id);
+	if(id == 0)
+		env_set("fdt_file", "imx8mm-rsb3730-a2-dsi2lvds-800x480.dtb");
+	else if(id == 1)
+		env_set("fdt_file", "imx8mm-rsb3730-a2.dtb");
+	else if(id == 2)
+		env_set("fdt_file", "imx8mm-rsb3730-a2-dsi-auog101uan02.dtb");
+
 	return 0;
 }
 

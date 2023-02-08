@@ -312,6 +312,10 @@
 #define LVDS_RESET_PAD IMX_GPIO_NR(1, 14)
 #endif
 
+#define BOARD_ID1 164
+#define BOARD_ID2 166
+#define BOARD_ID3 165
+
 #define ADV_AUTO_PROBE_THERMAL_TRIPS
 
 /* OTA support */
