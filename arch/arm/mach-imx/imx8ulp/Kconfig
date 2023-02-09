@@ -53,8 +53,19 @@ config TARGET_IMX8ULP_WATCH
 	select ARCH_MISC_INIT
 	select SPL_CRYPTO if SPL
 
+config TARGET_IMX8ULP_ROM2620A1
+	bool "Support i.MX8ULP ROM2620A1"
+	select IMX8ULP
+	select SUPPORT_SPL
+	select IMX8ULP_DRAM
+	select FSL_CAAM
+	select FSL_BLOB
+	select ARCH_MISC_INIT
+	select SPL_CRYPTO if SPL
+
 endchoice
 
+source "board/advantech/imx8ulp_rom2620a1/Kconfig"
 source "board/freescale/imx8ulp_evk/Kconfig"
 source "board/freescale/imx8ulp_watch/Kconfig"
 

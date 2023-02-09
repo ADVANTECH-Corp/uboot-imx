@@ -1,0 +1,6 @@
+i.MX8ULP ROM2620A1 BOARD
+M:	Advantech RISC
+S:	Maintained
+F:	board/advantech/imx8ulp_rom2620a1/
+F:	include/configs/imx8ulp_rom2620.h
+F:	configs/imx8ulp_rom2620a1_defconfig

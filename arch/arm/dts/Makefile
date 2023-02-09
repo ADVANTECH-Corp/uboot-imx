@@ -959,6 +959,7 @@ dtb-$(CONFIG_ARCH_IMX8) += \
 dtb-$(CONFIG_ARCH_IMX8ULP) += \
 	imx8ulp-evk.dtb \
 	imx8ulp-evk-i3c.dtb \
+	imx8ulp-rom2620-a1.dtb \
 	imx8ulp-9x9-evk.dtb \
 	imx8ulp-9x9-evk-i3c.dtb \
 	imx8ulp-watch.dtb
