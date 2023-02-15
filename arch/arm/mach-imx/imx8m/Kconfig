@@ -237,6 +237,7 @@ config TARGET_IMX8MM_RSB3730A2_4G
 	select IMX8MM
 	select SUPPORT_SPL
 	select IMX8M_LPDDR4
+	select IMX8M_4G_LPDDR4
 
 endchoice
 
