@@ -236,7 +236,7 @@ int board_late_init(void)
 	id = (id<<1)|gpio_get_value(BOARD_ID1);
 	printf("HW BOARD ID:%d\n",id);
 	if(id == 0)
-		env_set("fdt_file", "imx8mm-rsb3730-a2-dsi2lvds-800x480.dtb");
+		env_set("fdt_file", "imx8mm-rsb3730-a2-dsi2lvds-1920x1080.dtb");
 	else if(id == 1)
 		env_set("fdt_file", "imx8mm-rsb3730-a2.dtb");
 	else if(id == 2)
