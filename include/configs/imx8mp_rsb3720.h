@@ -194,7 +194,7 @@
 /* Size of malloc() pool */
 #define CONFIG_SYS_MALLOC_LEN		SZ_32M
 
-/* Totally 6GB or 4G DDR */
+/* Totally 6GB or 4G DDR or 2G DDR*/
 #define CONFIG_SYS_SDRAM_BASE		0x40000000
 #define PHYS_SDRAM			0x40000000
 #if defined(CONFIG_TARGET_IMX8MP_RSB3720A1_6G)
@@ -205,6 +205,8 @@
 #define PHYS_SDRAM_SIZE			0x80000000      /* 2 GB */
 #define PHYS_SDRAM_2			0xC0000000
 #define PHYS_SDRAM_2_SIZE		0x80000000      /* 2 GB */
+#elif defined(CONFIG_TARGET_IMX8MP_RSB3720A1_2G)
+#define PHYS_SDRAM_SIZE			0x80000000      /* 2 GB */
 #elif defined(CONFIG_TARGET_IMX8MP_DDR4_EVK)
 #define PHYS_SDRAM_SIZE                 0xC0000000      /* 3 GB */
 #define PHYS_SDRAM_2                    0x100000000

@@ -22,3 +22,12 @@ obj-y += spl.o
 obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_rsb3720a1_4G.o
 endif
 endif
+
+ifdef CONFIG_TARGET_IMX8MP_RSB3720A1_2G
+obj-y += imx8mp_rsb3720a1.o
+
+ifdef CONFIG_SPL_BUILD
+obj-y += spl.o
+obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_rsb3720a1_2G.o
+endif
+endif
