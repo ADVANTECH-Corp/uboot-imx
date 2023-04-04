@@ -216,6 +216,8 @@ int board_init(void)
 int board_late_init(void)
 {
 	int id;
+	char *display;
+	char fdt[100]={0};
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
 #endif
@@ -235,12 +237,20 @@ int board_late_init(void)
 	id = (id<<1)|gpio_get_value(BOARD_ID2);
 	id = (id<<1)|gpio_get_value(BOARD_ID1);
 	printf("HW BOARD ID:%d\n",id);
-	if(id == 0)
-		env_set("fdt_file", "imx8mm-rsb3730-a2-dsi2lvds-1920x1080.dtb");
-	else if(id == 1)
-		env_set("fdt_file", "imx8mm-rsb3730-a2.dtb");
-	else if(id == 2)
-		env_set("fdt_file", "imx8mm-rsb3730-a2-dsi-auog101uan02.dtb");
+	display = env_get("fdt_file");
+	if(id == 0) {
+		if (!strstr(display, "-dsi2lvds-")) {
+			sprintf(fdt, "%s%s", CONFIG_OF_LIST, "-dsi2lvds-1920x1080.dtb");
+			env_set("fdt_file", fdt);
+		}
+	} else if(id == 1)
+		env_set("fdt_file", CONFIG_DEFAULT_FDT_FILE);
+	else if(id == 2) {
+		if (!strstr(display, "-dsi-")) {
+			sprintf(fdt, "%s%s", CONFIG_OF_LIST, "-dsi-auog101uan02.dtb");
+			env_set("fdt_file", fdt);
+		}
+	}
 
 	return 0;
 }
