@@ -94,6 +94,12 @@ config TARGET_IMX8MM_EVK_QCA
 	select SUPPORT_SPL
 	select IMX8M_LPDDR4
 
+config TARGET_IMX8MM_ROM5721A1_4G
+	bool "imx8mm rom5721a1 4G"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_LPDDR4
+
 config TARGET_IMX8MM_ROM5721A1_2G
 	bool "imx8mm rom5721a1 2G"
 	select IMX8MM
