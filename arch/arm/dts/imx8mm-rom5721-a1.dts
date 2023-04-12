@@ -41,6 +41,15 @@
 		enable-active-high;
 	};
 
+	reg_usb_otg1_vbus: regulator-vbus {
+		compatible = "regulator-fixed";
+		regulator-name = "usb_otg1_vbus";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		gpio = <&gpio1 12 GPIO_ACTIVE_HIGH>;
+		enable-active-high;
+	};
+
 	wm8524: audio-codec {
 		#sound-dai-cells = <0>;
 		compatible = "wlf,wm8524";
@@ -363,13 +372,16 @@
 };
 
 &usbotg1 {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_usbotg>;
+	dr_mode = "otg";
+	vbus-supply = <&reg_usb_otg1_vbus>;
 	status = "okay";
-	extcon = <&ptn5110>;
 };
 
 &usbotg2 {
+	dr_mode = "host";
 	status = "okay";
-	extcon = <&ptn5110_2>;
 };
 
 &usdhc2 {
@@ -647,6 +659,12 @@
 	pinctrl_wdog: wdoggrp {
 		fsl,pins = <
 			MX8MM_IOMUXC_GPIO1_IO02_WDOG1_WDOG_B	0xc6
+		>;
+	};
+
+	pinctrl_usbotg: usbotggrp {
+		fsl,pins = <
+			MX8MM_IOMUXC_GPIO1_IO12_GPIO1_IO12		0x19	/* USB1_OTG_EN */
 		>;
 	};
 
