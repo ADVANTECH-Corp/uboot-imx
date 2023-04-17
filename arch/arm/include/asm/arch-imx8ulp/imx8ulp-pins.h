@@ -74,5 +74,11 @@ enum {
 	IMX8ULP_PAD_PTF0__SDHC1_D1                          = IOMUX_PAD(0x0100, 0x0100, 0x8, 0x0A68, 0x2, 0),
 	IMX8ULP_PAD_PTF1__SDHC1_D0                          = IOMUX_PAD(0x0104, 0x0104, 0x8, 0x0A64, 0x2, 0),
 
+	/* Advantech LVDS Use */
+	IMX8ULP_PAD_PTD19__PTD19                            = IOMUX_PAD(0x004c, 0x004c, 0x1, 0x0000, 0x0, 0),
+	IMX8ULP_PAD_PTD20__PTD20                            = IOMUX_PAD(0x0050, 0x0050, 0x1, 0x0000, 0x0, 0),
+	IMX8ULP_PAD_PTD21__PTD21                            = IOMUX_PAD(0x0054, 0x0054, 0x1, 0x0000, 0x0, 0),
+	IMX8ULP_PAD_PTF7__PTF7                              = IOMUX_PAD(0x011c, 0x011c, 0x1, 0x0000, 0x0, 0),
+
 };
 #endif  /* __ASM_ARCH_IMX8ULP_PINS_H__ */

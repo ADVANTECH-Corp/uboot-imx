@@ -162,6 +162,19 @@ void reset_lsm6dsx(uint8_t i2c_bus, uint8_t addr)
 		printf("%s: Reset device 0x%x successfully.\n", __func__, addr);
 }
 
+#define LVDS_PAD_CTRL	PAD_CTL_PUS_DOWN
+static iomux_cfg_t const lvds_pads[] = {
+	IMX8ULP_PAD_PTF7__PTF7 | MUX_PAD_CTRL(LVDS_PAD_CTRL),
+	IMX8ULP_PAD_PTD19__PTD19 | MUX_PAD_CTRL(LVDS_PAD_CTRL),
+	IMX8ULP_PAD_PTD20__PTD20 | MUX_PAD_CTRL(LVDS_PAD_CTRL),
+	IMX8ULP_PAD_PTD21__PTD21 | MUX_PAD_CTRL(LVDS_PAD_CTRL),
+};
+
+static void setup_lvds(void)
+{
+	imx8ulp_iomux_setup_multiple_pads(lvds_pads, ARRAY_SIZE(lvds_pads));
+}
+
 int board_init(void)
 {
 #if defined(CONFIG_NXP_FSPI) || defined(CONFIG_FSL_FSPI_NAND)
@@ -181,6 +194,9 @@ int board_init(void)
 		mipi_dsi_mux_panel();
 		mipi_dsi_panel_backlight();
 	}
+
+	printf("[ADV] gpio request LVDS PAD test.\n");
+	setup_lvds();
 
 	return 0;
 }
