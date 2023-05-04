@@ -1,0 +1,6 @@
+i.MX8MP ROM5722A1 BOARD
+M:	Peng Fan <peng.fan@nxp.com>
+S:	Maintained
+F:	board/freescale/imx8mp_rom5722a1/
+F:	include/configs/imx8mp_rom5722.h
+F:	configs/imx8mp_rom5722a1_6G_defconfig
