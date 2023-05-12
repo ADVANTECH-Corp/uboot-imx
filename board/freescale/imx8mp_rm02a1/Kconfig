@@ -1,0 +1,14 @@
+if TARGET_IMX8MP_RM02A1_6G || TARGET_IMX8MP_RM02A1_4G || TARGET_IMX8MP_RM02A1_2G
+
+config SYS_BOARD
+	default "imx8mp_rm02a1"
+
+config SYS_VENDOR
+	default "freescale"
+
+config SYS_CONFIG_NAME
+	default "imx8mp_rm02"
+
+source "board/freescale/common/Kconfig"
+
+endif
