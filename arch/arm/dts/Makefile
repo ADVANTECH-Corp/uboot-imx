@@ -973,6 +973,7 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
 	imx8mm-ab2.dtb \
 	imx8mm-rom5721-a1.dtb \
 	imx8mp-rom5722-a1.dtb \
+	imx8mp-rsb3720-a1.dtb \
 	imx8mm-icore-mx8mm-ctouch2.dtb \
 	imx8mm-icore-mx8mm-edimm2.2.dtb \
 	imx8mm-kontron-n801x-s.dtb \
@@ -1289,9 +1290,6 @@ dtb-$(CONFIG_TARGET_IMX8MM_CL_IOT_GATE_OPTEE) += imx8mm-cl-iot-gate-optee.dtb \
 					imx8mm-cl-iot-gate-ied-tpm0.dtbo \
 					imx8mm-cl-iot-gate-ied-tpm1.dtbo
 
-ifneq ($(CONFIG_TARGET_IMX8MP_RSB3720A1_4G)$(CONFIG_TARGET_IMX8MP_RSB3720A1_6G),)
-dtb-y += imx8mp-rsb3720-a1.dtb
-endif
 
 dtb-$(CONFIG_TARGET_EA_LPC3250DEVKITV2) += lpc3250-ea3250.dtb
 
