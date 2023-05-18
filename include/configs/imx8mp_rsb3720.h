@@ -11,6 +11,8 @@
 #include <asm/arch/imx-regs.h>
 #include "imx_env.h"
 
+#define CONFIG_HAS_ETH1
+
 #define CONFIG_SYS_BOOTM_LEN		(32 * SZ_1M)
 
 #define CONFIG_SPL_MAX_SIZE		(176 * 1024)
@@ -123,7 +125,7 @@
 	"bsp_script=boot.scr\0" \
 	"image=Image\0" \
 	"splashimage=0x50000000\0" \
-	"console=ttymxc1,115200\0" \
+	"console=ttymxc2,115200\0" \
 	"fdt_addr_r=0x43000000\0"			\
 	"fdt_addr=0x43000000\0"			\
 	"boot_fdt=try\0" \
@@ -196,18 +198,30 @@
 
 #define CONFIG_MMCROOT			"/dev/mmcblk1p2"  /* USDHC2 */
 
-/* Totally 6GB DDR */
+/* Totally 6GB or 4G DDR or 2G DDR*/
 #define CONFIG_SYS_SDRAM_BASE		0x40000000
 #define PHYS_SDRAM			0x40000000
+#if defined(CONFIG_TARGET_IMX8MP_RSB3720A1_6G)
 #define PHYS_SDRAM_SIZE			0xC0000000	/* 3 GB */
 #define PHYS_SDRAM_2			0x100000000
-#ifdef CONFIG_TARGET_IMX8MP_DDR4_EVK
-#define PHYS_SDRAM_2_SIZE		0x40000000	/* 1 GB */
+#define PHYS_SDRAM_2_SIZE		0xC0000000      /* 3 GB */
+#elif defined(CONFIG_TARGET_IMX8MP_RSB3720A1_4G)
+#define PHYS_SDRAM_SIZE			0x80000000      /* 2 GB */
+#define PHYS_SDRAM_2			0xC0000000
+#define PHYS_SDRAM_2_SIZE		0x80000000      /* 2 GB */
+#elif defined(CONFIG_TARGET_IMX8MP_RSB3720A1_2G)
+#define PHYS_SDRAM_SIZE			0x80000000      /* 2 GB */
+#elif defined(CONFIG_TARGET_IMX8MP_DDR4_EVK)
+#define PHYS_SDRAM_SIZE                 0xC0000000      /* 3 GB */
+#define PHYS_SDRAM_2                    0x100000000
+#define PHYS_SDRAM_2_SIZE               0x40000000      /* 1 GB */
 #else
+#define PHYS_SDRAM_SIZE                 0xC0000000      /* 3 GB */
+#define PHYS_SDRAM_2			0x100000000
 #define PHYS_SDRAM_2_SIZE		0xC0000000	/* 3 GB */
 #endif
 
-#define CONFIG_MXC_UART_BASE		UART2_BASE_ADDR
+#define CONFIG_MXC_UART_BASE		UART3_BASE_ADDR
 
 /* Monitor Command Prompt */
 #define CONFIG_SYS_CBSIZE		2048
@@ -243,7 +257,7 @@
 #define CONFIG_USB_GADGET_VBUS_DRAW 2
 
 #ifdef CONFIG_ANDROID_SUPPORT
-#include "imx8mp_evk_android.h"
+#include "imx8mp_rsb3720a1_android.h"
 #endif
 
 #endif
