@@ -76,7 +76,7 @@
 	u-boot,off-on-delay-us = <20000>;
 };
 
-&pinctrl_uart2 {
+&pinctrl_uart3 {
 	u-boot,dm-spl;
 };
 
