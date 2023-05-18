@@ -11,7 +11,7 @@
 #include <asm/arch/imx-regs.h>
 #include "imx_env.h"
 
-#define ADVANTECH_MX8_PLATFOR
+#define CONFIG_ADVANTECH_MX8
 #define CONFIG_SYS_BOOTM_LEN		(64 * SZ_1M)
 #define CONFIG_SPL_MAX_SIZE		(148 * 1024)
 #define CONFIG_SYS_MONITOR_LEN		SZ_512K
