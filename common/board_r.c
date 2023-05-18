@@ -64,7 +64,7 @@
 #ifdef CONFIG_FSL_FASTBOOT
 #include <fb_fsl.h>
 #endif
-#ifdef ADVANTECH_MX8_PLATFOR
+#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
 #include <version.h>
 #include <spi_flash.h>
 
@@ -491,7 +491,7 @@ static int initr_ethaddr(void)
 	return 0;
 }
 
-#ifdef ADVANTECH_MX8_PLATFOR
+#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
 #define XMK_STR(x)	#x
 #define MK_STR(x)	XMK_STR(x)
 
@@ -946,7 +946,7 @@ static init_fnc_t init_sequence_r[] = {
 	/* PPC has a udelay(20) here dating from 2002. Why? */
 #ifdef CONFIG_CMD_NET
 	initr_ethaddr,
-#ifdef ADVANTECH_MX8_PLATFOR
+#if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
 	boardcfg_get_mac, /* Get MAC address from SPI */
 #endif
 #endif
