@@ -11,6 +11,8 @@
 #include <asm/arch/imx-regs.h>
 #include "imx_env.h"
 
+#define CONFIG_HAS_ETH1
+
 #define CONFIG_SYS_BOOTM_LEN		(32 * SZ_1M)
 
 #define CONFIG_SPL_MAX_SIZE		(176 * 1024)
