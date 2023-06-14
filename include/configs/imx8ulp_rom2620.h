@@ -182,7 +182,11 @@
 
 #define CONFIG_SYS_SDRAM_BASE		0x80000000
 #define PHYS_SDRAM			0x80000000
+#if defined(CONFIG_TARGET_IMX8ULP_ROM2620A1_1G)
+#define PHYS_SDRAM_SIZE                 0x40000000 /* 1GB DDR */
+#elif defined(CONFIG_TARGET_IMX8ULP_ROM2620A1_2G)
 #define PHYS_SDRAM_SIZE			0x80000000 /* 2GB DDR */
+#endif
 
 /* Monitor Command Prompt */
 #define CONFIG_SYS_CBSIZE		2048
