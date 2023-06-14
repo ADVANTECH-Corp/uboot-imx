@@ -49,8 +49,8 @@ config TARGET_IMX8ULP_WATCH
 	select ARCH_MISC_INIT
 	select SPL_CRYPTO if SPL
 
-config TARGET_IMX8ULP_ROM2620A1
-	bool "Support i.MX8ULP ROM2620A1"
+config TARGET_IMX8ULP_ROM2620A1_2G
+	bool "Support i.MX8ULP ROM2620A1 2G"
 	select IMX8ULP
 	select SUPPORT_SPL
 	select IMX8ULP_DRAM
@@ -58,6 +58,16 @@ config TARGET_IMX8ULP_ROM2620A1
 	select FSL_BLOB
 	select ARCH_MISC_INIT
 	select SPL_CRYPTO if SPL
+
+config TARGET_IMX8ULP_ROM2620A1_1G
+        bool "Support i.MX8ULP ROM2620A1 1G"
+        select IMX8ULP
+        select SUPPORT_SPL
+        select IMX8ULP_DRAM
+        select FSL_CAAM
+        select FSL_BLOB
+        select ARCH_MISC_INIT
+        select SPL_CRYPTO if SPL
 
 endchoice
 
