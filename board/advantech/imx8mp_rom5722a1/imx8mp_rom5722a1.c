@@ -417,6 +417,19 @@ int board_typec_get_mode(int index)
 #endif
 #endif
 
+#define WDOG_TRIG IMX_GPIO_NR(4, 20)
+
+static iomux_v3_cfg_t wdt_trig[] = {
+	MX8MP_PAD_SAI1_MCLK__GPIO4_IO20 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+static void setup_iomux_wdt(void)
+{
+	printf("[ADVANTECH] setup_iomux_wdt\n");
+	imx_iomux_v3_setup_multiple_pads(wdt_trig, ARRAY_SIZE(wdt_trig));
+	gpio_request(WDOG_TRIG, "wdt_trig");
+	gpio_direction_output(WDOG_TRIG, 1);
+}
 static void setup_fec(void)
 {
 	struct iomuxc_gpr_base_regs *gpr =
@@ -484,8 +497,45 @@ int board_init(void)
 		      DISPMIX, true, 0, 0, 0, 0, &res);
 	arm_smccc_smc(IMX_SIP_GPC, IMX_SIP_GPC_PM_DOMAIN,
 		      MIPI, true, 0, 0, 0, 0, &res);
-
+	setup_iomux_wdt();
 	return 0;
+}
+
+#define DEBUG_UART_SEL IMX_GPIO_NR(3, 14)
+
+static iomux_v3_cfg_t debug_uart_sel_gpio[] = {
+	MX8MP_PAD_NAND_DQS__GPIO3_IO14 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+static void debug_uart_sel(void)
+{
+	int value = -1;
+
+	imx_iomux_v3_setup_multiple_pads(debug_uart_sel_gpio, ARRAY_SIZE(debug_uart_sel_gpio));
+	gpio_request(DEBUG_UART_SEL, "debug_uart_sel");
+	gpio_direction_input(DEBUG_UART_SEL);
+
+	value = gpio_get_value(DEBUG_UART_SEL);
+
+	/* High: enable debug log. Low: disable debug log. */
+	if(value == 0)
+	{
+		env_set("console", "disabled");
+	}
+}
+
+#define COLD_RST_EN IMX_GPIO_NR(3, 22)
+
+static iomux_v3_cfg_t cold_rst_en_gpio[] = {
+	MX8MP_PAD_SAI5_RXD1__GPIO3_IO22 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+static void cold_rst_en(void)
+{
+	printf("[ADVANTECH] cold_rst_en\n");
+	imx_iomux_v3_setup_multiple_pads(cold_rst_en_gpio, ARRAY_SIZE(cold_rst_en_gpio));
+	gpio_request(COLD_RST_EN, "cold_rst_en");
+	gpio_direction_output(COLD_RST_EN, 1);
 }
 
 int board_late_init(void)
@@ -498,6 +548,8 @@ int board_late_init(void)
 	env_set("board_rev", "iMX8MP");
 #endif
 
+	debug_uart_sel();
+	cold_rst_en();
 	return 0;
 }
 
