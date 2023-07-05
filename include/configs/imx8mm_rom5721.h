@@ -57,7 +57,7 @@
 #define PHY_ANEG_TIMEOUT 20000
 
 #define CONFIG_FEC_XCV_TYPE             RGMII
-#define CONFIG_FEC_MXC_PHYADDR          0
+#define CONFIG_FEC_MXC_PHYADDR          1
 
 #define IMX_FEC_BASE			0x30BE0000
 #endif
@@ -231,11 +231,10 @@
 #define CONFIG_SYS_FSL_ESDHC_ADDR       0
 
 #ifdef CONFIG_FSL_FSPI
-#define FSL_FSPI_FLASH_SIZE		SZ_32M
+#define FSL_FSPI_FLASH_SIZE		SZ_64M
 #define FSL_FSPI_FLASH_NUM		1
 #define FSPI0_BASE_ADDR			0x30bb0000
 #define FSPI0_AMBA_BASE			0x0
-#define CONFIG_FSPI_QUAD_SUPPORT
 
 #define CONFIG_SYS_FSL_FSPI_AHB
 #endif
@@ -263,5 +262,14 @@
 #ifdef CONFIG_ANDROID_SUPPORT
 #include "imx8mm_evk_android.h"
 #endif
+
+#define WDOG_TRIG IMX_GPIO_NR(1, 15)
+
+#define WDOG_ENABLE IMX_GPIO_NR(1, 9)
+#define DEBUG_UART_SEL IMX_GPIO_NR(4, 1)
+#define LVDS_STBY_PAD IMX_GPIO_NR(3, 23)
+#define LVDS_RESET_PAD IMX_GPIO_NR(3, 24)
+#define I2S_EN IMX_GPIO_NR(1, 10)
+#define RESET_OUT IMX_GPIO_NR(4, 28)
 
 #endif

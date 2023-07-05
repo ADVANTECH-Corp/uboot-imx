@@ -37,6 +37,25 @@ static iomux_v3_cfg_t const wdog_pads[] = {
 	IMX8MM_PAD_GPIO1_IO02_WDOG1_WDOG_B  | MUX_PAD_CTRL(WDOG_PAD_CTRL),
 };
 
+static iomux_v3_cfg_t debug_uart_sel_gpio[] = {
+	IMX8MM_PAD_SAI1_RXC_GPIO4_IO1 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+static void debug_uart_sel(void)
+{
+	int value = -1;
+
+	imx_iomux_v3_setup_multiple_pads(debug_uart_sel_gpio, ARRAY_SIZE(debug_uart_sel_gpio));
+	gpio_request(DEBUG_UART_SEL, "debug_uart_sel");
+	gpio_direction_input(DEBUG_UART_SEL);
+
+	value = gpio_get_value(DEBUG_UART_SEL);
+
+	/* High: enable debug log. Low: disable debug log. */
+	if(value == 0)
+		env_set("console", "disabled");
+}
+
 #ifdef CONFIG_NAND_MXS
 #ifdef CONFIG_SPL_BUILD
 #define NAND_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_FSEL2 | PAD_CTL_HYS)
@@ -107,6 +126,42 @@ int board_early_init_f(void)
 	return 0;
 }
 
+static iomux_v3_cfg_t const gpio_init_pads[] = {
+        IMX8MM_PAD_SAI5_RXD2_GPIO3_IO23 | MUX_PAD_CTRL(NO_PAD_CTRL),	//LVDS_STBY
+        IMX8MM_PAD_SAI5_RXD3_GPIO3_IO24 | MUX_PAD_CTRL(NO_PAD_CTRL),	//LVDS_RESET
+		IMX8MM_PAD_GPIO1_IO10_GPIO1_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),	//I2S_EN
+		IMX8MM_PAD_SAI3_RXFS_GPIO4_IO28 | MUX_PAD_CTRL(NO_PAD_CTRL),	//RESET_OUT
+};
+
+static void setup_iomux_gpio(void)
+{
+        imx_iomux_v3_setup_multiple_pads(gpio_init_pads,
+                                         ARRAY_SIZE(gpio_init_pads));
+
+        gpio_request(LVDS_STBY_PAD, "LVDS_STBY");
+        gpio_direction_output(LVDS_STBY_PAD, 1);
+		udelay(100);	//for lvds init sequence
+        gpio_request(LVDS_RESET_PAD, "LVDS_RESET");
+        gpio_direction_output(LVDS_RESET_PAD, 1);
+
+		gpio_request(I2S_EN, "I2S_EN");
+        gpio_direction_output(I2S_EN, 1);
+
+		gpio_request(RESET_OUT, "RESET_OUT");
+        gpio_direction_output(RESET_OUT, 1);
+}
+
+void setup_iomux_wdt()
+{
+        imx_iomux_v3_setup_pad(IMX8MM_PAD_GPIO1_IO15_GPIO1_IO15| MUX_PAD_CTRL(NO_PAD_CTRL));
+        imx_iomux_v3_setup_pad(IMX8MM_PAD_GPIO1_IO09_GPIO1_IO9| MUX_PAD_CTRL(NO_PAD_CTRL));
+        gpio_request(WDOG_ENABLE, "wdt_en");
+        gpio_direction_output(WDOG_ENABLE,0);
+        gpio_request(WDOG_TRIG, "wdt_trig");
+        gpio_direction_output(WDOG_TRIG,1);
+
+}
+
 #if IS_ENABLED(CONFIG_FEC_MXC)
 static int setup_fec(void)
 {
@@ -140,6 +195,7 @@ int board_phy_config(struct phy_device *phydev)
 #endif
 
 #ifdef CONFIG_USB_TCPC
+#if 0
 struct tcpc_port port1;
 struct tcpc_port port2;
 
@@ -248,25 +304,25 @@ static int setup_typec(void)
 
 	return ret;
 }
-
+#endif
 int board_usb_init(int index, enum usb_init_type init)
 {
 	int ret = 0;
-	struct tcpc_port *port_ptr;
+//	struct tcpc_port *port_ptr;
 
 	debug("board_usb_init %d, type %d\n", index, init);
 
-	if (index == 0)
-		port_ptr = &port1;
-	else
-		port_ptr = &port2;
+//	if (index == 0)
+//		port_ptr = &port1;
+//	else
+//		port_ptr = &port2;
 
 	imx8m_usb_power(index, true);
 
-	if (init == USB_INIT_HOST)
-		tcpc_setup_dfp_mode(port_ptr);
-	else
-		tcpc_setup_ufp_mode(port_ptr);
+//	if (init == USB_INIT_HOST)
+//		tcpc_setup_dfp_mode(port_ptr);
+//	else
+//		tcpc_setup_ufp_mode(port_ptr);
 
 	return ret;
 }
@@ -277,12 +333,12 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 
 	debug("board_usb_cleanup %d, type %d\n", index, init);
 
-	if (init == USB_INIT_HOST) {
-		if (index == 0)
-			ret = tcpc_disable_src_vbus(&port1);
-		else
-			ret = tcpc_disable_src_vbus(&port2);
-	}
+//	if (init == USB_INIT_HOST) {
+//		if (index == 0)
+//			ret = tcpc_disable_src_vbus(&port1);
+//		else
+//			ret = tcpc_disable_src_vbus(&port2);
+//	}
 
 	imx8m_usb_power(index, false);
 	return ret;
@@ -291,6 +347,7 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 int board_ehci_usb_phy_mode(struct udevice *dev)
 {
 	int ret = 0;
+#if 0
 	enum typec_cc_polarity pol;
 	enum typec_cc_state state;
 	struct tcpc_port *port_ptr;
@@ -307,7 +364,7 @@ int board_ehci_usb_phy_mode(struct udevice *dev)
 		if (state == TYPEC_STATE_SRC_RD_RA || state == TYPEC_STATE_SRC_RD)
 			return USB_INIT_HOST;
 	}
-
+#endif
 	return USB_INIT_DEVICE;
 }
 
@@ -321,7 +378,7 @@ int board_init(void)
 	struct arm_smccc_res res;
 
 #ifdef CONFIG_USB_TCPC
-	setup_typec();
+	//setup_typec();
 #endif
 
 	if (IS_ENABLED(CONFIG_FEC_MXC))
@@ -332,6 +389,8 @@ int board_init(void)
 	arm_smccc_smc(IMX_SIP_GPC, IMX_SIP_GPC_PM_DOMAIN,
 		      MIPI, true, 0, 0, 0, 0, &res);
 
+	setup_iomux_gpio();
+	setup_iomux_wdt();
 	return 0;
 }
 
@@ -340,6 +399,8 @@ int board_late_init(void)
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
 #endif
+
+	debug_uart_sel();
 
 	if (IS_ENABLED(CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG)) {
 		env_set("board_name", "EVK");
