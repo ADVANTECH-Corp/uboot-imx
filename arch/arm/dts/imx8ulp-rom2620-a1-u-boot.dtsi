@@ -4,6 +4,13 @@
  */
 
 / {
+	mu@27020000 {
+		compatible = "fsl,imx8ulp-mu";
+		reg = <0 0x27020000 0 0x10000>;
+		status = "okay";
+		u-boot,dm-spl;
+	};
+
 	aliases {
 		usbgadget0 = &usbg1;
 		usbgadget1 = &usbg2;
@@ -29,7 +36,7 @@
 	};
 };
 
-&{/soc@0} {
+&soc {
 	u-boot,dm-spl;
 };
 
@@ -59,10 +66,6 @@
 };
 
 &pinctrl_lpuart5 {
-	u-boot,dm-spl;
-};
-
-&s400_mu {
 	u-boot,dm-spl;
 };
 
@@ -124,10 +127,8 @@
 
 &usbotg1 {
 	compatible = "fsl,imx8ulp-usb", "fsl,imx7ulp-usb", "fsl,imx27-usb";
-	fsl,usbphy = <&usbphy1>;
 };
 
 &usbotg2 {
 	compatible = "fsl,imx8ulp-usb", "fsl,imx7ulp-usb", "fsl,imx27-usb";
-	fsl,usbphy = <&usbphy2>;
 };
