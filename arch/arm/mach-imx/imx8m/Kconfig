@@ -358,6 +358,16 @@ config TARGET_IMX8MP_ROM5722A1_6G
         select ARCH_MISC_INIT
         select SPL_CRYPTO if SPL
 
+config TARGET_IMX8MP_ROM5722A1_4G
+        bool "Support i.MX8MP ROM5722A1 4G"
+        select IMX8MP
+        select SUPPORT_SPL
+        select IMX8M_LPDDR4
+        select FSL_CAAM
+        select FSL_BLOB
+        select ARCH_MISC_INIT
+        select SPL_CRYPTO if SPL
+
 config TARGET_IMX8MP_RSB3720A1_6G
 	bool "Support i.MX8MP RSB3720A1 6G"
 	select IMX8MP
