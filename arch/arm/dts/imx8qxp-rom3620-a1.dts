@@ -8,7 +8,7 @@
 #include "fsl-imx8qxp.dtsi"
 
 / {
-	model = "Freescale i.MX8QXP ROM-5620 A1";
+	model = "Freescale i.MX8QXP ROM-3620 A1";
 	compatible = "fsl,imx8qxp-mek", "fsl,imx8qxp";
 
 	aliases {
