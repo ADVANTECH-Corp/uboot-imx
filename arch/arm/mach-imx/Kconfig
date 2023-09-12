@@ -1,6 +1,12 @@
 config MACH_IMX
 	bool
 
+config ADVANTECH_MX6
+    bool "Support Advantech imx6 projects"
+
+config ADVANTECH_MX8
+    bool "Support Advantech imx8 projects"
+
 config HAS_CAAM
 	bool
 
