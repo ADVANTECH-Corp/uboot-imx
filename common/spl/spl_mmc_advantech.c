@@ -27,6 +27,7 @@
 #include <fat.h>
 #include <version.h>
 #include <u-boot/crc.h>
+#include <image.h>
 DECLARE_GLOBAL_DATA_PTR;
 
 extern struct spl_image_info spl_image;

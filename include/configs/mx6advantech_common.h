@@ -16,6 +16,12 @@
 
 #define CONFIG_MXC_UART
 
+/* SATA CONFIG */
+#define CONFIG_SYS_SATA_MAX_DEVICE      1
+#define CONFIG_DWC_AHSATA_PORT_ID       0
+#define CONFIG_DWC_AHSATA_BASE_ADDR     SATA_ARB_BASE_ADDR
+#define CONFIG_LBA48
+
 /* MMC Configs */
 #define CONFIG_SYS_FSL_ESDHC_ADDR      0
 
@@ -296,18 +302,6 @@
 #elif defined(CONFIG_ENV_IS_IN_NAND)
 #elif defined(CONFIG_ENV_IS_IN_SATA)
 #define CONFIG_SYS_SATA_ENV_DEV		0
-#endif
-
-/* I2C Configs */
-#ifndef CONFIG_DM_I2C
-#define CONFIG_SYS_I2C
-#endif
-#ifdef CONFIG_CMD_I2C
-#define CONFIG_SYS_I2C_MXC
-#define CONFIG_SYS_I2C_MXC_I2C1		/* enable I2C bus 1 */
-#define CONFIG_SYS_I2C_MXC_I2C2		/* enable I2C bus 2 */
-#define CONFIG_SYS_I2C_MXC_I2C3		/* enable I2C bus 3 */
-#define CONFIG_SYS_I2C_SPEED		  100000
 #endif
 
 /* PMIC */

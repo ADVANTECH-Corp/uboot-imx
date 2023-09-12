@@ -14,11 +14,13 @@
 #include <asm/mach-imx/spi.h>
 #include <env.h>
 #include <linux/errno.h>
+#include <linux/delay.h>
 #include <asm/gpio.h>
 #include <asm/mach-imx/mxc_i2c.h>
 #include <asm/mach-imx/iomux-v3.h>
 #include <asm/mach-imx/boot_mode.h>
 #include <asm/mach-imx/video.h>
+#include <asm/mach-imx/sata.h>
 #include <mmc.h>
 #include <fsl_esdhc_imx.h>
 #include <miiphy.h>
@@ -206,9 +208,28 @@ iomux_v3_cfg_t const di0_pads[] = {
 	IOMUX_PADS(PAD_DI0_PIN3__IPU1_DI0_PIN03),		/* DISP0_VSYNC */
 };
 
+#ifdef CONFIG_SWITCH_DEBUG_PORT_TO_UART1
+iomux_v3_cfg_t const uart1_switch_pads[] = {
+	MX6_PAD_SD3_CLK__GPIO7_IO03 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+static unsigned int uart1_funtion = 1;
+#endif
 static void setup_iomux_uart(void)
 {
+#ifdef CONFIG_SWITCH_DEBUG_PORT_TO_UART1
+        imx_iomux_v3_setup_multiple_pads(uart1_switch_pads, ARRAY_SIZE(uart1_switch_pads));
+        gpio_request(IMX_GPIO_NR(7, 3), "UART1_SWITCH");
+        gpio_direction_input(IMX_GPIO_NR(7, 3));
+        uart1_funtion = gpio_get_value(IMX_GPIO_NR(7, 3));
+        gpio_free(IMX_GPIO_NR(7, 3));
+
+        if (uart1_funtion == 0)
+                gd->flags |= GD_FLG_SILENT;
+#endif
 	SETUP_IOMUX_PADS(uart1_pads);
+#ifdef ADV_ENABLE_UART2
+	SETUP_IOMUX_PADS(uart2_pads);
+#endif
 }
 
 #if defined(CONFIG_MX6DL) && defined(CONFIG_MXC_EPDC)
@@ -867,9 +888,119 @@ int board_early_init_f(void)
 	setup_display();
 #endif
 
+#ifdef CONFIG_CMD_SATA
+        setup_sata();
+#endif
 	return 0;
 }
 
+#if defined (CONFIG_ADVANTECH) && defined(CONFIG_SUPPORT_LVDS)
+void setup_lvds_init(void)
+{
+	imx_iomux_v3_setup_pad(IOMUX_LCD_BKLT_PWM); /* LCD_BKLT_PWM */
+	imx_iomux_v3_setup_pad(IOMUX_LCD_BKLT_EN); /* LCD_BKLT_EN */
+	imx_iomux_v3_setup_pad(IOMUX_LCD_VDD_EN); /* LCD_VDD_EN */
+
+	gpio_request(LCD_BKLT_PWM, "LCD BKLT PWM");
+	gpio_request(LCD_BKLT_EN, "LCD BKLT EN");
+	gpio_request(LCD_VDD_EN, "LCD VDD EN");
+
+#ifdef IOMUX_VDD_BKLT_EN
+	imx_iomux_v3_setup_pad(IOMUX_VDD_BKLT_EN); /* VDD_BKLT_EN */
+	gpio_request(VDD_BKLT_EN, "VDD BKLT EN");
+#endif
+	/* LCD_BKLT_EN - disable backlight */
+#ifdef LCD_BKLT_EN_INVERT
+	gpio_direction_output(LCD_BKLT_EN, 1);
+#else
+	gpio_direction_output(LCD_BKLT_EN, 0);
+#endif
+	mdelay(10);
+	/* LCD_BKLT_PWM - disable pwm */
+#ifdef LCD_BKLT_PWM_INVERT
+	gpio_direction_output(LCD_BKLT_PWM, 1);
+#else
+	gpio_direction_output(LCD_BKLT_PWM, 0);
+#endif
+	mdelay(10);
+	/* VDD_BKLT_EN - disable backight VDD */
+#ifdef IOMUX_VDD_BKLT_EN
+#ifdef VDD_BKLT_EN_INVERT
+	gpio_direction_output(VDD_BKLT_EN, 1);
+#else
+	gpio_direction_output(VDD_BKLT_EN, 0);
+#endif
+	mdelay(200);
+#endif
+	/* LCD_VDD_EN - disable display VDD */
+#ifdef LCD_VDD_EN_INVERT
+	gpio_direction_output(LCD_VDD_EN, 1);
+#else
+	gpio_direction_output(LCD_VDD_EN, 0);
+#endif
+}
+
+#endif
+#ifdef	DIGITAL_OUTPUT
+void setup_do_init()
+{
+	imx_iomux_v3_setup_pad(IOMUX_DO_1| MUX_PAD_CTRL(NO_PAD_CTRL));
+	imx_iomux_v3_setup_pad(IOMUX_DO_2 | MUX_PAD_CTRL(NO_PAD_CTRL));
+	imx_iomux_v3_setup_pad(IOMUX_DO_3| MUX_PAD_CTRL(NO_PAD_CTRL));
+	imx_iomux_v3_setup_pad(IOMUX_DO_POWER_OFF| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_direction_output(DO_1,0);
+	gpio_direction_output(DO_2,0);
+	gpio_direction_output(DO_3,0);
+	gpio_direction_output(DO_POWER_OFF,0);
+}
+#endif
+
+#ifdef	CONFIG_PCIE_POWER
+void setup_iomux_pcie_power()
+{
+	imx_iomux_v3_setup_pad(IOMUX_PCIE_POWER| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(PCIE_POWER, "PCIE_POWER");
+	gpio_direction_output(PCIE_POWER,1);
+
+}
+#endif
+
+#ifdef	CONFIG_PCIE_RESET
+void setup_iomux_pcie_reset()
+{
+	imx_iomux_v3_setup_pad(IOMUX_PCIE_RESET| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(PCIE_RESET, "PCIE_RESET");
+        gpio_direction_output(PCIE_RESET,0);
+
+}
+#endif
+
+#ifdef	CONFIG_M2_SLOT
+void setup_iomux_m2()
+{
+#ifdef IOMUX_M2_WLAN_OFF
+	imx_iomux_v3_setup_pad(IOMUX_M2_WLAN_OFF| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(M2_WLAN_OFF, "M2_WLAN_OFF");
+        gpio_direction_output(M2_WLAN_OFF,0);
+	mdelay(10);
+        gpio_direction_output(M2_WLAN_OFF,1);
+#endif
+#ifdef IOMUX_M2_BT_OFF
+	imx_iomux_v3_setup_pad(IOMUX_M2_BT_OFF| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(M2_BT_OFF, "M2_BT_OFF");
+        gpio_direction_output(M2_BT_OFF,0);
+	mdelay(10);
+        gpio_direction_output(M2_BT_OFF,1);
+#endif
+#ifdef	IOMUX_M2E_SW_RESET
+	imx_iomux_v3_setup_pad(IOMUX_M2E_SW_RESET| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(M2E_SW_RESET, "M2E_SW_RESET");
+        gpio_direction_output(M2E_SW_RESET,0);
+	mdelay(10);
+        gpio_direction_output(M2E_SW_RESET,1);
+#endif
+}
+#endif
 int board_init(void)
 {
 	/* address of boot parameters */
@@ -1302,6 +1433,11 @@ int board_late_init(void)
 
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
+#endif
+
+#ifdef CONFIG_SWITCH_DEBUG_PORT_TO_UART1
+	if (uart1_funtion == 0)
+		env_set("console", "NULL");
 #endif
 
 	return 0;
