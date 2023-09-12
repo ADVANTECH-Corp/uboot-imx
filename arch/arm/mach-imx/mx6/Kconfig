@@ -461,7 +461,7 @@ config TARGET_MX6QSABRESD
 config TARGET_MX6QRSB4410A1_1G
 	bool "Support mx6qrsb4410a1 1G"
     select TARGET_MX6ADVANTECH_COMMON
-    select MX6Q
+    depends on MX6Q
 
 config TARGET_MX6QPSABRESD
 	bool "mx6qpsabresd"

@@ -854,7 +854,7 @@ int board_init(void)
 	return 0;
 }
 
-#ifdef CONFIG_POWER
+#ifdef CONFIG_POWER_LEGACY
 int power_init_board(void)
 {
 	struct pmic *pfuze;
@@ -1028,7 +1028,7 @@ int power_init_board(void)
 #endif
 
 #ifdef CONFIG_LDO_BYPASS_CHECK
-#ifdef CONFIG_POWER
+#ifdef CONFIG_POWER_LEGACY
 void ldo_mode_set(int ldo_bypass)
 {
 	unsigned int value;
