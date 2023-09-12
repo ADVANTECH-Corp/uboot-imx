@@ -923,7 +923,7 @@ endif
 
 # Always append INPUTS so that arch config.mk's can add custom ones
 ifeq ($(CONFIG_ARCH_MX6)$(CONFIG_ADVANTECH), yy)
-INPUTS-y += u-boot.srec u-boot.bin u-boot_crc.bin u-boot.sym System.map u-boot.cfg binary_size_check
+INPUTS-y += u-boot.srec u-boot.bin u-boot_crc.bin u-boot_crc_adv.bin u-boot.sym System.map u-boot.cfg binary_size_check
 else
 INPUTS-y += u-boot.srec u-boot.bin u-boot.sym System.map binary_size_check
 endif
@@ -1315,6 +1315,12 @@ u-boot_crc.bin:	u-boot.bin
 		@./mk_uboot_crc
 		@crc32 ./u-boot_crc.bin > ./u-boot_crc.bin.crc
 		@rm -f ./mk_uboot_crc
+endif
+ifeq ($(CONFIG_ARCH_MX6)$(CONFIG_ADVANTECH), yy)
+u-boot_crc_adv.bin: u-boot_crc.bin
+		@touch u-boot_crc_adv.bin
+		@dd if=u-boot_crc.bin.crc of=u-boot_crc_adv.bin conv=fsync
+		@dd if=u-boot_crc.bin of=u-boot_crc_adv.bin bs=512 seek=1 conv=fsync
 endif
 u-boot.ldr:	u-boot
 		$(CREATE_LDR_ENV)
