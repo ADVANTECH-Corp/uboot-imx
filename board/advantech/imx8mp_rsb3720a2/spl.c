@@ -123,6 +123,8 @@ int power_init_board(void)
 	/* Set NVCC_DRAM to 1.2v for DDR4 */
 	pmic_reg_write(dev, PCA9450_BUCK6OUT, 0x18);
 #endif
+	/* Forced enable the I2C level translator*/
+	pmic_reg_write(dev, PCA9450_CONFIG2, 0x03);
 
 	return 0;
 }
