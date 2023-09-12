@@ -439,6 +439,23 @@ static int setup_eqos(void)
 #if CONFIG_IS_ENABLED(NET)
 int board_phy_config(struct phy_device *phydev)
 {
+	unsigned short val;
+
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x1f, 0x0d04);
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x10, 0xa050);
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x11, 0x0000);
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x1f, 0x0000);
+
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x1f, 0x0d08);
+	val = phy_read(phydev, MDIO_DEVAD_NONE, 0x11);
+	val |= (0x1 << 8);//enable TX delay
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x11, val);
+
+	val = phy_read(phydev, MDIO_DEVAD_NONE, 0x15);
+	val |= (0x1 << 3);//enable RX delay
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x15, val);
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x1f, 0x0000);
+
 	if (phydev->drv->config)
 		phydev->drv->config(phydev);
 	return 0;
