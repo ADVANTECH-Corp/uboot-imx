@@ -10,6 +10,7 @@
 #include <common.h>
 #include <dm.h>
 #include <spl.h>
+#include <init.h>
 #include <asm/u-boot.h>
 #include <nand.h>
 #include <fat.h>
@@ -21,6 +22,10 @@
 #include <linux/compiler.h>
 #include <serial.h>
 #include <hang.h>
+#if CONFIG_IS_ENABLED(BANNER_PRINT)
+#include <timestamp.h>
+#endif
+#include <version.h>
 #define DEBUG 1
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -42,7 +47,7 @@ struct spl_image_info spl_image;
 const char __weak version_string[] = SPL_VERSION_STRING;
 #endif
 /* Define board data structure */
-static bd_t bdata __attribute__ ((section(".data")));
+static struct bd_info bdata __attribute__ ((section(".data")));
 
 /*
  * Default function to determine if u-boot or the OS should

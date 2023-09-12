@@ -66,6 +66,7 @@
 #endif
 #if defined(CONFIG_ADVANTECH) || defined(CONFIG_ADVANTECH_MX8)
 #include <version.h>
+#include <version_string.h>
 #include <spi_flash.h>
 #endif
 #ifdef CONFIG_MANUFACTURE_INFO2EMMC

@@ -455,6 +455,7 @@ void spl_parse_image_header(const struct image_header *header);
 int spl_parse_image_header(struct spl_image_info *spl_image,
 			   const struct spl_boot_device *bootdev,
 			   const struct image_header *header);
+#endif
 
 void spl_board_prepare_for_linux(void);
 

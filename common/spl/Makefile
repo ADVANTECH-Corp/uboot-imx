@@ -14,7 +14,9 @@ obj-$(CONFIG_$(SPL_TPL_)FRAMEWORK) += spl.o
 endif
 obj-$(CONFIG_$(SPL_TPL_)BOOTROM_SUPPORT) += spl_bootrom.o
 obj-$(CONFIG_$(SPL_TPL_)LOAD_FIT) += spl_fit.o
+ifndef CONFIG_ADVANTECH
 obj-$(CONFIG_$(SPL_TPL_)LEGACY_IMAGE_SUPPORT) += spl_legacy.o
+endif
 obj-$(CONFIG_$(SPL_TPL_)NOR_SUPPORT) += spl_nor.o
 obj-$(CONFIG_$(SPL_TPL_)XIP_SUPPORT) += spl_xip.o
 obj-$(CONFIG_$(SPL_TPL_)YMODEM_SUPPORT) += spl_ymodem.o
