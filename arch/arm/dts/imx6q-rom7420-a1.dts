@@ -9,7 +9,7 @@
 #include "imx6qdl-advantech.dtsi"
 
 / {
-	model = "i.MX6 Quad ADVANTECH Smart Device Board";
+	model = "i.MX6 Quad Advantech Device Board";
 	compatible = "fsl,imx6q-sabresd", "fsl,imx6q";
         aliases {
                 mmc0 = &usdhc2;
@@ -20,20 +20,36 @@
 
 };
 
-&ecspi1 {
-	cs-gpios = <&gpio3 19 0>;
-};
-
 &iomuxc {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_hog>;
+
 
 	pinctrl_ecspi1_cs_0: ecspi1_cs_grp-0 {
 		fsl,pins = <
-			MX6QDL_PAD_EIM_D19__GPIO3_IO19		0x80000000	/* ECSPI1_CS1 */
+			MX6QDL_PAD_EIM_D19__GPIO3_IO19		0x1b0b0
 			>;
 		};
+
+
+
 };
+
+&ecspi1 {
+	fsl,spi-num-chipselects = <1>;
+	cs-gpios = <&gpio3 19 GPIO_ACTIVE_LOW>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi1_cs_0 &pinctrl_ecspi1>;
+	status = "okay";
+
+	flash: m25p80@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "st,m25p32", "jedec,spi-nor";
+		spi-max-frequency = <20000000>;
+		reg = <0>;
+	};
+
+};
+
 
 &uart1 {
 	status = "okay";

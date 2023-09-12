@@ -1020,7 +1020,9 @@ int board_init(void)
 #endif
 
 #if defined(CONFIG_PCIE_IMX) && !defined(CONFIG_DM_PCI)
+#ifndef CONFIG_TARGET_MX6QROM7420A1_1G
 	setup_pcie();
+#endif
 #endif
 
 #if defined(CONFIG_MX6DL) && defined(CONFIG_MXC_EPDC)

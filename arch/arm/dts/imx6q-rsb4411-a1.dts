@@ -21,15 +21,31 @@
 };
 
 &iomuxc {
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_hog>;
+
 
 	pinctrl_ecspi1_cs_0: ecspi1_cs_grp-0 {
 		fsl,pins = <
-			MX6QDL_PAD_EIM_EB2__GPIO2_IO30		0x80000000	/* ECSPI1_CS0 */
+			MX6QDL_PAD_EIM_EB2__GPIO2_IO30 0x1b0b0    /* ECSPI1_CS0 */
 			>;
 		};
 };
+
+&ecspi1 {
+	fsl,spi-num-chipselects = <1>;
+	cs-gpios = <&gpio2 30 0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi1_cs_0 &pinctrl_ecspi1>;
+	status = "okay";
+
+	flash: m25p80@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "st,m25p32", "jedec,spi-nor";
+		spi-max-frequency = <20000000>;
+		reg = <0>;
+	};
+};
+
 
 &uart1 {
 	status = "okay";

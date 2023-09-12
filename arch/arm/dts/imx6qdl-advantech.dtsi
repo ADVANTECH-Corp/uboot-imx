@@ -82,7 +82,7 @@
 			gpio = <&gpio4 10 0>;
 			enable-active-high;
 		};
-
+/*
 		reg_pcie: regulator@3 {
 			compatible = "regulator-fixed";
 			reg = <3>;
@@ -95,7 +95,7 @@
 			regulator-always-on;
 			enable-active-high;
 		};
-
+*/
 		reg_sensor: regulator@4 {
 			compatible = "regulator-fixed";
 			reg = <4>;
@@ -104,6 +104,7 @@
 			regulator-max-microvolt = <3300000>;
 			gpio = <&gpio2 31 0>;
 			startup-delay-us = <500>;
+			regulator-always-on;
 			enable-active-high;
 		};
 
@@ -316,29 +317,24 @@
 				 <&clks IMX6QDL_CLK_PLL2_PFD0_352M>;
 };
 
-&ecspi1 {
-	fsl,spi-num-chipselects = <1>;
-	cs-gpios = <&gpio2 30 0>;
-	pinctrl-names = "default";
-	pinctrl-0 = <&pinctrl_ecspi1_cs_0 &pinctrl_ecspi1>;
-	status = "okay";
-
-	flash: m25p80@0 {
-		#address-cells = <1>;
-		#size-cells = <1>;
-		compatible = "st,m25p32", "jedec,spi-nor";
-		spi-max-frequency = <20000000>;
-		reg = <0>;
-	};
-};
-
 &fec {
 	pinctrl-names = "default";
 	pinctrl-0 = <&pinctrl_enet>;
-	phy-mode = "rgmii";
+	phy-mode = "rgmii-id";
 	phy-reset-gpios = <&gpio1 25 GPIO_ACTIVE_LOW>;
+	phy-handle = <&phy>;
 	fsl,magic-packet;
-	status = "disabled";
+	status = "okay";
+
+	mdio {
+		#address-cells = <1>;
+		#size-cells = <0>;
+
+		phy: ethernet-phy@1 {
+			reg = <1>;
+			qca,clk-out-frequency = <125000000>;
+		};
+	};
 };
 
 &gpc {
@@ -678,6 +674,7 @@
                                 MX6QDL_PAD_EIM_D17__ECSPI1_MISO 	0x100b1
                                 MX6QDL_PAD_EIM_D18__ECSPI1_MOSI 	0x100b1
                                 MX6QDL_PAD_EIM_D16__ECSPI1_SCLK 	0x100b1
+				/* MX6QDL_PAD_EIM_D16__ECSPI1_SCLK 	0x000b1 */
 			>;
 		};
 
@@ -871,13 +868,13 @@
 				MX6QDL_PAD_GPIO_17__GPIO7_IO12	0x1b0b0
 			>;
 		};
-
+/*
 		pinctrl_pcie_reg: pciereggrp {
 			fsl,pins = <
 				MX6QDL_PAD_EIM_D19__GPIO3_IO19	0x1b0b0
 			>;
 		};
-
+*/
 		pinctrl_pwm1: pwm1grp {
 			fsl,pins = <
 				MX6QDL_PAD_SD1_DAT3__PWM1_OUT		0x1b0b1

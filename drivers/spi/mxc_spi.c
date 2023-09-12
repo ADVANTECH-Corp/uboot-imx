@@ -592,6 +592,8 @@ static int mxc_spi_probe(struct udevice *bus)
 	int ret;
 	int i;
 
+	reg_write(0x020C406C, 0x30fc03);  /* enalbe ecspi clock CCM register */
+
 	ret = gpio_request_list_by_name(bus, "cs-gpios", mxcs->cs_gpios,
 					ARRAY_SIZE(mxcs->cs_gpios), 0);
 	if (ret < 0) {
