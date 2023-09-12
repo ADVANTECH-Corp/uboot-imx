@@ -17,3 +17,8 @@ config SYS_CONFIG_NAME
 	default "mx6rsb4411"
 endif
 
+if TARGET_MX6QROM7420A1_1G
+config SYS_CONFIG_NAME
+        default "mx6rom7420"
+endif
+
