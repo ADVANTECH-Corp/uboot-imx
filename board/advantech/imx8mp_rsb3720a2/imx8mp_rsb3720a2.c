@@ -445,6 +445,19 @@ int board_phy_config(struct phy_device *phydev)
 }
 #endif
 
+#define WDOG_TRIG IMX_GPIO_NR(4, 20)
+
+static iomux_v3_cfg_t wdt_trig[] = {
+	MX8MP_PAD_SAI1_MCLK__GPIO4_IO20 | MUX_PAD_CTRL(NO_PAD_CTRL),
+};
+
+static void setup_iomux_wdt(void)
+{
+	imx_iomux_v3_setup_multiple_pads(wdt_trig, ARRAY_SIZE(wdt_trig));
+	gpio_request(WDOG_TRIG, "wdt_trig");
+	gpio_direction_output(WDOG_TRIG, 1);
+}
+
 int board_init(void)
 {
 #ifdef CONFIG_USB_TCPC
@@ -466,6 +479,8 @@ int board_init(void)
 #if defined(CONFIG_USB_DWC3) || defined(CONFIG_USB_XHCI_IMX8M)
 	init_usb_clk();
 #endif
+
+	setup_iomux_wdt();
 
 	return 0;
 }
