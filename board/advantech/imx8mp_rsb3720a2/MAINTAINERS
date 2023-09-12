@@ -1,0 +1,6 @@
+i.MX8MP RSB3720A2 BOARD
+M:	Darren Huang <Darren.Huang@advantech.com.tw>
+S:	Maintained
+F:	board/advantech/imx8mp_rsb3720a2/
+F:	include/configs/imx8mp_rsb3720.h
+F:	configs/imx8mp_rsb3720a2_6G_defconfig
