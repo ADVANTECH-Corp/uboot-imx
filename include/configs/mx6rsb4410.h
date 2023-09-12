@@ -10,7 +10,7 @@
 #define __MX6ADVANTECH_CONFIG_H
 
 #ifdef CONFIG_SPL
-#include "imx6_spl.h"
+#include "imx6_spl_advantech.h"
 #endif
 
 #define CONFIG_MACH_TYPE	3980
@@ -89,4 +89,5 @@
 
 	#define CONFIG_WAVEFORM_BUF_SIZE		0x400000
 #endif /* CONFIG_SPLASH_SCREEN && CONFIG_MXC_EPDC */
+#define USDHC2_CD_GPIO          IMX_GPIO_NR(2, 2)
 #endif                         /* __MX6ADVANTECH_CONFIG_H */

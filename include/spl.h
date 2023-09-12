@@ -379,7 +379,11 @@ u32 spl_boot_device(void);
  * Note:  It is important to use the boot_device parameter instead of e.g.
  * spl_boot_device() as U-Boot is not always loaded from the same device as SPL.
  */
+#ifdef CONFIG_ADVANTECH
+u32 spl_boot_mode(void);
+#else
 u32 spl_mmc_boot_mode(const u32 boot_device);
+#endif
 
 /**
  * spl_mmc_boot_partition() - MMC partition to load U-Boot from.
@@ -427,7 +431,9 @@ void spl_set_bd(void);
  *
  * @spl_image: Image description to set up
  */
+#ifndef CONFIG_ADVANTECH
 void spl_set_header_raw_uboot(struct spl_image_info *spl_image);
+#endif
 
 /**
  * spl_parse_image_header() - parse the image header and set up info
@@ -443,6 +449,9 @@ void spl_set_header_raw_uboot(struct spl_image_info *spl_image);
  * @header image header to parse
  * Return: 0 if a header was correctly parsed, -ve on error
  */
+#ifdef CONFIG_ADVANTECH
+void spl_parse_image_header(const struct image_header *header);
+#else
 int spl_parse_image_header(struct spl_image_info *spl_image,
 			   const struct spl_boot_device *bootdev,
 			   const struct image_header *header);
@@ -665,9 +674,12 @@ bool spl_was_boot_source(void);
  */
 int spl_dfu_cmd(int usbctrl, char *dfu_alt_info, char *interface, char *devstr);
 
+#ifdef CONFIG_ADVANTECH
+int spl_mmc_load_image(unsigned int dev);
+#else
 int spl_mmc_load_image(struct spl_image_info *spl_image,
 		       struct spl_boot_device *bootdev);
-
+#endif
 /**
  * spl_mmc_load() - Load an image file from MMC/SD media
  *

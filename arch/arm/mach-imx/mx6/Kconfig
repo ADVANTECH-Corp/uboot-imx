@@ -160,6 +160,7 @@ config TARGET_MX6ADVANTECH_COMMON
     select DM_THERMAL
     select BOARD_EARLY_INIT_F
     select NXP_BOARD_REVISION
+    select SUPPORT_SPL
     imply CMD_DM
 
 config TARGET_MX6QDLARM2

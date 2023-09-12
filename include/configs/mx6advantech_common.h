@@ -328,4 +328,8 @@
 #define CONFIG_USBD_HS
 
 #endif /* CONFIG_ANDROID_SUPPORT */
+/* boot device dev number */
+#define	CONFIG_EMMC_DEV_NUM	1
+#define	CONFIG_SD_DEV_NUM	0
+#define	CONFIG_SATA_DEV_NUM	0
 #endif                         /* __MX6QSABRE_COMMON_CONFIG_H */
