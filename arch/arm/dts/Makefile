@@ -722,6 +722,9 @@ dtb-$(CONFIG_MX53) += imx53-cx9020.dtb \
 	imx53-m53menlo.dtb \
 	imx53-usbarmory.dtb
 
+dtb-$(CONFIG_ADVANTECH) += \
+	imx6q-rsb4410-a1.dtb 
+
 ifneq ($(CONFIG_MX6DL)$(CONFIG_MX6QDL)$(CONFIG_MX6S),)
 dtb-y += \
 	imx6dl-aristainetos2c_7.dtb \

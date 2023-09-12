@@ -153,6 +153,23 @@ config TARGET_MX6SABRESD_COMMON
     select ARCH_MISC_INIT
     select RNG_SELF_TEST
 
+config TARGET_MX6ADVANTECH_COMMON
+    bool
+    select BOARD_LATE_INIT
+    select DM
+    select DM_THERMAL
+    select BOARD_EARLY_INIT_F
+    select NXP_BOARD_REVISION
+    imply CMD_DM
+
+config TARGET_MX6QDLARM2
+    bool
+    select BOARD_LATE_INIT
+    select DM
+    select DM_THERMAL
+    select BOARD_EARLY_INIT_F
+    imply CMD_DM
+
 choice
 	prompt "MX6 board select"
 	optional
@@ -440,6 +457,11 @@ config TARGET_MX6QSABRESD
 	bool "mx6qsabresd"
     select TARGET_MX6SABRESD_COMMON
     depends on MX6Q
+
+config TARGET_MX6QRSB4410A1_1G
+	bool "Support mx6qrsb4410a1 1G"
+    select TARGET_MX6ADVANTECH_COMMON
+    select MX6Q
 
 config TARGET_MX6QPSABRESD
 	bool "mx6qpsabresd"
@@ -850,6 +872,7 @@ source "board/engicam/imx6ul/Kconfig"
 source "board/freescale/mx6memcal/Kconfig"
 source "board/freescale/mx6sabreauto/Kconfig"
 source "board/freescale/mx6sabresd/Kconfig"
+source "board/freescale/mx6advantech/Kconfig"
 source "board/freescale/mx6slevk/Kconfig"
 source "board/freescale/mx6sll_val/Kconfig"
 source "board/freescale/mx6sllevk/Kconfig"
