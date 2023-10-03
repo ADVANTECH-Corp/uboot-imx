@@ -105,8 +105,10 @@ int board_early_init_f(void)
 }
 
 static iomux_v3_cfg_t const gpio_init_pads[] = {
+#ifndef CONFIG_ADVANTECH_LOGO
         IMX8MM_PAD_SAI5_RXD2_GPIO3_IO23 | MUX_PAD_CTRL(NO_PAD_CTRL),	//LVDS_STBY
         IMX8MM_PAD_SAI5_RXD3_GPIO3_IO24 | MUX_PAD_CTRL(NO_PAD_CTRL),	//LVDS_RESET
+#endif
 		IMX8MM_PAD_GPIO1_IO10_GPIO1_IO10 | MUX_PAD_CTRL(NO_PAD_CTRL),	//I2S_EN
 		IMX8MM_PAD_SAI3_RXFS_GPIO4_IO28 | MUX_PAD_CTRL(NO_PAD_CTRL),	//RESET_OUT
 };
@@ -115,13 +117,13 @@ static void setup_iomux_gpio(void)
 {
         imx_iomux_v3_setup_multiple_pads(gpio_init_pads,
                                          ARRAY_SIZE(gpio_init_pads));
-
+#ifndef CONFIG_ADVANTECH_LOGO
         gpio_request(LVDS_STBY_PAD, "LVDS_STBY");
         gpio_direction_output(LVDS_STBY_PAD, 1);
 		udelay(100);	//for lvds init sequence
         gpio_request(LVDS_RESET_PAD, "LVDS_RESET");
         gpio_direction_output(LVDS_RESET_PAD, 1);
-
+#endif
 		gpio_request(I2S_EN, "I2S_EN");
         gpio_direction_output(I2S_EN, 1);
 
@@ -371,6 +373,9 @@ int board_init(void)
 
 	setup_iomux_gpio();
 	setup_iomux_wdt();
+#ifdef CONFIG_ADVANTECH_LOGO
+	set_clk_pwm();
+#endif
 	return 0;
 }
 

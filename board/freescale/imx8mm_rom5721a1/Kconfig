@@ -8,6 +8,12 @@ config SYS_VENDOR
 config SYS_CONFIG_NAME
         default "imx8mm_rom5721"
 
+config ADVANTECH_LOGO
+        bool "Advantech logo display support"
+        default n
+        help
+          Enable Advantech logo support
+
 source "board/freescale/common/Kconfig"
 
 endif
