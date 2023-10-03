@@ -251,6 +251,11 @@ LOGO-$(CONFIG_LCD_LOGO) += $(LOGO_DATA_H)
 LOGO-$(CONFIG_VIDEO_LOGO) += $(LOGO_H)
 LOGO-$(CONFIG_VIDEO_LOGO) += $(LOGO_DATA_H)
 
+# Use Advantech logo for highest priority
+ifeq ($(CONFIG_ADVANTECH_LOGO),y)
+LOGO_BMP= $(srctree)/$(src)/logos/advantech.bmp
+endif
+
 # Generic logo
 ifeq ($(LOGO_BMP),)
 LOGO_BMP= $(srctree)/$(src)/logos/denx.bmp
