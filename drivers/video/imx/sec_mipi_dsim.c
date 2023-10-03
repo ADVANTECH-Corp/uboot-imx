@@ -820,6 +820,9 @@ static int sec_mipi_dsim_bridge_clk_set(struct sec_mipi_dsim *dsim_host)
 		 */
 		dsim_host->pms = 0x4210;
 	}
+#ifdef CONFIG_ADVANTECH_LOGO
+	dsim_host->pms = 0x13042; /* force set pms to 0x13042 */
+#endif
 
 	debug("%s: bitclk %llu pixclk %llu\n", __func__, dsim_host->bit_clk, dsim_host->pix_clk);
 
