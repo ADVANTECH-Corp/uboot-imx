@@ -1,0 +1,144 @@
+#include "imx8mm-rom5721-a1.dts"
+#include <dt-bindings/media/mipi_dsi.h>
+
+/ {
+	/delete-node/ rm67191_panel;
+
+	reg_bklt_12v: regulator-bklt-12v {
+			compatible = "regulator-fixed";
+			regulator-name = "reg_bklt_12v";
+			regulator-min-microvolt = <12000000>;
+			regulator-max-microvolt = <12000000>;
+			gpio = <&gpio4 0 GPIO_ACTIVE_HIGH>;
+			enable-active-high;
+	 };
+
+	backlight: backlight@0 {
+		compatible = "pwm-backlight";
+		pwms = <&pwm4 0 1000000 0>;
+		brightness-levels = < 0  1  2  3  4  5  6  7  8  9
+				10 11 12 13 14 15 16 17 18 19
+				20 21 22 23 24 25 26 27 28 29
+				30 31 32 33 34 35 36 37 38 39
+				40 41 42 43 44 45 46 47 48 49
+				50 51 52 53 54 55 56 57 58 59
+				60 61 62 63 64 65 66 67 68 69
+				70 71 72 73 74 75 76 77 78 79
+				80 81 82 83 84 85 86 87 88 89
+				90 91 92 93 94 95 96 97 98 99
+				100>;
+		default-brightness-level = <80>;
+	};
+};
+
+&src {
+	compatible = "fsl,imx8mm-src", "fsl,imx8mq-src", "syscon", "simple-mfd";
+
+	reboot_mode_gpr: reboot-mode {
+		compatible = "barebox,syscon-reboot-mode";
+		offset = <0x94>, <0x98>; /* SRC_GPR{9,10} */
+		mask = <0xffffffff>, <0x40000000>;
+		mode-normal = <0>, <0>;
+		mode-serial = <0x00000010>, <0x40000000>;
+	};
+};
+
+&i2c2 {
+	/delete-node/ adv_bridge;
+
+	tc385775@0f {
+		compatible = "tc,tc358775";
+		reg = <0x0f>;
+		pinctrl-names = "default";
+		pinctrl-0 = <&pinctrl_tc385775>;
+
+		tc,dsi-flags = <(MIPI_DSI_MODE_VIDEO | MIPI_DSI_MODE_VIDEO_BURST | MIPI_DSI_MODE_LPM | MIPI_DSI_MODE_EOT_PACKET)>;
+		tc,dsi-format = <MIPI_DSI_FMT_RGB888>;
+		tc,dsi-lanes = <4>;
+		status = "okay";
+
+		standby-gpios = <&gpio3 23 GPIO_ACTIVE_LOW>;
+		reset-gpios = <&gpio3 24 GPIO_ACTIVE_LOW>;
+		lcd0vdd-gpios = <&gpio4 30 GPIO_ACTIVE_HIGH>;
+
+		backlight = <&backlight>;
+
+		display-timings {
+			native-mode = <&timing0>;
+			timing0: timing0 {
+				clock-frequency = <29500000>;
+				hactive = <800>;
+				vactive = <480>;
+				hfront-porch = <24>;
+				hback-porch = <96>;
+				hsync-len = <72>;
+				vback-porch = <3>;
+				vfront-porch = <10>;
+				vsync-len = <7>;
+			};
+		};
+
+		port {
+			tc385775_from_dsim: endpoint {
+				remote-endpoint = <&dsim_to_tc385775>;
+			};
+		};
+	};
+};
+
+&mipi_dsi {
+
+	/delete-node/ port@2;
+
+	port@1 {
+		/delete-node/ dsim_to_adv7535;
+
+		dsim_to_tc385775: endpoint {
+			remote-endpoint = <&tc385775_from_dsim>;
+		};
+	};
+};
+
+&iomuxc {
+	pinctrl_pwm4: pwm4grp {
+		fsl,pins = <
+			MX8MM_IOMUXC_SAI3_MCLK_PWM4_OUT		0x06	/* LCD0_BKLT_PWM */
+		>;
+	};
+
+	pinctrl_bklt: bkltgrp {
+		fsl,pins = <
+			MX8MM_IOMUXC_SAI1_RXFS_GPIO4_IO0	0x10	/* COLD_RST_EN */
+			MX8MM_IOMUXC_SAI3_RXC_GPIO4_IO29	0x19	/* LCD0_BKLT_EN */
+		>;
+	};
+
+	pinctrl_lcd0: lcd0grp {
+		fsl,pins = <
+			MX8MM_IOMUXC_SAI3_RXD_GPIO4_IO30	0x10	/* LCD0_VDD_EN */
+		>;
+	};
+
+	pinctrl_tc385775: tc358775 {
+		fsl,pins = <
+			MX8MM_IOMUXC_SAI5_RXD2_GPIO3_IO23	0x19
+			MX8MM_IOMUXC_SAI5_RXD3_GPIO3_IO24	0x19
+			MX8MM_IOMUXC_SAI3_RXD_GPIO4_IO30	0x10
+		>;
+	};
+};
+
+&pwm4 {
+	status = "okay";
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_pwm4>;
+};
+
+&backlight {
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_bklt>;
+	power-supply = <&reg_bklt_12v>;
+	enable-gpios = <&gpio4 29 GPIO_ACTIVE_HIGH>;
+	status = "okay";
+};
+
