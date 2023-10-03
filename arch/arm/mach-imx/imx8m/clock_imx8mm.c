@@ -704,6 +704,14 @@ int set_clk_enet(enum enet_freq type)
 }
 #endif
 
+int set_clk_pwm(void)
+{
+	clock_enable(CCGR_PWM4, 0);
+	clock_set_target_val(PWM4_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(0)| CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1));
+	clock_enable(CCGR_PWM4, 1);
+	return 0;
+}
+
 static u32 decode_intpll(enum clk_root_src intpll)
 {
 	u32 pll_gnrl_ctl, pll_div_ctl, pll_clke_mask;
