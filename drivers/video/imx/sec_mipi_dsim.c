@@ -819,10 +819,13 @@ static int sec_mipi_dsim_bridge_clk_set(struct sec_mipi_dsim *dsim_host)
 		 * add other modes support later
 		 */
 		dsim_host->pms = 0x4210;
-	}
+	} else {
 #ifdef CONFIG_ADVANTECH_LOGO
-	dsim_host->pms = 0x13042; /* force set pms to 0x13042 */
+		if ((dsim_host->lanes == 4) && (bpp == 24) && (dsim_host->pix_clk == 29500)) {
+			dsim_host->pms = 0x13042; /* suitable panel : g070vw01 */
+		}
 #endif
+	}
 
 	debug("%s: bitclk %llu pixclk %llu\n", __func__, dsim_host->bit_clk, dsim_host->pix_clk);
 
