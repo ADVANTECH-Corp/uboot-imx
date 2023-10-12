@@ -808,6 +808,7 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
 	imx8mm-ddr4-ab2.dtb \
 	imx8mm-rom5721-a1.dtb \
 	imx8mm-rom5721-a1-dsi2lvds-g070vw01.dtb \
+	imx8mm-rom5721-a1-auog101uan02.dtb \
 	imx8mq-rom5720-a1.dtb \
 	imx8mm-rsb3730-a1.dtb \
 	imx8mm-rsb3730-a2.dtb \
