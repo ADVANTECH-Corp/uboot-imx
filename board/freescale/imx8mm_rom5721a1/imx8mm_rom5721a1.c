@@ -375,6 +375,7 @@ int board_init(void)
 	setup_iomux_wdt();
 #ifdef CONFIG_ADVANTECH_LOGO
 	set_clk_pwm();
+	enable_display_clk(1);
 #endif
 	return 0;
 }
