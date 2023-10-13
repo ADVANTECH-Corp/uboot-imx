@@ -44,6 +44,7 @@ struct simple_panel_priv {
 	struct dsi_panel_cmds *init_cmds;
 };
 
+#if defined(CONFIG_VIDEO_MIPI_DSI)
 static int panel_simple_dsi_parse_dcs_cmds(struct udevice *dev,
 					   const u8 *data, int blen,
 					   struct dsi_panel_cmds *pcmds)
@@ -153,12 +154,15 @@ static int panel_simple_dsi_send_cmds(struct mipi_dsi_device *dsi,
 
 	return 0;
 }
+#endif
 
 static int simple_panel_enable_backlight(struct udevice *dev)
 {
 	struct simple_panel_priv *priv = dev_get_priv(dev);
+#if defined(CONFIG_VIDEO_MIPI_DSI)
 	struct mipi_dsi_panel_plat *plat = dev_get_platdata(dev);
 	struct mipi_dsi_device *device = plat->device;
+#endif
 	int ret;
 
 	debug("%s: start, backlight = '%s'\n", __func__, priv->backlight->name);
@@ -168,6 +172,7 @@ static int simple_panel_enable_backlight(struct udevice *dev)
 	if (ret)
 		return ret;
 
+#if defined(CONFIG_VIDEO_MIPI_DSI)
 	device->lanes = priv->lanes;
 	device->format = priv->format;
 	device->mode_flags = priv->mode_flags;
@@ -187,6 +192,7 @@ static int simple_panel_enable_backlight(struct udevice *dev)
 		if (ret)
 			dev_err(dev, "failed to send init cmds\n");
 	}
+#endif
 
 	return 0;
 }
@@ -210,8 +216,10 @@ static int simple_panel_ofdata_to_platdata(struct udevice *dev)
 {
 	struct simple_panel_priv *priv = dev_get_priv(dev);
 	int ret;
+#if defined(CONFIG_VIDEO_MIPI_DSI)
 	const void *data;
 	int len;
+#endif
 
 	if (IS_ENABLED(CONFIG_DM_REGULATOR)) {
 		ret = uclass_get_device_by_phandle(UCLASS_REGULATOR, dev,
@@ -238,6 +246,7 @@ static int simple_panel_ofdata_to_platdata(struct udevice *dev)
 			return log_ret(ret);
 	}
 
+#if defined(CONFIG_VIDEO_MIPI_DSI)
 	/* Advantech */
 	ret = dev_read_u32(dev, "simple,dsi-lanes", &priv->lanes);
 	if (!ret) {
@@ -266,6 +275,7 @@ static int simple_panel_ofdata_to_platdata(struct udevice *dev)
 		}
 
 	}
+#endif
 
 	return 0;
 }
