@@ -43,6 +43,7 @@ int enable_i2c_clk(unsigned char enable, unsigned i2c_num)
 }
 
 static struct imx_int_pll_rate_table imx8mm_fracpll_tbl[] = {
+	PLL_1443X_RATE(1039500000U, 693, 4, 2, 0),
 	PLL_1443X_RATE(1000000000U, 250, 3, 1, 0),
 	PLL_1443X_RATE(800000000U, 200, 3, 1, 0),
 	PLL_1443X_RATE(750000000U, 250, 2, 2, 0),
@@ -274,7 +275,11 @@ int intpll_configure(enum pll_clocks pll, ulong freq)
 	return 0;
 }
 
+#ifdef CONFIG_IMX8MP
+#define VIDEO_PLL_RATE 400000000U
+#else
 #define VIDEO_PLL_RATE 594000000U
+#endif
 
 void mxs_set_lcdclk(uint32_t base_addr, uint32_t freq)
 {
@@ -302,7 +307,8 @@ find:
 	debug("mxs_set_lcdclk, pre = %d, post = %d\n", pre, post);
 
 #ifdef CONFIG_IMX8MP
-	clock_set_target_val(MEDIA_DISP1_PIX_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(pre - 1) | CLK_ROOT_POST_DIV(post - 1));
+	//clock_set_target_val(MEDIA_DISP1_PIX_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(pre - 1) | CLK_ROOT_POST_DIV(post - 1));
+	clock_set_target_val(MEDIA_DISP2_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(pre - 1) | CLK_ROOT_POST_DIV(post - 1));
 #elif defined(CONFIG_IMX8MN)
 	clock_set_target_val(DISPLAY_PIXEL_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(pre - 1) | CLK_ROOT_POST_DIV(post - 1));
 #else
@@ -342,7 +348,9 @@ void enable_display_clk(unsigned char enable)
 		clock_set_target_val(MEDIA_APB_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(2) |CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV4));
 
 		/* 27Mhz MIPI DPHY PLL ref from video PLL */
-		clock_set_target_val(MEDIA_MIPI_PHY1_REF_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) |CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV22));
+		//clock_set_target_val(MEDIA_MIPI_PHY1_REF_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) |CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV22));
+		/* 200 Mhz LVDS PLL ref from video PLL */
+		clock_set_target_val(MEDIA_LDB_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) |CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV2));
 		clock_enable(CCGR_DISPMIX, true);
 	} else {
 		clock_enable(CCGR_DISPMIX, false);
