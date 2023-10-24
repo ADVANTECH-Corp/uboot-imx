@@ -177,20 +177,25 @@ static int simple_panel_enable_backlight(struct udevice *dev)
 	device->format = priv->format;
 	device->mode_flags = priv->mode_flags;
 
-	ret = mipi_dsi_attach(device);
-
-	if (ret < 0)
+	if (device->mode_flags != 0 && \
+	    device->format != 0 && \
+	    device->lanes != 0)
 	{
-		printf("[%s@%d] mipi_dsi_attach failure (%d)\n", __func__, __LINE__, ret);
-		return ret;
-	}
+		ret = mipi_dsi_attach(device);
 
-	if (priv->init_cmds) {
-		dev_info(dev, "DSI panel init\n");
+		if (ret < 0)
+		{
+			printf("[%s@%d] mipi_dsi_attach failure (%d)\n", __func__, __LINE__, ret);
+			return ret;
+		}
 
-		ret = panel_simple_dsi_send_cmds(device, dev, priv->init_cmds);
-		if (ret)
-			dev_err(dev, "failed to send init cmds\n");
+		if (priv->init_cmds) {
+			dev_info(dev, "DSI panel init\n");
+
+			ret = panel_simple_dsi_send_cmds(device, dev, priv->init_cmds);
+			if (ret)
+				dev_err(dev, "failed to send init cmds\n");
+		}
 	}
 #endif
 
