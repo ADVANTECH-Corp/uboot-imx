@@ -331,6 +331,7 @@ static int lcdifv3_video_remove(struct udevice *dev)
 
 static const struct udevice_id lcdifv3_video_ids[] = {
 	{ .compatible = "fsl,imx8mp-lcdif1" },
+	{ .compatible = "fsl,imx8mp-lcdif2" },
 	{ /* sentinel */ }
 };
 
