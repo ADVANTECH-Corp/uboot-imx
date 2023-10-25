@@ -9,6 +9,12 @@ config SYS_VENDOR
 config SYS_CONFIG_NAME
 	default "imx8mp_rsb3720"
 
+config ADVANTECH_LOGO
+	bool "Advantech logo display support"
+	default n
+	help
+	  Enable Advantech logo support
+
 source "board/freescale/common/Kconfig"
 
 endif
