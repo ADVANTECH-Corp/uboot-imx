@@ -156,6 +156,28 @@ static int panel_simple_dsi_send_cmds(struct mipi_dsi_device *dsi,
 }
 #endif
 
+#if defined(CONFIG_VIDEO_MIPI_DSI)
+static int simple_panel_dsi_data_validation(unsigned int lanes, enum mipi_dsi_pixel_format format, unsigned long mode_flags)
+{
+	if (!lanes) {
+		return -EINVAL;
+	}
+
+	if (!mode_flags) {
+		return -EINVAL;
+	}
+
+	if (format != MIPI_DSI_FMT_RGB888 &&
+	    format != MIPI_DSI_FMT_RGB565 &&
+	    format != MIPI_DSI_FMT_RGB666 &&
+	    format != MIPI_DSI_FMT_RGB666_PACKED) {
+		return -EINVAL;
+	}
+
+	return 0;
+}
+#endif
+
 static int simple_panel_enable_backlight(struct udevice *dev)
 {
 	struct simple_panel_priv *priv = dev_get_priv(dev);
@@ -177,9 +199,9 @@ static int simple_panel_enable_backlight(struct udevice *dev)
 	device->format = priv->format;
 	device->mode_flags = priv->mode_flags;
 
-	if (device->mode_flags != 0 && \
-	    device->format != 0 && \
-	    device->lanes != 0)
+	ret = simple_panel_dsi_data_validation(device->lanes, device->format, device->mode_flags);
+
+	if (!ret)
 	{
 		ret = mipi_dsi_attach(device);
 
