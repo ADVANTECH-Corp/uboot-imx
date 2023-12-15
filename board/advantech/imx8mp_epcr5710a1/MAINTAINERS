@@ -1,0 +1,6 @@
+i.MX8MP EPCR5710A1 BOARD
+M:	Peng Fan <peng.fan@nxp.com>
+S:	Maintained
+F:	board/advantech/imx8mp_epcr5710a1/
+F:	include/configs/imx8mp_epcr5710a1.h
+F:	configs/imx8mp_epcr5710a1_6G_defconfig

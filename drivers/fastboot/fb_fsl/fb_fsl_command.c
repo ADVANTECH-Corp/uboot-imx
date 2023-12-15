@@ -98,6 +98,17 @@ static FbBootMode fastboot_get_bootmode(void)
 		return boot_mode;
 	}
 #endif
+
+#ifdef CONFIG_ADVANTECH_R5710
+	extern int get_recovery_key_pressed(void);
+
+	if(get_recovery_key_pressed()) {
+			printf("*** R5710 RECOVERY OK *** \n");
+	}
+	else
+		printf("*** R5710 RECOVERY NOT PRESS ***  \n");
+#endif
+
 #ifdef CONFIG_BCB_SUPPORT
 	int ret = 0;
 	char command[32];

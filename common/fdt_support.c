@@ -276,11 +276,46 @@ __weak char *board_fdt_chosen_bootargs(void)
 	return env_get("bootargs");
 }
 
+#if defined(CONFIG_ADVANTECH_MX8) && defined(ADV_AUTO_PROBE_THERMAL_TRIPS)
+extern int g_cpu_thermal_trip1;
+#endif
+
 int fdt_chosen(void *fdt)
 {
 	int   nodeoffset;
 	int   err;
 	char  *str;		/* used to set string properties */
+
+#ifdef	CONFIG_ADVANTECH_MX8
+	char command_line[512];
+
+#ifdef ADV_AUTO_PROBE_THERMAL_TRIPS
+	char trip1[32];
+#endif /* ADV_AUTO_PROBE_THERMAL_TRIPS */
+
+	if(env_get("uart_mode")){
+		str = env_get("bootargs");
+		memset(command_line,0,sizeof(command_line));
+		memcpy(command_line,str,strlen(str));
+		strcat(command_line, " uart_mode=");
+		strcat(command_line, env_get("uart_mode"));
+		env_set("bootargs", command_line);
+	}
+
+#ifdef ADV_AUTO_PROBE_THERMAL_TRIPS
+	if(g_cpu_thermal_trip1 > 0){
+		memset(trip1, 0, sizeof(trip1));
+		sprintf(trip1, "%d", g_cpu_thermal_trip1);
+
+		str = env_get("bootargs");
+		memset(command_line,0,sizeof(command_line));
+		memcpy(command_line,str,strlen(str));
+		strcat(command_line, " cpu_thermal_trip1=");
+		strcat(command_line, trip1);
+		env_set("bootargs", command_line);
+	}
+#endif /* ADV_AUTO_PROBE_THERMAL_TRIPS */
+#endif /* CONFIG_ADVANTECH_MX8 */
 
 	err = fdt_check_header(fdt);
 	if (err < 0) {
