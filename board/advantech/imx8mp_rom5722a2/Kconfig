@@ -1,0 +1,15 @@
+if TARGET_IMX8MP_ROM5722A2_6G
+
+config SYS_BOARD
+	default "imx8mp_rom5722a2"
+
+config SYS_VENDOR
+	default "advantech"
+
+config SYS_CONFIG_NAME
+	default "imx8mp_rom5722"
+
+config IMX_CONFIG
+	default "board/advantech/imx8mp_rom5722a2/imximage-8mp-lpddr4.cfg"
+
+endif
