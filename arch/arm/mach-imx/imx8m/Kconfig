@@ -444,8 +444,8 @@ config TARGET_IMX8MP_RSB3720A2_6G
         select ARCH_MISC_INIT
         select SPL_CRYPTO if SPL
 
-config TARGET_IMX8MP_ROM5722A2_6G
-        bool "Support i.MX8MP ROM5722A2 6G"
+config TARGET_IMX8MP_ROM5722A1_6G
+        bool "Support i.MX8MP ROM5722A1 6G"
         select IMX8MP
         select SUPPORT_SPL
         select IMX8M_LPDDR4
@@ -457,7 +457,7 @@ config TARGET_IMX8MP_ROM5722A2_6G
 endchoice
 
 source "board/advantech/imx8mp_rsb3720a2/Kconfig"
-source "board/advantech/imx8mp_rom5722a2/Kconfig"
+source "board/advantech/imx8mp_rom5722a1/Kconfig"
 source "board/beacon/imx8mm/Kconfig"
 source "board/beacon/imx8mn/Kconfig"
 source "board/bsh/imx8mn_smm_s2/Kconfig"

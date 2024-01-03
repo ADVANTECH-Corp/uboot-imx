@@ -1,6 +1,6 @@
 i.MX8MP ROM5722A2 BOARD
 M:	Clayder Huang <Clayder.Huang@advantech.com.tw>
 S:	Maintained
-F:	board/advantech/imx8mp_rom5722a2/
+F:	board/advantech/imx8mp_rom5722a1/
 F:	include/configs/imx8mp_rom5722.h
-F:	configs/imx8mp_rom5722a2_6G_defconfig
+F:	configs/imx8mp_rom5722a1_6G_defconfig
