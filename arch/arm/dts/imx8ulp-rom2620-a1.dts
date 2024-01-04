@@ -156,6 +156,20 @@
 	status = "okay";
 };
 
+&usdhc2 {
+	ssigned-clocks = <&pcc4 IMX8ULP_CLK_USDHC2>;
+	assigned-clock-rates = <396000000>;
+	pinctrl-names = "default", "state_100mhz", "state_200mhz";
+	pinctrl-0 = <&pinctrl_usdhc2_pte>;
+	pinctrl-1 = <&pinctrl_usdhc2_pte>;
+	pinctrl-2 = <&pinctrl_usdhc2_pte>;
+	wp-gpios = <&gpiof 27 GPIO_ACTIVE_HIGH>;
+	cd-gpios = <&gpiof 28 GPIO_ACTIVE_LOW>;
+	bus-width = <4>;
+	keep-power-in-suspend;
+	status = "okay";
+};
+
 &fec {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&pinctrl_enet>;
@@ -268,6 +282,20 @@
 			MX8ULP_PAD_PTD4__SDHC0_D6	0x3
 			MX8ULP_PAD_PTD3__SDHC0_D7	0x3
 			MX8ULP_PAD_PTD11__SDHC0_DQS	0x10002
+		>;
+	};
+
+	pinctrl_usdhc2_pte: usdhc2ptegrp {
+		fsl,pins = <
+			MX8ULP_PAD_PTE1__SDHC2_D0	0x3
+			MX8ULP_PAD_PTE0__SDHC2_D1	0x3
+			MX8ULP_PAD_PTE5__SDHC2_D2	0x3
+			MX8ULP_PAD_PTE4__SDHC2_D3	0x3
+			MX8ULP_PAD_PTE2__SDHC2_CLK	0x10002
+			MX8ULP_PAD_PTE3__SDHC2_CMD	0x3
+			MX8ULP_PAD_PTF26__SDHC2_RESET_B	0x3
+			MX8ULP_PAD_PTF27__SDHC2_WP	0x2
+			MX8ULP_PAD_PTF28__SDHC2_CD	0x3
 		>;
 	};
 };
