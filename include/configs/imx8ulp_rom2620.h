@@ -10,6 +10,8 @@
 #include <asm/arch/imx-regs.h>
 #include "imx_env.h"
 
+#define CONFIG_MANUFACTURE_INFO2EMMC /* Store manufacture info (mac, sn, ...) to eMMC bootpart */
+
 #define CFG_SYS_UBOOT_BASE	(QSPI0_AMBA_BASE + CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR * 512)
 
 #ifdef CONFIG_SPL_BUILD
