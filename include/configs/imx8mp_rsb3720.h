@@ -207,6 +207,10 @@
 #define PHYS_SDRAM_2_SIZE		0x80000000      /* 2 GB */
 #elif defined(CONFIG_TARGET_IMX8MP_RSB3720A1_2G)
 #define PHYS_SDRAM_SIZE			0x80000000      /* 2 GB */
+#elif defined(CONFIG_TARGET_IMX8MP_RSB3720A1_8G)
+#define PHYS_SDRAM_SIZE                 0xC0000000      /* 3 GB */
+#define PHYS_SDRAM_2                    0x100000000
+#define PHYS_SDRAM_2_SIZE               0x140000000      /* 5 GB */
 #elif defined(CONFIG_TARGET_IMX8MP_DDR4_EVK)
 #define PHYS_SDRAM_SIZE                 0xC0000000      /* 3 GB */
 #define PHYS_SDRAM_2                    0x100000000
