@@ -420,6 +420,26 @@ config TARGET_IMX8MM_CL_IOT_GATE_OPTEE
 	select IMX8M_LPDDR4
 	select SUPPORT_EXTENSION_SCAN
 
+config TARGET_IMX8MM_ROM5721A1_1G
+	bool "Support i.MX8MM ROM5721A1 1G"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_LPDDR4
+	select FSL_CAAM
+	select FSL_BLOB
+	select ARCH_MISC_INIT
+	select SPL_CRYPTO if SPL
+
+config TARGET_IMX8MM_ROM5721A1_2G
+	bool "Support i.MX8MM ROM5721A1 2G"
+	select IMX8MM
+	select SUPPORT_SPL
+	select IMX8M_LPDDR4
+	select FSL_CAAM
+	select FSL_BLOB
+	select ARCH_MISC_INIT
+	select SPL_CRYPTO if SPL
+
 config TARGET_MSC_SM2S_IMX8MP
 	bool "MSC SMARC2 i.MX8MPLUS"
 	select BINMAN
@@ -458,6 +478,7 @@ endchoice
 
 source "board/advantech/imx8mp_rsb3720a2/Kconfig"
 source "board/advantech/imx8mp_rom5722a1/Kconfig"
+source "board/advantech/imx8mm_rom5721a1/Kconfig"
 source "board/beacon/imx8mm/Kconfig"
 source "board/beacon/imx8mn/Kconfig"
 source "board/bsh/imx8mn_smm_s2/Kconfig"

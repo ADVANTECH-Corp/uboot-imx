@@ -1,0 +1,7 @@
+i.MX8MM ROM5721A1 BOARD
+M:	Advantech RISC
+S:	Maintained
+F:	board/advantech/imx8mm_rom5721a1/
+F:	include/configs/imx8mm_rom5721.h
+F:      configs/imx8mm_rom5721a1_1G_defconfig
+F:	configs/imx8mm_rom5721a1_2G_defconfig
