@@ -221,6 +221,12 @@ config TARGET_IMX8MP_EPCR5710A1_2G
         select SUPPORT_SPL
         select IMX8M_LPDDR4	
 
+config TARGET_IMX8MP_ROM5722A1_8G
+	bool "Support i.MX8MP ROM5722A1 8G"
+	select IMX8MP
+	select SUPPORT_SPL
+	select IMX8M_LPDDR4
+
 config TARGET_IMX8MP_ROM5722A1_6G
         bool "Support i.MX8MP ROM5722A1 6G"
         select IMX8MP
