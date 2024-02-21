@@ -79,10 +79,76 @@ DECLARE_GLOBAL_DATA_PTR;
 
 #define KEY_VOL_UP	IMX_GPIO_NR(1, 4)
 
+#ifdef CONFIG_ADVANTECH
+void tune_ddr(void)
+{
+#if defined(CONFIG_TARGET_MX6ROM7420A1_2G) || defined(CONFIG_TARGET_MX6ROM7420A1_1G)
+  /* Add for ROM-7420 Quar Core 2G booted failed from advload V2.330 */
+
+       unsigned int *ADD_MMDC_P1_MPWLDECTRL0;
+       unsigned int *ADD_MMDC_P1_MPWLDECTRL1;
+       char advboot_version[128];
+       char* pch = NULL;
+       ADD_MMDC_P1_MPWLDECTRL0 = (unsigned int *)MX6_MMDC_P1_MPWLDECTRL0;
+       ADD_MMDC_P1_MPWLDECTRL1 = (unsigned int *)MX6_MMDC_P1_MPWLDECTRL1;
+
+       strncpy(advboot_version, (void *)0x22300000, 128);
+       pch = strstr (advboot_version, "rom7420_2G");
+
+       if (pch != NULL || gd->ram_size == (2u * 1024 * 1024 * 1024))
+       {
+         *ADD_MMDC_P1_MPWLDECTRL0 = 0x001F001F;
+         *ADD_MMDC_P1_MPWLDECTRL1 = 0x001F001F;
+       }
+#endif
+}
+#endif
+
 int dram_init(void)
 {
+#ifdef CONFIG_ADVANTECH
+       char *under_line_1, *under_line_2, *under_line_3;
+       char memory_size[30];
+       char advboot_version[128];
+
+       /* Read memory size sent from Adv-Boot */
+       gd->ram_size = (*(unsigned int *)0x22400000);
+       if (gd->ram_size != (2u * 1024 * 1024 * 1024) &&
+               gd->ram_size != (1u * 1024 * 1024 * 1024) &&
+               gd->ram_size != (512 * 1024 * 1024))
+       {
+               strncpy(advboot_version, (void *)0x22300000, 128);
+
+               under_line_1 = strchr(advboot_version,'_');
+               under_line_2 = strchr(under_line_1+1,'_');
+               under_line_3 = strchr(under_line_2+1,'_');
+
+               strncpy(memory_size, under_line_2+1, under_line_3-under_line_2-1);
+               memory_size[under_line_3-under_line_2]='\0';
+
+               if (0 == strcmp(memory_size, "2G"))
+               {
+                       gd->ram_size = (2u * 1024 * 1024 * 1024);
+               }
+               else if (0 == strcmp(memory_size, "1G"))
+               {
+                       gd->ram_size = (1u * 1024 * 1024 * 1024);
+               }
+               else if (0 == strcmp(memory_size, "512M"))
+               {
+                       gd->ram_size = (512 * 1024 * 1024);
+               }
+               else
+               {
+                       gd->ram_size = PHYS_SDRAM_SIZE;
+               }
+       }
+       tune_ddr();
+#else
 	gd->ram_size = imx_ddr_size();
+#endif
 	return 0;
+
 }
 
 static iomux_v3_cfg_t const uart1_pads[] = {
