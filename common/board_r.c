@@ -69,6 +69,31 @@
 #ifdef CONFIG_FSL_FASTBOOT
 #include <fb_fsl.h>
 #endif
+#if defined(CONFIG_ADVANTECH_MX6) || defined(CONFIG_ADVANTECH_MX8) || defined(CONFIG_ADVANTECH_MX9)
+#include <version.h>
+#include <spi_flash.h>
+#endif
+#ifdef CONFIG_MANUFACTURE_INFO2EMMC
+#include <blk.h>
+#endif
+
+#if defined(CONFIG_ADVANTECH_MX6) || defined(CONFIG_ADVANTECH_MX8) || defined(CONFIG_ADVANTECH_MX9)
+
+#ifdef CONFIG_MANUFACTURE_INFO2EMMC
+static struct blk_desc *dev_desc = NULL;
+#else
+#define CONFIG_SPI_ENV_OFFSET	(768 * 1024)
+#define CONFIG_SPI_ENV_SIZE	(8 * 1024)
+static struct spi_flash *flash = NULL;
+#endif
+
+struct boardcfg_t {
+    unsigned char mac[6];
+    unsigned char sn[10];
+    unsigned char Manufacturing_Time[14];
+};
+
+#endif /* (CONFIG_ADVANTECH_MX6) || defined(CONFIG_ADVANTECH_MX8)  || defined(CONFIG_ADVANTECH_MX9)*/
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -512,6 +537,235 @@ static int initr_net(void)
 #endif
 	return 0;
 }
+
+#if defined(CONFIG_ADVANTECH_MX6) || defined(CONFIG_ADVANTECH_MX8) || defined(CONFIG_ADVANTECH_MX9)
+#define XMK_STR(x)	#x
+#define MK_STR(x)	XMK_STR(x)
+
+static int board_config_read(u32 offset, struct boardcfg_t *bcfg)
+{
+	int rc = -1;
+#ifdef CONFIG_MANUFACTURE_INFO2EMMC
+	unsigned char ori_hwpart;
+	unsigned char *buf = NULL;
+	u32 blk_cnt;
+	int ret;
+
+	if ((dev_desc == NULL) ||
+	    (bcfg == NULL))
+	{
+		printf("%s: argument error!\n", __func__);
+		goto BCONF_READ_ERR;
+	}
+
+	blk_cnt = DIV_ROUND_UP(512, dev_desc->blksz);
+	buf = memalign(ARCH_DMA_MINALIGN, dev_desc->blksz*blk_cnt);
+	if (!buf) {
+		printf("%s: out of memory!\n", __func__);
+		goto BCONF_READ_ERR;
+	}
+
+	ori_hwpart = dev_desc->hwpart;
+
+	ret = blk_select_hwpart_devnum(UCLASS_MMC, dev_desc->devnum, MMC_NUM_BOOT_PARTITION);
+	if (ret) {
+		printf("%s: failed to select boot_part!\n", __func__);
+		goto BCONF_READ_ERR;
+	}
+
+	ret = blk_dread(dev_desc, 0, blk_cnt, buf);
+	if (ret != blk_cnt) {
+		printf("%s: failed to read boot_part hdr!\n", __func__);
+		blk_select_hwpart_devnum(UCLASS_MMC, dev_desc->devnum, ori_hwpart);
+		goto BCONF_READ_ERR;
+	}
+
+	memcpy(bcfg, buf + offset, sizeof(struct boardcfg_t));
+
+	ret = blk_select_hwpart_devnum(UCLASS_MMC, dev_desc->devnum, ori_hwpart);
+	if (ret != 0) {
+		printf("failed to select user data part\n");
+		goto BCONF_READ_ERR;
+	}
+
+	rc = 0; /* complete flow */
+#else
+	if ((flash == NULL) ||
+	    (bcfg == NULL))
+	{
+		printf("%s: argument error!\n", __func__);
+		goto BCONF_READ_ERR;
+	}
+
+	rc = spi_flash_read(flash, offset, sizeof(struct boardcfg_t), bcfg);
+#endif
+
+BCONF_READ_ERR:
+
+#ifdef CONFIG_MANUFACTURE_INFO2EMMC
+	if (buf) {
+		free(buf);
+	}
+#endif
+	return rc;
+}
+
+static int get_eth0_mac(void)
+{
+	int rc = 0;
+	struct boardcfg_t boardcfg;
+	char print_buf[32];
+	uint64_t macaddr = 0;
+#ifdef CONFIG_MANUFACTURE_INFO2EMMC
+	u32 offset = 0;
+#else /* MAC address in SPI */
+	u32 offset = CONFIG_SPI_ENV_OFFSET + 8*CONFIG_SPI_ENV_SIZE;
+#endif
+
+	if (board_config_read(offset, &boardcfg) == 0) {
+
+
+		/*printf("0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X\n",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);*/
+
+
+		macaddr = ((uint64_t)boardcfg.mac[0] << 40)
+			+ ((uint64_t)boardcfg.mac[1] << 32)
+			+ ((uint64_t)boardcfg.mac[2] << 24)
+			+ ((uint64_t)boardcfg.mac[3] << 16)
+			+ ((uint64_t)boardcfg.mac[4] << 8)
+			+ boardcfg.mac[5];
+		/* printf ("MAC addr =%012llX\n", macaddr); */
+
+		if( (macaddr==0) || (macaddr==0xFFFFFFFFFFFFull) ) {
+			printf("eth0 MAC address is invailed !!\n");
+			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE0");
+			printf("Use default MAC adderss:%s\n",print_buf);
+			env_set("ethaddr",print_buf);
+			return rc;
+		}
+	} else {
+		printf("board config read fail!!\n");
+		rc = -1;
+	}
+
+	if (rc == 0) {
+		sprintf(print_buf, "0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);
+		printf ("eth0 MAC addr = %s\n", print_buf);
+
+		if( (env_get("ethaddr") == NULL) ||
+			(strcmp (env_get("ethaddr"),print_buf) != 0) ||
+			(strcmp (env_get("ethaddr"),MK_STR(CONFIG_ETHADDR)) == 0) ) {
+			env_set("ethaddr", print_buf);
+		}
+	}
+
+	return rc;
+}
+
+#ifdef CFG_HAS_ETH1
+static int get_eth1_mac(void)
+{
+	int rc = 0;
+	struct boardcfg_t boardcfg;
+	char print_buf[32];
+	uint64_t macaddr = 0;
+#ifdef CONFIG_MANUFACTURE_INFO2EMMC
+	u32 offset = 16;
+#else /* MAC address in SPI */
+	u32 offset = CONFIG_SPI_ENV_OFFSET + 8*CONFIG_SPI_ENV_SIZE + 16;
+#endif
+
+	if (board_config_read(offset, &boardcfg) == 0) {
+
+		/*printf("offset=%d\n", CONFIG_SPI_ENV_OFFSET+ 8*CONFIG_SPI_ENV_SIZE);*/
+
+		/*printf("0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X\n",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);*/
+
+
+		macaddr = ((uint64_t)boardcfg.mac[0] << 40)
+			+ ((uint64_t)boardcfg.mac[1] << 32)
+			+ ((uint64_t)boardcfg.mac[2] << 24)
+			+ ((uint64_t)boardcfg.mac[3] << 16)
+			+ ((uint64_t)boardcfg.mac[4] << 8)
+			+ boardcfg.mac[5];
+		/* printf ("MAC addr =%012llX\n", macaddr); */
+
+		if( (macaddr==0) || (macaddr==0xFFFFFFFFFFFFull) ) {
+			printf("eth1 MAC address is invailed !!\n");
+			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE0");
+			printf("Use default MAC adderss:%s\n",print_buf);
+			env_set("eth1addr",print_buf);
+			return rc;
+		}
+	} else {
+		printf("board config read fail!!\n");
+		rc = -1;
+	}
+
+	if (rc==0) {
+		sprintf(print_buf, "0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);
+		printf ("eth1 MAC addr = %s\n", print_buf);
+
+		if( (env_get("eth1addr") == NULL) ||
+			(strcmp (env_get("eth1addr"),print_buf) != 0) ||
+			(strcmp (env_get("eth1addr"),MK_STR(CONFIG_ETH1ADDR)) == 0) ) {
+			env_set("eth1addr", print_buf);
+		}
+	}
+
+	return rc;
+}
+#endif
+
+int boardcfg_get_mac(void)
+{
+	int rc = 0;
+#ifdef CONFIG_MANUFACTURE_INFO2EMMC
+	dev_desc = blk_get_devnum_by_uclass_id(UCLASS_MMC, 0);
+	if (!dev_desc) {
+		printf("%s: Can't find dev_desc!\n", __func__);
+		return -1;
+	}
+#else
+	flash = spi_flash_probe(CONFIG_SF_DEFAULT_BUS, CONFIG_SF_DEFAULT_CS,
+				CONFIG_SF_DEFAULT_SPEED, CONFIG_SF_DEFAULT_MODE);
+	if (!flash)
+		return -1;
+#endif
+
+	rc = get_eth0_mac();
+#ifdef CFG_HAS_ETH1
+	rc = get_eth1_mac();
+#endif
+
+	return rc;
+}
+#endif /* (CONFIG_ADVANTECH_MX6) || defined(CONFIG_ADVANTECH_MX8) || defined(CONFIG_ADVANTECH_MX9) */
+
 #endif
 
 #ifdef CONFIG_POST
@@ -818,6 +1072,9 @@ static init_fnc_t init_sequence_r[] = {
 #ifdef CONFIG_CMD_NET
 	INIT_FUNC_WATCHDOG_RESET
 	initr_net,
+#if defined(CONFIG_ADVANTECH_MX6) || defined(CONFIG_ADVANTECH_MX8) || defined(CONFIG_ADVANTECH_MX9)
+	boardcfg_get_mac,	/* Get MAC address from SPI */
+#endif
 #endif
 #ifdef CONFIG_POST
 	initr_post,

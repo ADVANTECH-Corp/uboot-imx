@@ -9,6 +9,12 @@ config IMX_CONFIG
 	depends on MACH_IMX
 	default "arch/arm/mach-imx/spl_sd.cfg"
 
+config ADVANTECH_MX8
+    bool "Support Advantech imx8 projects"
+
+config ADVANTECH_MX9
+    bool "Support Advantech imx9 projects"
+
 config IMX_OPTEE
 	bool "Support OP-TEE"
 	help
