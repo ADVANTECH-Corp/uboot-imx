@@ -1,0 +1,30 @@
+if TARGET_IMX93_AFEE320A1
+
+config SYS_BOARD
+	default "imx93_afee320a1"
+
+config SYS_VENDOR
+	default "advantech"
+
+config SYS_CONFIG_NAME
+	default "imx93_afee320"
+
+choice
+	prompt "Select DDR Type"
+	default IMX93_AFEE320A1_LPDDR4X
+
+config IMX93_AFEE320A1_LPDDR4X
+	bool "Using LPDDR4X Timing and PMIC voltage"
+	select IMX9_LPDDR4X
+	help
+	  Select the LPDDR4X timing and 0.6V VDDQ
+
+config IMX93_AFEE320A1_LPDDR4
+	bool "Using LPDDR4 Timing and PMIC voltage"
+	select IMX9_LPDDR4X
+	help
+	  Select the LPDDR4 timing and 1.1V VDDQ
+
+endchoice
+
+endif

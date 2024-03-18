@@ -54,9 +54,15 @@ config TARGET_IMX93_ROM2820A1
 	#select FSL_BLOB
 	select ARCH_MISC_INIT
 	select SPL_CRYPTO if SPL
+
+config TARGET_IMX93_AFEE320A1
+	bool "Support i.MX93 AFEE320A1"
+	select IMX93
+
 endchoice
 
 source "board/advantech/imx93_rom2820a1/Kconfig"
+source "board/advantech/imx93_afee320a1/Kconfig"
 source "board/freescale/imx93_evk/Kconfig"
 source "board/freescale/imx93_qsb/Kconfig"
 

@@ -1,0 +1,6 @@
+i.MX93 AFEE320A1 BOARD
+M:	Advantech RISC
+S:	Maintained
+F:	board/advantech/imx93_afee320a1/
+F:	include/configs/imx93_afee320.h
+F:	configs/imx93_afee320a1_defconfig
