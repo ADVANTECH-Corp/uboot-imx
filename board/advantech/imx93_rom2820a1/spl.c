@@ -68,7 +68,7 @@ extern struct dram_timing_info dram_timing_1866mts;
 void spl_dram_init(void)
 {
 	struct dram_timing_info *ptiming = &dram_timing;
-#if IS_ENABLED(CONFIG_IMX93_EVK_LPDDR4X)
+#if IS_ENABLED(CONFIG_IMX93_ROM2820A1_LPDDR4X)
 	if (is_voltage_mode(VOLT_LOW_DRIVE))
 		ptiming = &dram_timing_1866mts;
 #endif
@@ -123,7 +123,7 @@ int power_init_board(void)
 		pmic_reg_write(dev, PCA9450_BUCK3OUT_DVS0, buck_val + 0x4);
 	}
 
-	if (IS_ENABLED(CONFIG_IMX93_EVK_LPDDR4)) {
+	if (IS_ENABLED(CONFIG_IMX93_ROM2820A1_LPDDR4)) {
 		/* Set VDDQ to 1.1V from buck2 */
 		pmic_reg_write(dev, PCA9450_BUCK2OUT_DVS0, 0x28);
 	}

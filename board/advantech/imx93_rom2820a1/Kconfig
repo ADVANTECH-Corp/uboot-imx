@@ -11,16 +11,15 @@ config SYS_CONFIG_NAME
 
 choice
 	prompt "Select DDR Type"
-	default IMX93_EVK_LPDDR4X if TARGET_IMX93_ROM2820A1
-	default IMX93_EVK_LPDDR4 if TARGET_IMX91P_11X11_EVK
+	default IMX93_ROM2820A1_LPDDR4X
 
-config IMX93_EVK_LPDDR4X
+config IMX93_ROM2820A1_LPDDR4X
 	bool "Using LPDDR4X Timing and PMIC voltage"
 	select IMX9_LPDDR4X
 	help
 	  Select the LPDDR4X timing and 0.6V VDDQ
 
-config IMX93_EVK_LPDDR4
+config IMX93_ROM2820A1_LPDDR4
 	bool "Using LPDDR4 Timing and PMIC voltage"
 	select IMX9_LPDDR4X
 	help
