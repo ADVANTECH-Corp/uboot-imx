@@ -14,6 +14,8 @@
 #include <div64.h>
 #include <asm/arch/imx-regs.h>
 
+#define CONFIG_IMX6_PWM_PER_CLK	66000000
+
 /* pwm_id from 0..7 */
 struct pwm_regs *pwm_id_to_reg(int pwm_id)
 {
