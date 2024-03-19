@@ -360,6 +360,16 @@ static int lcdifv3_video_probe(struct udevice *dev)
 			}
 		}
 #endif
+
+#if IS_ENABLED(CONFIG_VIDEO_IMX8MP_LVDS)
+		if (device_get_uclass_id(priv->disp_dev) == UCLASS_DISPLAY) {
+			ret = display_enable(priv->disp_dev, NULL, NULL);
+			if (ret) {
+				dev_err(dev, "fail to enable display\n");
+				return ret;
+			}
+		}
+#endif
 	}
 
 	mode.xres = timings.hactive.typ;
@@ -416,6 +426,7 @@ static int lcdifv3_video_remove(struct udevice *dev)
 
 static const struct udevice_id lcdifv3_video_ids[] = {
 	{ .compatible = "fsl,imx8mp-lcdif1" },
+	{ .compatible = "fsl,imx8mp-lcdif2" },
 	{ /* sentinel */ }
 };
 
