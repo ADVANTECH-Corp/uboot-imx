@@ -180,7 +180,7 @@
 			      "sys_pll1_800m", "dram_pll_div";
 	};
 
-	power-domains {
+	pm_domain: power-domains {
 		compatible = "simple-bus";
 
 		/* HSIO SS */

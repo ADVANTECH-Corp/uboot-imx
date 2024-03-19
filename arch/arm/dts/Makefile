@@ -879,6 +879,7 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
 	imx8mp-ddr4-evk.dtb \
 	imx8mp-evk.dtb \
 	imx8mp-rsb3720-a1.dtb \
+	imx8mp-rsb3720-a1-lvds0-auo.dtb \
 	imx8mp-rom5722-a1.dtb \
 	imx8mp-phyboard-pollux-rdk.dtb \
 	imx8mq-pico-pi.dtb
