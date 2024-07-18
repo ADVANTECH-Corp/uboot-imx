@@ -7,7 +7,11 @@
 #
 
 ifdef CONFIG_SPL_BUILD
+ifdef CONFIG_ADVANTECH
+obj-$(CONFIG_SPL_FRAMEWORK) += spl_advantech.o
+else
 obj-$(CONFIG_$(SPL_TPL_)FRAMEWORK) += spl.o
+endif
 obj-$(CONFIG_$(SPL_TPL_)BOOTROM_SUPPORT) += spl_bootrom.o
 obj-$(CONFIG_$(SPL_TPL_)LOAD_FIT) += spl_fit.o
 obj-$(CONFIG_$(SPL_TPL_)LEGACY_IMAGE_FORMAT) += spl_legacy.o

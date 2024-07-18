@@ -1,5 +1,3 @@
-if TARGET_MX6QRSB4410A1_1G || TARGET_MX6QRSB4411A1_1G
-
 config SYS_BOARD
 	default "mx6advantech"
 
@@ -19,4 +17,7 @@ config SYS_CONFIG_NAME
 	default "mx6rsb4411"
 endif
 
+if TARGET_MX6QRSB3430A1_1G
+config SYS_CONFIG_NAME
+        default "mx6rsb3430"
 endif

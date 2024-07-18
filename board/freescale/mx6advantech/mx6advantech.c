@@ -156,6 +156,12 @@ static iomux_v3_cfg_t const uart1_pads[] = {
 	IOMUX_PADS(PAD_CSI0_DAT11__UART1_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
 };
 
+#ifdef	ADV_ENABLE_UART2
+static iomux_v3_cfg_t const uart2_pads[] = {
+	IOMUX_PADS(PAD_EIM_D26__UART2_TX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
+	IOMUX_PADS(PAD_EIM_D27__UART2_RX_DATA | MUX_PAD_CTRL(UART_PAD_CTRL)),
+};
+#endif
 #ifdef CONFIG_MXC_SPI
 static iomux_v3_cfg_t const ecspi1_pads[] = {
 	IOMUX_PADS(PAD_EIM_D16__ECSPI1_SCLK | MUX_PAD_CTRL(SPI_PAD_CTRL)),
@@ -265,7 +271,7 @@ iomux_v3_cfg_t const pcie_pads[] = {
 static void setup_pcie(void)
 {
 	SETUP_IOMUX_PADS(pcie_pads);
-	gpio_request(CONFIG_PCIE_IMX_POWER_GPIO, "PCIE Power Enable");
+	//gpio_request(CONFIG_PCIE_IMX_POWER_GPIO, "PCIE Power Enable");    /* rsb3430 fail */
 	gpio_request(CONFIG_PCIE_IMX_PERST_GPIO, "PCIE Reset");
 }
 #endif
