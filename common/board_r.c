@@ -64,7 +64,7 @@
 #ifdef CONFIG_FSL_FASTBOOT
 #include <fb_fsl.h>
 #endif
-#ifdef ADVANTECH_MX8_PLATFOR
+#ifdef CONFIG_ADVANTECH_MX8
 #include <version.h>
 #include <spi_flash.h>
 
