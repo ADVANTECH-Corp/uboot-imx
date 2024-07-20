@@ -617,18 +617,16 @@ static int get_eth1_mac(void)
 int boardcfg_get_mac(void)
 {
 	int rc = 0;
-#ifndef CONFIG_ARCH_ADVANTECH
-	// flash = spi_flash_probe(CONFIG_SF_DEFAULT_BUS, CONFIG_SF_DEFAULT_CS,
-	// 			CONFIG_SF_DEFAULT_SPEED, CONFIG_SF_DEFAULT_MODE);
-	// if (!flash)
-	// 	return -1;
+	flash = spi_flash_probe(CONFIG_SF_DEFAULT_BUS, CONFIG_SF_DEFAULT_CS,
+				CONFIG_SF_DEFAULT_SPEED, CONFIG_SF_DEFAULT_MODE);
+	if (!flash)
+		return -1;
 
-	// rc = get_eth0_mac();
-
+	rc = get_eth0_mac();
 #ifdef CONFIG_HAS_ETH1
 	rc = get_eth1_mac();
 #endif
-#endif
+
 	return rc;
 }
 #endif
