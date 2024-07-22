@@ -491,7 +491,7 @@ static int initr_ethaddr(void)
 	return 0;
 }
 
-#ifdef ADVANTECH_MX8_PLATFOR
+#ifdef CONFIG_ADVANTECH_MX8
 #define XMK_STR(x)	#x
 #define MK_STR(x)	XMK_STR(x)
 
@@ -616,18 +616,67 @@ static int get_eth1_mac(void)
 
 int boardcfg_get_mac(void)
 {
-	int rc = 0;
+	int rc=-1;
+	struct blk_desc *dev_desc;
+	u32 blk_cnt;
+	unsigned char *buf;
+	unsigned char ori_hwpart;
+	
 	flash = spi_flash_probe(CONFIG_SF_DEFAULT_BUS, CONFIG_SF_DEFAULT_CS,
 				CONFIG_SF_DEFAULT_SPEED, CONFIG_SF_DEFAULT_MODE);
-	if (!flash)
-		return -1;
-
-	rc = get_eth0_mac();
+	if (flash) {
+		rc = get_eth0_mac();
 #ifdef CONFIG_HAS_ETH1
-	rc = get_eth1_mac();
+		rc = get_eth1_mac();
+#endif
+	}
+
+	if(rc) {
+	dev_desc = blk_get_devnum_by_type(IF_TYPE_MMC, 2);
+	if (!dev_desc) {
+		printf("Error: %s, dev_desc is NULL!\n", __func__);
+		return -ENODEV;
+	}
+
+	blk_cnt = DIV_ROUND_UP(512, dev_desc->blksz);
+	buf = memalign(ARCH_DMA_MINALIGN, dev_desc->blksz*blk_cnt);
+	if (!buf) {
+		printf("Error: %s: out of memory!\n", __func__);
+		return 0;
+	}
+
+	ori_hwpart = dev_desc->hwpart;
+	rc = blk_select_hwpart_devnum(IF_TYPE_MMC, dev_desc->devnum, MMC_NUM_BOOT_PARTITION);
+	if (rc){
+		printf("Error: failed to select boot_part\n");
+		goto out;
+	}
+
+	rc = blk_dread(dev_desc, 0, blk_cnt, buf);
+	if (rc != blk_cnt) {
+		printf("Error: %s: failed to read boot_part hdr!\n", __func__);
+		blk_select_hwpart_devnum(IF_TYPE_MMC, dev_desc->devnum, ori_hwpart);
+		goto out;
+	}
+	blk_select_hwpart_devnum(IF_TYPE_MMC, dev_desc->devnum, ori_hwpart);
+
+	if (is_valid_ethaddr(buf))
+	{
+		eth_env_set_enetaddr("ethaddr", buf);
+	}
+
+#ifdef CONFIG_HAS_ETH1
+	if (is_valid_ethaddr(&buf[6]))
+	{
+		eth_env_set_enetaddr("eth1addr", &buf[6]);
+	}
 #endif
 
-	return rc;
+out:
+	free(buf);
+	}
+
+	return 0;
 }
 #endif
 #endif /* CONFIG_CMD_NET */
@@ -946,7 +995,7 @@ static init_fnc_t init_sequence_r[] = {
 	/* PPC has a udelay(20) here dating from 2002. Why? */
 #ifdef CONFIG_CMD_NET
 	initr_ethaddr,
-#ifdef ADVANTECH_MX8_PLATFOR
+#ifdef CONFIG_ADVANTECH_MX8
 	boardcfg_get_mac, /* Get MAC address from SPI */
 #endif
 #endif
