@@ -217,10 +217,12 @@
 	label = "i2c5_io";
 };
 
+/*
 &i2c6_gpio_expander_21 {
 	compatible = "ti,tca6416";
 	label = "i2c6_io";
 };
+*/
 
 &flexspi1 {
 	u-boot,dm-spl;
