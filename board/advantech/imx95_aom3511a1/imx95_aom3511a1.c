@@ -31,6 +31,32 @@
 
 DECLARE_GLOBAL_DATA_PTR;
 
+static void setup_iomux_swrst(void)
+{
+	int ret;
+	struct gpio_desc desc;
+
+	printf("[ADVANTECH] setup_iomux_swrst\n");
+
+	ret = dm_gpio_lookup_name("GPIO2_27", &desc);
+	if (ret) {
+		printf("%s lookup GPIO2_27 failed ret = %d\n", __func__, ret);
+		return;
+	}
+
+	ret = dm_gpio_request(&desc, "SW_RESET_OUT");
+	if (ret) {
+		printf("%s request SW_RESET_OUT failed ret = %d\n", __func__, ret);
+		return;
+	}
+
+	/* assert the SW_RESET_OUT */
+	dm_gpio_set_dir_flags(&desc, GPIOD_IS_OUT | GPIOD_IS_OUT_ACTIVE | GPIOD_ACTIVE_LOW);
+	udelay(10000);
+	dm_gpio_set_value(&desc, 0); /* deassert the SW_RESET_OUT */
+	udelay(80000);
+}
+
 int board_early_init_f(void)
 {
 	/* UART1: A55, UART2: M33, UART3: M7 */
@@ -312,6 +338,8 @@ int board_init(void)
 #if defined(CONFIG_USB_TCPC)
 	setup_typec();
 #endif
+
+	setup_iomux_swrst();
 
 	netc_init();
 	return 0;
