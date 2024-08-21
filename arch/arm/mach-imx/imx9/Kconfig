@@ -64,6 +64,10 @@ config TARGET_IMX95_AOM3511A1_16G
 	bool "Support i.MX95 AOM3511A1 16G"
 	select IMX95
 
+config TARGET_IMX95_AOM3511A1_8G
+	bool "Support i.MX95 AOM3511A1 8G"
+	select IMX95
+
 endchoice
 
 source "board/advantech/imx95_aom3511a1/Kconfig"
