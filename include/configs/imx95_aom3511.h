@@ -210,6 +210,12 @@
 #endif
 #endif
 
+#if defined(CONFIG_TARGET_IMX95_AOM3511A1_8G)
+/* Totally 8GB */
+#define PHYS_SDRAM_SIZE			0x70000000UL /* 2GB  - 256MB DDR */
+#define PHYS_SDRAM_2_SIZE		0x180000000UL /* 6GB */
+#endif
+
 #define CFG_SYS_FSL_USDHC_NUM	2
 
 /* Using ULP WDOG for reset */
