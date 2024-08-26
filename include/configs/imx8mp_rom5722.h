@@ -161,15 +161,25 @@
 #define CFG_SYS_INIT_RAM_SIZE	0x80000
 
 
-/* Totally 6GB DDR */
+/* Totally 6GB or 4GB DDR */
 #define CFG_SYS_SDRAM_BASE		0x40000000
 #define PHYS_SDRAM			0x40000000
-#define PHYS_SDRAM_SIZE			0xC0000000	/* 3 GB */
-#define PHYS_SDRAM_2			0x100000000
-#ifdef CONFIG_TARGET_IMX8MP_DDR4_EVK
-#define PHYS_SDRAM_2_SIZE		0x40000000	/* 1 GB */
+#if defined(CONFIG_TARGET_IMX8MP_ROM5722A1_6G)
+#define PHYS_SDRAM_SIZE         0xC0000000      /* 3 GB */
+#define PHYS_SDRAM_2            0x100000000
+#define PHYS_SDRAM_2_SIZE       0xC0000000      /* 3 GB */
+#elif defined(CONFIG_TARGET_IMX8MP_ROM5722A1_4G)
+#define PHYS_SDRAM_SIZE         0x80000000      /* 2 GB */
+#define PHYS_SDRAM_2            0xC0000000
+#define PHYS_SDRAM_2_SIZE       0x80000000      /* 2 GB */
+#elif defined(CONFIG_TARGET_IMX8MP_DDR4_EVK)
+#define PHYS_SDRAM_SIZE         0xC0000000      /* 3 GB */
+#define PHYS_SDRAM_2            0x100000000
+#define PHYS_SDRAM_2_SIZE       0x40000000      /* 1 GB */
 #else
-#define PHYS_SDRAM_2_SIZE		0xC0000000	/* 3 GB */
+#define PHYS_SDRAM_SIZE         0xC0000000	    /* 3 GB */
+#define PHYS_SDRAM_2            0x100000000
+#define PHYS_SDRAM_2_SIZE       0xC0000000	    /* 3 GB */
 #endif
 
 #define CFG_MXC_UART_BASE		UART2_BASE_ADDR
