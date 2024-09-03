@@ -1,0 +1,73 @@
+// SPDX-License-Identifier: GPL-2.0+
+//
+// Copyright 2012 Freescale Semiconductor, Inc.
+// Copyright 2011 Linaro Ltd.
+
+/dts-v1/;
+
+#include "imx6dl.dtsi"
+#include "imx6qdl-advantech.dtsi"
+
+/ {
+	model = "i.MX6 DualLite ADVANTECH Smart Device Board";
+	compatible = "fsl,imx6dl-sabresd", "fsl,imx6dl";
+        aliases {
+                mmc0 = &usdhc3;
+                mmc1 = &usdhc4;
+                mmc2;
+                mmc3;
+        };
+
+};
+
+&iomuxc {
+
+
+	pinctrl_ecspi1_cs_0: ecspi1_cs_grp-0 {
+		fsl,pins = <
+			MX6QDL_PAD_EIM_EB2__GPIO2_IO30 0x1b0b0    /* ECSPI1_CS0 */
+			>;
+		};
+};
+
+&ecspi1 {
+	fsl,spi-num-chipselects = <1>;
+	cs-gpios = <&gpio2 30 0>;
+	pinctrl-names = "default";
+	pinctrl-0 = <&pinctrl_ecspi1_cs_0 &pinctrl_ecspi1>;
+	status = "okay";
+
+	flash: m25p80@0 {
+		#address-cells = <1>;
+		#size-cells = <1>;
+		compatible = "st,m25p32", "jedec,spi-nor";
+		spi-max-frequency = <20000000>;
+		reg = <0>;
+	};
+};
+
+
+&uart1 {
+	status = "okay";
+};
+
+&fec {
+	status = "okay";
+};
+
+&usdhc3 {
+        pinctrl-names = "default";
+        pinctrl-0 = <&pinctrl_usdhc3_2>;
+        bus-width = <4>;
+        cd-gpios = <&gpio7 1 GPIO_ACTIVE_LOW>;
+        wp-gpios = <&gpio7 0 GPIO_ACTIVE_HIGH>;
+        status = "okay";
+};
+
+&usdhc4 {
+	status = "okay";
+};
+
+&epdc {
+	status = "disabled";
+};

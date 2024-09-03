@@ -464,6 +464,26 @@ config TARGET_MX6QRSB4411A1_1G
     select TARGET_MX6ADVANTECH_COMMON
     depends on MX6Q
 
+config TARGET_MX6DLRSB4411A1_1G
+        bool "Support mx6dlrsb4411a1 1G"
+    select TARGET_MX6ADVANTECH_COMMON
+    depends on MX6DL
+
+config TARGET_MX6DLRSB4411A1_2G
+        bool "Support mx6dlrsb4411a1 2G"
+    select TARGET_MX6ADVANTECH_COMMON
+    depends on MX6DL
+
+config TARGET_MX6DLRSB4411A2_1G
+        bool "Support mx6dlrsb4411a2 1G"
+    select TARGET_MX6ADVANTECH_COMMON
+    depends on MX6DL
+
+config TARGET_MX6DLRSB4411A2_2G
+        bool "Support mx6dlrsb4411a2 2G"
+    select TARGET_MX6ADVANTECH_COMMON
+    depends on MX6DL
+
 config TARGET_MX6QRSB3430A1_1G
     bool "Support mx6qrsb3430a1 1G"
     select TARGET_MX6ADVANTECH_COMMON
