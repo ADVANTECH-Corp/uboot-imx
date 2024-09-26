@@ -104,7 +104,7 @@ int enable_AXI_cache(void)
 #ifdef CONFIG_ADVANTECH
 void tune_ddr(void)
 {
-#if defined(CONFIG_TARGET_MX6ROM7420A1_2G) || defined(CONFIG_TARGET_MX6ROM7420A1_1G)
+#if defined(CONFIG_TARGET_MX6ROM7420A2_2G) || defined(CONFIG_TARGET_MX6ROM7420A2_1G)
   /* add for ROM-7420 Quar Core 2G booted failed from advload V2.330 */
   unsigned int *ADD_MMDC_P1_MPWLDECTRL0;
   unsigned int *ADD_MMDC_P1_MPWLDECTRL1;
@@ -1147,7 +1147,9 @@ int board_init(void)
 #endif
 
 #if defined(CONFIG_PCIE_IMX) && !defined(CONFIG_DM_PCI)
+	#ifndef CONFIG_TARGET_MX6QROM7420A2_1G
 	setup_pcie();
+#endif
 #endif
 
 #if defined(CONFIG_MX6DL) && defined(CONFIG_MXC_EPDC)

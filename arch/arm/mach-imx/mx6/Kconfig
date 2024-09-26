@@ -504,6 +504,11 @@ config TARGET_MX6QRSB4411A1_1G
     select MISC
     select ARCH_MISC_INIT
 
+config TARGET_MX6QROM7420A2_1G
+    bool "Support mx6qrom7420a2 1G"
+    select TARGET_MX6ADVANTECH_COMMON
+    depends on MX6Q
+
 config TARGET_MX6QPSABRESD
 	bool "mx6qpsabresd"
     select TARGET_MX6SABRESD_COMMON

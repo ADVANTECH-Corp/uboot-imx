@@ -83,7 +83,7 @@
 			enable-active-high;
 		};
 
-		reg_pcie: regulator@3 {
+		/*reg_pcie: regulator@3 {
 			compatible = "regulator-fixed";
 			reg = <3>;
 			pinctrl-names = "default";
@@ -94,7 +94,7 @@
 			gpio = <&gpio3 19 0>;
 			regulator-always-on;
 			enable-active-high;
-		};
+		};*/
 
 		reg_sensor: regulator@4 {
 			compatible = "regulator-fixed";

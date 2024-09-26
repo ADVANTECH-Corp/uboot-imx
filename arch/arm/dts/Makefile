@@ -664,6 +664,7 @@ dtb-$(CONFIG_MX53) += imx53-cx9020.dtb \
 
 dtb-$(CONFIG_ADVANTECH) += imx6q-rsb4411-a1.dtb \
 	imx6q-rsb3430-a1.dtb \
+	imx6q-rom7420-a2.dtb
 
 ifneq ($(CONFIG_MX6DL)$(CONFIG_MX6QDL)$(CONFIG_MX6S),)
 dtb-y += \
