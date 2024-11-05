@@ -1,0 +1,6 @@
+i.MX8MM EBCRS16A1 BOARD
+M:	Advantech RISC
+S:	Maintained
+F:	board/advantech/imx8mm_ebcrs16a1/
+F:	include/configs/imx8mm_ebcrs16.h
+F:	configs/imx8mm_ebcrs16a1_2G_defconfig
