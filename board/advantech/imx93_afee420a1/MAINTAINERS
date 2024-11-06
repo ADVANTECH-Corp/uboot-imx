@@ -1,0 +1,6 @@
+i.MX93 AFEE420A1 BOARD
+M:	Sean Chuang <Sean.Chuang@advantech.com.tw>
+S:	Maintained
+F:	board/advantech/imx93_afee420a1/
+F:	include/configs/imx93_afee420.h
+F:	configs/imx93_afee420a1_defconfig
