@@ -11,6 +11,8 @@
 #include <asm/arch/imx-regs.h>
 #include "imx_env.h"
 
+#define ADVANTECH_MX8_PLATFOR
+#define ADV_AUTO_PROBE_THERMAL_TRIPS
 #define UBOOT_ITB_OFFSET			0x57C00
 #define FSPI_CONF_BLOCK_SIZE		0x1000
 #define UBOOT_ITB_OFFSET_FSPI  \

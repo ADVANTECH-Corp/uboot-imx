@@ -533,6 +533,10 @@ static int imx_tmu_enable_msite(struct udevice *dev)
 	return 0;
 }
 
+#if defined(CONFIG_ADVANTECH_MX8) && defined(ADV_AUTO_PROBE_THERMAL_TRIPS)
+int g_cpu_thermal_trip1 = -1;
+#endif
+
 static int imx_tmu_bind(struct udevice *dev)
 {
 	struct imx_tmu_plat *pdata = dev_get_plat(dev);
@@ -553,6 +557,10 @@ static int imx_tmu_bind(struct udevice *dev)
 	get_cpu_temp_grade(&minc, &maxc);
 	pdata->critical = maxc * 1000;
 	pdata->alert = (maxc - 10) * 1000;
+
+#if defined(CONFIG_ADVANTECH_MX8) && defined(ADV_AUTO_PROBE_THERMAL_TRIPS)
+	g_cpu_thermal_trip1 = pdata->critical;
+#endif
 
 	node = ofnode_path("/thermal-zones");
 	ofnode_for_each_subnode(offset, node) {
