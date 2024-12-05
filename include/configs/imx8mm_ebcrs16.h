@@ -3,8 +3,8 @@
  * Copyright 2019 NXP
  */
 
-#ifndef __IMX8MM_ROM5721_H
-#define __IMX8MM_ROM5721_H
+#ifndef __IMX8MM_EBCRS16_H
+#define __IMX8MM_EBCRS16_H
 
 #include <linux/sizes.h>
 #include <linux/stringify.h>

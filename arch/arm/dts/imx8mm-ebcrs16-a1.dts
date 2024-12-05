@@ -6,7 +6,7 @@
 /dts-v1/;
 
 #include <dt-bindings/usb/pd.h>
-#include "imx8mm-advantech.dtsi"
+#include "imx8mm-ebcrs16-a1.dtsi"
 
 / {
 	model = "NXP i.MX8MM EBCRS16A1 board";
