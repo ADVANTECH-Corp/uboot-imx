@@ -70,19 +70,6 @@
 #include <fb_fsl.h>
 #endif
 
-#ifndef CONFIG_SF_DEFAULT_BUS
-#define CONFIG_SF_DEFAULT_BUS   0
-#endif
-#ifndef CONFIG_SF_DEFAULT_CS
-#define CONFIG_SF_DEFAULT_CS    0
-#endif
-#ifndef CONFIG_SF_DEFAULT_SPEED
-#define CONFIG_SF_DEFAULT_SPEED 40000000
-#endif
-#ifndef CONFIG_SF_DEFAULT_MODE
-#define CONFIG_SF_DEFAULT_MODE  0
-#endif
-
 #if defined(CONFIG_ADVANTECH_MX6) || defined(CONFIG_ADVANTECH_MX8)
 #include <version.h>
 #include <spi_flash.h>
