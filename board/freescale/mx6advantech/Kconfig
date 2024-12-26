@@ -11,3 +11,8 @@ if TARGET_MX6QRSB3430A1_1G
 config SYS_CONFIG_NAME
         default "mx6rsb3430"
 endif
+
+if TARGET_MX6QRSB3430A2_1G
+config SYS_CONFIG_NAME
+        default "mx6rsb3430"
+endif

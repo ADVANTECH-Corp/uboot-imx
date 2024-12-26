@@ -475,6 +475,11 @@ config TARGET_MX6QRSB3430A1_1G
     select TARGET_MX6ADVANTECH_COMMON
     depends on MX6Q
 
+config TARGET_MX6QRSB3430A2_1G
+    bool "Support mx6qrsb3430a2 1G"
+    select TARGET_MX6ADVANTECH_COMMON
+    depends on MX6Q
+
 config TARGET_MX6QPSABRESD
 	bool "mx6qpsabresd"
     select TARGET_MX6SABRESD_COMMON

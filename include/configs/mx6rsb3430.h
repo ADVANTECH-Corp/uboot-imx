@@ -32,6 +32,14 @@
 #define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
 #endif
 
+#if defined(CONFIG_TARGET_MX6QRSB3430A2_512M) || defined(CONFIG_TARGET_MX6DLRSB3430A2_512M)
+#define PHYS_SDRAM_SIZE         (512u * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6QRSB3430A2_1G) || defined(CONFIG_TARGET_MX6DLRSB3430A2_1G)
+#define PHYS_SDRAM_SIZE         (1u * 1024 * 1024 * 1024)
+#elif defined(CONFIG_TARGET_MX6QRSB3430A2_2G) || defined(CONFIG_TARGET_MX6DLRSB3430A2_2G)
+#define PHYS_SDRAM_SIZE         (2u * 1024 * 1024 * 1024)
+#endif
+
 #if defined(CONFIG_MX6QP)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rsb3430-a1.dtb"
 #elif defined(CONFIG_MX6Q)
@@ -40,6 +48,15 @@
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb3430-a1.dtb"
 #elif defined(CONFIG_MX6S)
 #define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb3430-a1.dtb"
+#endif
+#if defined(CONFIG_MX6QP)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6qp-rsb3430-a2.dtb"
+#elif defined(CONFIG_MX6Q)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6q-rsb3430-a2.dtb"
+#elif defined(CONFIG_MX6DL)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb3430-a2.dtb"
+#elif defined(CONFIG_MX6S)
+#define CONFIG_DEFAULT_FDT_FILE	"imx6dl-rsb3430-a2.dtb"
 #endif
 #define CONFIG_MMC_CLOCK_DOWNGRADE
 #include "mx6advantech_common.h"
