@@ -80,10 +80,10 @@ struct efi_fw_image fw_images[] = {
 
 struct efi_capsule_update_info update_info = {
 	.dfu_string = "mmc 2=flash-bin raw 0x42 0x2000 mmcpart 1",
+	.num_images = ARRAY_SIZE(fw_images),
 	.images = fw_images,
 };
 
-u8 num_image_type_guids = ARRAY_SIZE(fw_images);
 #endif /* EFI_HAVE_CAPSULE_SUPPORT */
 
 int board_early_init_f(void)
@@ -148,7 +148,6 @@ int board_phy_config(struct phy_device *phydev)
 #endif
 
 #ifdef CONFIG_USB_TCPC
-#if 0
 struct tcpc_port port1;
 struct tcpc_port port2;
 
@@ -257,25 +256,25 @@ static int setup_typec(void)
 
 	return ret;
 }
-#endif
+
 int board_usb_init(int index, enum usb_init_type init)
 {
 	int ret = 0;
-//	struct tcpc_port *port_ptr;
+	struct tcpc_port *port_ptr;
 
 	debug("board_usb_init %d, type %d\n", index, init);
 
-//	if (index == 0)
-//		port_ptr = &port1;
-//	else
-//		port_ptr = &port2;
+	if (index == 0)
+		port_ptr = &port1;
+	else
+		port_ptr = &port2;
 
 	imx8m_usb_power(index, true);
 
-//	if (init == USB_INIT_HOST)
-//		tcpc_setup_dfp_mode(port_ptr);
-//	else
-//		tcpc_setup_ufp_mode(port_ptr);
+	if (init == USB_INIT_HOST)
+		tcpc_setup_dfp_mode(port_ptr);
+	else
+		tcpc_setup_ufp_mode(port_ptr);
 
 	return ret;
 }
@@ -286,12 +285,12 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 
 	debug("board_usb_cleanup %d, type %d\n", index, init);
 
-//	if (init == USB_INIT_HOST) {
-//		if (index == 0)
-//			ret = tcpc_disable_src_vbus(&port1);
-//		else
-//			ret = tcpc_disable_src_vbus(&port2);
-//	}
+	if (init == USB_INIT_HOST) {
+		if (index == 0)
+			ret = tcpc_disable_src_vbus(&port1);
+		else
+			ret = tcpc_disable_src_vbus(&port2);
+	}
 
 	imx8m_usb_power(index, false);
 	return ret;
@@ -300,7 +299,6 @@ int board_usb_cleanup(int index, enum usb_init_type init)
 int board_ehci_usb_phy_mode(struct udevice *dev)
 {
 	int ret = 0;
-#if 0
 	enum typec_cc_polarity pol;
 	enum typec_cc_state state;
 	struct tcpc_port *port_ptr;
@@ -317,7 +315,7 @@ int board_ehci_usb_phy_mode(struct udevice *dev)
 		if (state == TYPEC_STATE_SRC_RD_RA || state == TYPEC_STATE_SRC_RD)
 			return USB_INIT_HOST;
 	}
-#endif
+
 	return USB_INIT_DEVICE;
 }
 
@@ -326,13 +324,13 @@ int board_ehci_usb_phy_mode(struct udevice *dev)
 int board_init(void)
 {
 #ifdef CONFIG_USB_TCPC
-//	setup_typec();
+	setup_typec();
 #endif
 
 	if (IS_ENABLED(CONFIG_FEC_MXC))
 		setup_fec();
 
-	setup_iomux_wdt();	
+	setup_iomux_wdt();
 	return 0;
 }
 
@@ -343,8 +341,8 @@ int board_late_init(void)
 #endif
 
 	if (IS_ENABLED(CONFIG_ENV_VARS_UBOOT_RUNTIME_CONFIG)) {
-		env_set("board_name", "EVK");
-		env_set("board_rev", "iMX8MM");
+		env_set("board_name", "EBC-RS16");
+		env_set("board_rev", "A1");
 	}
 
 	return 0;

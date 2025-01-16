@@ -11,7 +11,6 @@
 #include <asm/arch/imx-regs.h>
 #include "imx_env.h"
 
-#define ADVANTECH_MX8_PLATFOR
 #define ADV_AUTO_PROBE_THERMAL_TRIPS
 #define UBOOT_ITB_OFFSET			0x57C00
 #define FSPI_CONF_BLOCK_SIZE		0x1000
@@ -33,10 +32,6 @@
 #endif
 
 #define PHY_ANEG_TIMEOUT 20000
-
-#ifdef CONFIG_NAND_BOOT
-#define MFG_NAND_PARTITION "mtdparts=gpmi-nand:64m(nandboot),16m(nandfit),32m(nandkernel),16m(nanddtb),8m(nandtee),-(nandrootfs)"
-#endif
 
 #ifdef CONFIG_DISTRO_DEFAULTS
 #define BOOT_TARGET_DEVICES(func) \
@@ -178,15 +173,9 @@
 #define PHYS_SDRAM                      0x40000000
 #define PHYS_SDRAM_SIZE			0x80000000 /* 2GB DDR */
 
-#define CFG_FEC_MXC_PHYADDR          0
-
 #define CFG_MXC_UART_BASE		UART_BASE_ADDR(2)
 
-#ifdef CONFIG_TARGET_IMX8MM_DDR4_EVK
-#define CFG_SYS_FSL_USDHC_NUM	1
-#else
 #define CFG_SYS_FSL_USDHC_NUM	2
-#endif
 #define CFG_SYS_FSL_ESDHC_ADDR	0
 
 #define CFG_SYS_NAND_BASE           0x20000000
@@ -200,12 +189,6 @@
 #endif
 
 #define WDOG_TRIG IMX_GPIO_NR(1, 15)
-
 #define WDOG_ENABLE IMX_GPIO_NR(1, 9)
-#define DEBUG_UART_SEL IMX_GPIO_NR(4, 1)
-#define LVDS_STBY_PAD IMX_GPIO_NR(3, 23)
-#define LVDS_RESET_PAD IMX_GPIO_NR(3, 24)
-#define I2S_EN IMX_GPIO_NR(1, 10)
-#define RESET_OUT IMX_GPIO_NR(4, 28)
 
 #endif
