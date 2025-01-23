@@ -69,6 +69,7 @@
 #ifdef CONFIG_FSL_FASTBOOT
 #include <fb_fsl.h>
 #endif
+#include <spi_flash.h>
 
 DECLARE_GLOBAL_DATA_PTR;
 
@@ -463,6 +464,101 @@ static int initr_malloc_bootparams(void)
 }
 #endif
 
+static int get_eth0_mac(struct spi_flash *flash)
+{
+	int rc = 0;
+	unsigned char mac[6];
+	char print_buf[32];
+	uint64_t macaddr = 0;
+
+	if(spi_flash_read(flash, CONFIG_MAC0_OFFSET, 6, mac)==0) {
+		macaddr = ((uint64_t)mac[0] << 40)
+			+ ((uint64_t)mac[1] << 32)
+			+ ((uint64_t)mac[2] << 24)
+			+ ((uint64_t)mac[3] << 16)
+			+ ((uint64_t)mac[4] << 8)
+			+ mac[5];
+		/* printf ("MAC addr =%012llX\n", macaddr); */
+
+		if( (macaddr==0) || (macaddr==0xFFFFFFFFFFFFull) ) {
+			printf("eth0 MAC address is invailed !!\n");
+			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE0");
+			printf("Use default MAC adderss:%s\n",print_buf);
+			env_set("ethaddr",print_buf);
+			return rc;
+		}
+	} else {
+		printf("SPI Read fail!!\n");
+		rc = -1;
+	}
+
+	if (rc==0) {
+		sprintf(print_buf, "0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X",
+						mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
+
+		if(is_valid_ethaddr(print_buf)) {
+			env_set("ethaddr", print_buf);
+			//eth_env_get_enetaddr("ethaddr", bd->bi_enetaddr);
+		}
+	}
+
+	return rc;
+}
+
+static int get_eth1_mac(struct spi_flash *flash)
+{
+	int rc = 0;
+	unsigned char mac[6];
+	char print_buf[32];
+	uint64_t macaddr = 0;
+
+	if(spi_flash_read(flash, CONFIG_MAC1_OFFSET, 6, mac)==0) {
+		macaddr = ((uint64_t)mac[0] << 40)
+			+ ((uint64_t)mac[1] << 32)
+			+ ((uint64_t)mac[2] << 24)
+			+ ((uint64_t)mac[3] << 16)
+			+ ((uint64_t)mac[4] << 8)
+			+ mac[5];
+		/* printf ("MAC addr =%012llX\n", macaddr); */
+
+		if( (macaddr==0) || (macaddr==0xFFFFFFFFFFFFull) ) {
+			printf("eth1 MAC address is invailed !!\n");
+			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE0");
+			printf("Use default MAC adderss:%s\n",print_buf);
+			env_set("eth1addr",print_buf);
+			return rc;
+		}
+	} else {
+		printf("SPI Read fail!!\n");
+		rc = -1;
+	}
+
+	if (rc==0) {
+		sprintf(print_buf, "0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X",
+						mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
+
+		if(is_valid_ethaddr(print_buf)) {
+			env_set("eth1addr", print_buf);
+		}
+	}
+	
+	return rc;
+}
+
+int boardcfg_get_mac(void)
+{
+	struct spi_flash *flash;
+	
+	flash = spi_flash_probe(CONFIG_SF_DEFAULT_BUS, CONFIG_SF_DEFAULT_CS,
+				CONFIG_SF_DEFAULT_SPEED, CONFIG_SF_DEFAULT_MODE);
+	if (flash) {
+		get_eth0_mac(flash);
+		get_eth1_mac(flash);
+	}
+
+	return 0;
+}
+
 #if defined(CONFIG_LED_STATUS)
 static int initr_status_led(void)
 {
@@ -761,6 +857,7 @@ static init_fnc_t init_sequence_r[] = {
 	initr_status_led,
 #endif
 	/* PPC has a udelay(20) here dating from 2002. Why? */
+	boardcfg_get_mac, /* Get MAC address from SPI */
 #ifdef CONFIG_BOARD_LATE_INIT
 	board_late_init,
 #endif
