@@ -10,7 +10,7 @@
 #include "imx95.dtsi"
 
 / {
-	model = "Advantech i.MX95 AOM3511A1 board";
+	model = "Advantech i.MX95 AOM5521A1 board";
 	compatible = "fsl,imx95-19x19-evk", "fsl,imx95";
 
 	chosen {

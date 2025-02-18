@@ -80,17 +80,17 @@ config TARGET_IMX95_15X15_EVK
 	bool "imx95_15x15_evk"
 	select IMX95
 
-config TARGET_IMX95_AOM3511A1_16G
-	bool "Support i.MX95 AOM3511A1 16G"
+config TARGET_IMX95_AOM5521A1_16G
+	bool "Support i.MX95 AOM5521A1 16G"
 	select IMX95
 
-config TARGET_IMX95_AOM3511A1_8G
-	bool "Support i.MX95 AOM3511A1 8G"
+config TARGET_IMX95_AOM5521A1_8G
+	bool "Support i.MX95 AOM5521A1 8G"
 	select IMX95
 
 endchoice
 
-source "board/advantech/imx95_aom3511a1/Kconfig"
+source "board/advantech/imx95_aom5521a1/Kconfig"
 source "board/freescale/imx91_evk/Kconfig"
 source "board/freescale/imx91_qsb/Kconfig"
 source "board/freescale/imx93_evk/Kconfig"

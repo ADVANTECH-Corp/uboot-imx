@@ -3,8 +3,8 @@
  * Copyright 2023 NXP
  */
 
-#ifndef __IMX95_AOM3511_H
-#define __IMX95_AOM3511_H
+#ifndef __IMX95_AOM5521_H
+#define __IMX95_AOM5521_H
 
 #include <linux/sizes.h>
 #include <linux/stringify.h>
@@ -196,7 +196,7 @@
 #define CFG_SYS_SDRAM_BASE           0x90000000
 #define PHYS_SDRAM                      0x90000000
 
-#if defined(CONFIG_TARGET_IMX95_AOM3511A1_16G)
+#if defined(CONFIG_TARGET_IMX95_AOM5521A1_16G)
 /* Totally 16GB */
 #define PHYS_SDRAM_SIZE			0x70000000UL /* 2GB  - 256MB DDR */
 #define PHYS_SDRAM_2_SIZE		0x380000000UL /* 14GB */
@@ -210,7 +210,7 @@
 #endif
 #endif
 
-#if defined(CONFIG_TARGET_IMX95_AOM3511A1_8G)
+#if defined(CONFIG_TARGET_IMX95_AOM5521A1_8G)
 /* Totally 8GB */
 #define PHYS_SDRAM_SIZE			0x70000000UL /* 2GB  - 256MB DDR */
 #define PHYS_SDRAM_2_SIZE		0x180000000UL /* 6GB */
