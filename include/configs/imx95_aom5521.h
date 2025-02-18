@@ -200,6 +200,10 @@
 /* Totally 16GB */
 #define PHYS_SDRAM_SIZE			0x70000000UL /* 2GB  - 256MB DDR */
 #define PHYS_SDRAM_2_SIZE		0x380000000UL /* 14GB */
+#elif defined(CONFIG_TARGET_IMX95_AOM5521A1_8G)
+/* Totally 8GB */
+#define PHYS_SDRAM_SIZE			0x70000000UL /* 2GB  - 256MB DDR */
+#define PHYS_SDRAM_2_SIZE		0x180000000UL /* 6GB */
 #else
 /* Totally 16GB */
 #define PHYS_SDRAM_SIZE			0x70000000UL /* 2GB  - 256MB DDR */
@@ -208,12 +212,6 @@
 #else
 #define PHYS_SDRAM_2_SIZE 		0x380000000UL /* 14GB */
 #endif
-#endif
-
-#if defined(CONFIG_TARGET_IMX95_AOM5521A1_8G)
-/* Totally 8GB */
-#define PHYS_SDRAM_SIZE			0x70000000UL /* 2GB  - 256MB DDR */
-#define PHYS_SDRAM_2_SIZE		0x180000000UL /* 6GB */
 #endif
 
 #define CFG_SYS_FSL_USDHC_NUM	2
