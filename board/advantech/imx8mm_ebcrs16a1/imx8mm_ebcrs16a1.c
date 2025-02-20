@@ -345,6 +345,10 @@ int board_late_init(void)
 		env_set("board_rev", "A1");
 	}
 
+	imx_iomux_v3_setup_pad(IMX8MM_PAD_SAI3_TXD_GPIO5_IO1| MUX_PAD_CTRL(NO_PAD_CTRL));
+	gpio_request(USNLAN_Z_REST, "UsbLan_z_Rest");
+	gpio_direction_output(USNLAN_Z_REST,0);
+
 	return 0;
 }
 
