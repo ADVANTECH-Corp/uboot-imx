@@ -23,6 +23,7 @@
 #endif
 
 #define CFG_HAS_ETH1 1
+#define CFG_MAC_OFFSET_ETH1 16
 
 #ifdef CONFIG_DISTRO_DEFAULTS
 #define BOOT_TARGET_DEVICES(func) \

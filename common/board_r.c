@@ -558,7 +558,7 @@ static int board_config_read(u32 offset, struct boardcfg_t *bcfg)
 		goto BCONF_READ_ERR;
 	}
 
-	blk_cnt = DIV_ROUND_UP(512, dev_desc->blksz);
+	blk_cnt = DIV_ROUND_UP(2048, dev_desc->blksz);
 	buf = memalign(ARCH_DMA_MINALIGN, dev_desc->blksz*blk_cnt);
 	if (!buf) {
 		printf("%s: out of memory!\n", __func__);
@@ -682,9 +682,9 @@ static int get_eth1_mac(void)
 	char print_buf[32];
 	uint64_t macaddr = 0;
 #ifdef CONFIG_MANUFACTURE_INFO2EMMC
-	u32 offset = 16;
+	u32 offset = CFG_MAC_OFFSET_ETH1;
 #else /* MAC address in SPI */
-	u32 offset = CONFIG_SPI_ENV_OFFSET + 8*CONFIG_SPI_ENV_SIZE + 16;
+	u32 offset = CONFIG_SPI_ENV_OFFSET + 8*CONFIG_SPI_ENV_SIZE + 1024;
 #endif
 
 	if (board_config_read(offset, &boardcfg) == 0) {
