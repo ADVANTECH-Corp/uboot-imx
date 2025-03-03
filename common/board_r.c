@@ -710,7 +710,7 @@ static int get_eth1_mac(void)
 
 		if( (macaddr==0) || (macaddr==0xFFFFFFFFFFFFull) ) {
 			printf("eth1 MAC address is invailed !!\n");
-			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE0");
+			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE1");
 			printf("Use default MAC adderss:%s\n",print_buf);
 			env_set("eth1addr",print_buf);
 			return rc;
@@ -741,6 +741,138 @@ static int get_eth1_mac(void)
 }
 #endif
 
+#ifdef CFG_HAS_ETH2
+static int get_eth2_mac(void)
+{
+	int rc = 0;
+	struct boardcfg_t boardcfg;
+	char print_buf[32];
+	uint64_t macaddr = 0;
+#ifdef CONFIG_MANUFACTURE_INFO2EMMC
+	u32 offset = CFG_MAC_OFFSET_ETH1 + 64;
+#else /* MAC address in SPI */
+	u32 offset = CONFIG_SPI_ENV_OFFSET + 8*CONFIG_SPI_ENV_SIZE + 1024 + 64;
+#endif
+
+	if (board_config_read(offset, &boardcfg) == 0) {
+
+		/*printf("offset=%d\n", CONFIG_SPI_ENV_OFFSET+ 8*CONFIG_SPI_ENV_SIZE + 1024 + 64);*/
+
+		/*printf("0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X\n",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);*/
+
+		macaddr = ((uint64_t)boardcfg.mac[0] << 40)
+			+ ((uint64_t)boardcfg.mac[1] << 32)
+			+ ((uint64_t)boardcfg.mac[2] << 24)
+			+ ((uint64_t)boardcfg.mac[3] << 16)
+			+ ((uint64_t)boardcfg.mac[4] << 8)
+			+ boardcfg.mac[5];
+		/* printf ("MAC addr =%012llX\n", macaddr); */
+
+		if( (macaddr==0) || (macaddr==0xFFFFFFFFFFFFull) ) {
+			printf("eth2 MAC address is invailed !!\n");
+			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE2");
+			printf("Use default MAC adderss:%s\n",print_buf);
+			env_set("eth2addr",print_buf);
+			return rc;
+		}
+	} else {
+		printf("board config read fail!!\n");
+		rc = -1;
+	}
+
+	if (rc==0) {
+		sprintf(print_buf, "0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);
+		printf ("eth2 MAC addr = %s\n", print_buf);
+
+		if( (env_get("eth2addr") == NULL) ||
+			(strcmp (env_get("eth2addr"),print_buf) != 0) ||
+			(strcmp (env_get("eth2addr"),MK_STR(CONFIG_ETH2ADDR)) == 0) ) {
+			env_set("eth2addr", print_buf);
+		}
+	}
+
+	return rc;
+}
+#endif
+
+#ifdef CFG_HAS_ETH3
+static int get_eth3_mac(void)
+{
+	int rc = 0;
+	struct boardcfg_t boardcfg;
+	char print_buf[32];
+	uint64_t macaddr = 0;
+#ifdef CONFIG_MANUFACTURE_INFO2EMMC
+	u32 offset = CFG_MAC_OFFSET_ETH1 + 2*64;
+#else /* MAC address in SPI */
+	u32 offset = CONFIG_SPI_ENV_OFFSET + 8*CONFIG_SPI_ENV_SIZE + 1024 + 2*64;
+#endif
+
+	if (board_config_read(offset, &boardcfg) == 0) {
+
+		/*printf("offset=%d\n", CONFIG_SPI_ENV_OFFSET+ 8*CONFIG_SPI_ENV_SIZE + 1024 + 2*64);*/
+
+		/*printf("0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X\n",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);*/
+
+		macaddr = ((uint64_t)boardcfg.mac[0] << 40)
+			+ ((uint64_t)boardcfg.mac[1] << 32)
+			+ ((uint64_t)boardcfg.mac[2] << 24)
+			+ ((uint64_t)boardcfg.mac[3] << 16)
+			+ ((uint64_t)boardcfg.mac[4] << 8)
+			+ boardcfg.mac[5];
+		/* printf ("MAC addr =%012llX\n", macaddr); */
+
+		if( (macaddr==0) || (macaddr==0xFFFFFFFFFFFFull) ) {
+			printf("eth3 MAC address is invailed !!\n");
+			sprintf(print_buf,"0x00:0x04:0x9F:0x01:0x30:0xE3");
+			printf("Use default MAC adderss:%s\n",print_buf);
+			env_set("eth3addr",print_buf);
+			return rc;
+		}
+	} else {
+		printf("board config read fail!!\n");
+		rc = -1;
+	}
+
+	if (rc==0) {
+		sprintf(print_buf, "0x%02X:0x%02X:0x%02X:0x%02X:0x%02X:0x%02X",
+						boardcfg.mac[0],
+						boardcfg.mac[1],
+						boardcfg.mac[2],
+						boardcfg.mac[3],
+						boardcfg.mac[4],
+						boardcfg.mac[5]);
+		printf ("eth3 MAC addr = %s\n", print_buf);
+
+		if( (env_get("eth3addr") == NULL) ||
+			(strcmp (env_get("eth3addr"),print_buf) != 0) ||
+			(strcmp (env_get("eth3addr"),MK_STR(CONFIG_ETH3ADDR)) == 0) ) {
+			env_set("eth3addr", print_buf);
+		}
+	}
+
+	return rc;
+}
+#endif
+
 int boardcfg_get_mac(void)
 {
 	int rc = 0;
@@ -760,6 +892,12 @@ int boardcfg_get_mac(void)
 	rc = get_eth0_mac();
 #ifdef CFG_HAS_ETH1
 	rc = get_eth1_mac();
+#endif
+#ifdef CFG_HAS_ETH2
+        rc = get_eth2_mac();
+#endif
+#ifdef CFG_HAS_ETH3
+        rc = get_eth3_mac();
 #endif
 
 	return rc;
