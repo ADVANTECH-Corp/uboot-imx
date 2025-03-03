@@ -24,6 +24,8 @@
 
 #define CFG_HAS_ETH1 1
 #define CFG_MAC_OFFSET_ETH1 1024
+#define CFG_HAS_ETH2 1
+#define CFG_HAS_ETH3 1
 
 #ifdef CONFIG_DISTRO_DEFAULTS
 #define BOOT_TARGET_DEVICES(func) \
