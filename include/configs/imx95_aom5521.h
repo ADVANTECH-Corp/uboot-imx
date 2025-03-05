@@ -20,6 +20,8 @@
 #define AHAB_ENV "sec_boot=no\0"
 #endif
 
+#define CFG_HAS_ETH1 1
+
 #ifdef CONFIG_DISTRO_DEFAULTS
 #define BOOT_TARGET_DEVICES(func) \
 	func(MMC, mmc, 0) \
