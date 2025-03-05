@@ -21,6 +21,7 @@
 #endif
 
 #define CFG_HAS_ETH1 1
+#define CFG_HAS_ETH2 1
 
 #ifdef CONFIG_DISTRO_DEFAULTS
 #define BOOT_TARGET_DEVICES(func) \
