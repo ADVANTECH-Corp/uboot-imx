@@ -241,10 +241,6 @@
 	bootph-pre-ram;
 };
 
-&mt35xu01gbba {
-	bootph-pre-ram;
-};
-
 &pinctrl_flexspi1 {
 	bootph-pre-ram;
 };
