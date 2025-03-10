@@ -3,8 +3,8 @@
  * Copyright 2022 NXP
  */
 
-#ifndef __IMX93_AFEE320_H
-#define __IMX93_AFEE320_H
+#ifndef __IMX93_AFEE420_H
+#define __IMX93_AFEE420_H
 
 #include <linux/sizes.h>
 #include <linux/stringify.h>
