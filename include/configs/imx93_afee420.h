@@ -22,6 +22,8 @@
 #define AHAB_ENV "sec_boot=no\0"
 #endif
 
+#define AUTO_RESET_FDT_BY_HDMI_DETECTION 1
+
 #define CFG_HAS_ETH1 1
 #define CFG_MAC_OFFSET_ETH1 1024
 #define CFG_HAS_ETH2 1

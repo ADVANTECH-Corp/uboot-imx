@@ -300,6 +300,41 @@ static void board_gpio_init(void)
 	}
 }
 
+#ifdef AUTO_RESET_FDT_BY_HDMI_DETECTION
+void check_hdmi_bridge_and_reset_fdtfile(void)
+{
+	int bus_num = 2; // i2c3
+	int device_address = 0x3c; // adv7535 i2c slave address
+	struct udevice *bus;
+	struct udevice *dev;
+	int ret;
+
+	if (env_get("fdtfile_flag")) {
+		printf("fdtfile has already been set. Skipping...\n");
+		return;
+	}
+
+	// Get the I2C bus
+	ret = uclass_get_device_by_seq(UCLASS_I2C, bus_num, &bus);
+	if (ret) {
+		printf("Failed to get I2C bus %d\n", bus_num);
+		return;
+	}
+
+	// Probe the I2C device
+	ret = dm_i2c_probe(bus, device_address, 0, &dev);
+	if (ret != 0) {
+		// Device not found, set fdtfile to imx93-afee420-a1-lvds.dtb
+		env_set("fdtfile", "imx93-afee420-a1-lvds.dtb");
+	}
+
+	// Print the fdtfile environment variable
+	printf("fdtfile is set to %s\n", env_get("fdtfile"));
+
+	env_set("fdtfile_flag", "1");
+}
+#endif
+
 int board_init(void)
 {
 #ifdef CONFIG_USB_TCPC
@@ -319,6 +354,10 @@ int board_init(void)
 
 int board_late_init(void)
 {
+#ifdef AUTO_RESET_FDT_BY_HDMI_DETECTION
+	check_hdmi_bridge_and_reset_fdtfile();
+#endif
+
 #ifdef CONFIG_ENV_IS_IN_MMC
 	board_late_mmc_env_init();
 #endif
