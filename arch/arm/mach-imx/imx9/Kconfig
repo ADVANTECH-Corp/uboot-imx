@@ -82,8 +82,13 @@ config TARGET_IMX95_15X15_EVK
 	bool "imx95_15x15_evk"
 	select IMX95
 
+config TARGET_IMX95_AOM5521A1
+	bool "Support i.MX95 AOM5521A1"
+	select IMX95
+
 endchoice
 
+source "board/advantech/imx95_aom5521a1/Kconfig"
 source "board/freescale/imx91_evk/Kconfig"
 source "board/freescale/imx91_qsb/Kconfig"
 source "board/freescale/imx93_evk/Kconfig"
