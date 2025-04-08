@@ -208,12 +208,19 @@
 
 #define CFG_SYS_SDRAM_BASE           0x90000000
 #define PHYS_SDRAM                      0x90000000
+
+#if defined(CONFIG_TARGET_IMX95_AOM5521A1_8G)
+/* Totally 8GB */
+#define PHYS_SDRAM_SIZE			0x70000000UL /* 2GB  - 256MB DDR */
+#define PHYS_SDRAM_2_SIZE		0x180000000UL /* 6GB */
+#else
 /* Totally 16GB */
 #define PHYS_SDRAM_SIZE			0x70000000UL /* 2GB  - 256MB DDR */
 #ifdef CONFIG_TARGET_IMX95_15X15_EVK
 #define PHYS_SDRAM_2_SIZE 		0x180000000UL /* 4GB temp workaround, should be 8GB */
 #else
 #define PHYS_SDRAM_2_SIZE 		0x380000000UL /* 14GB */
+#endif
 #endif
 
 #define CFG_SYS_FSL_USDHC_NUM	2

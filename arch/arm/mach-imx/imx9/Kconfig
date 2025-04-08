@@ -82,8 +82,8 @@ config TARGET_IMX95_15X15_EVK
 	bool "imx95_15x15_evk"
 	select IMX95
 
-config TARGET_IMX95_AOM5521A1
-	bool "Support i.MX95 AOM5521A1"
+config TARGET_IMX95_AOM5521A1_8G
+	bool "Support i.MX95 AOM5521A1 8G"
 	select IMX95
 
 endchoice
