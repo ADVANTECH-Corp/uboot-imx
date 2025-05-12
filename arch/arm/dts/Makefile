@@ -1146,6 +1146,7 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
 	imx8mm-venice-gw7905-0x.dtb \
 	imx8mm-verdin-wifi-dev.dtb \
 	imx8mm-rom5721-a1.dtb \
+	imx8mm-rsb3730-a2.dtb \
 	imx8mn-bsh-smm-s2.dtb \
 	imx8mn-bsh-smm-s2pro.dtb \
 	imx8mn-ddr3l-evk.dtb \

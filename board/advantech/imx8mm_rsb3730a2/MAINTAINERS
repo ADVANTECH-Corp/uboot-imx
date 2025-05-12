@@ -1,0 +1,7 @@
+i.MX8MM RSB3730A2 BOARD
+M:	Advantech RISC
+S:	Maintained
+F:	board/advantech/imx8mm_rsb3730a2/
+F:	include/configs/imx8mm_rsb3730.h
+F:	configs/imx8mm_rsb3730a2_2G_defconfig
+F:	configs/imx8mm_rsb3730a2_4G_defconfig
