@@ -2943,6 +2943,11 @@ int mmc_start_init(struct mmc *mmc)
 #if CONFIG_IS_ENABLED(DM_MMC)
 	mmc_deferred_probe(mmc);
 #endif
+
+#ifdef ADV_AKTC_MX8
+	udelay(5000);
+#endif
+
 #if !defined(CONFIG_MMC_BROKEN_CD)
 	no_card = mmc_getcd(mmc) == 0;
 #else

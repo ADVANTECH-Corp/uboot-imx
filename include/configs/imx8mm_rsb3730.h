@@ -219,4 +219,6 @@
 #define BOARD_ID2 166
 #define BOARD_ID3 165
 
+#define ADV_AKTC_MX8
+
 #endif
