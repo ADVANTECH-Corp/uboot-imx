@@ -61,7 +61,7 @@
 
 
 #ifdef CONFIG_NAND_BOOT
-#define MFG_NAND_PARTITION "mtdparts=gpmi-nand:64m(nandboot),16m(nandfit),32m(nandkernel),16m(nanddtb),8m(nandtee),-(nandrootfs)"
+#define MFG_NAND_PARTITION "mtdparts=gpmi-nand:64m(nandboot),16m(nandfit),64m(nandkernel),16m(nanddtb),8m(nandtee),-(nandrootfs)"
 #endif
 
 /* Initial environment variables */
@@ -78,8 +78,8 @@
 		"root=ubi0:nandrootfs rootfstype=ubifs "		     \
 		MFG_NAND_PARTITION \
 		"\0" \
-	"bootcmd=nand read ${loadaddr} 0x5000000 0x2000000;"\
-		"nand read ${fdt_addr_r} 0x7000000 0x100000;"\
+	"bootcmd=nand read ${loadaddr} 0x5000000 0x4000000;"\
+		"nand read ${fdt_addr_r} 0x9000000 0x100000;"\
 		"booti ${loadaddr} - ${fdt_addr_r}"
 
 #else
@@ -162,14 +162,22 @@
 #define CFG_SYS_INIT_RAM_SIZE	0x80000
 
 
-/* Totally 6GB DDR */
+/* Totally 6GB or 4G DDR or 2G DDR*/
 #define CFG_SYS_SDRAM_BASE		0x40000000
 #define PHYS_SDRAM			0x40000000
+
+#if defined(CONFIG_TARGET_IMX8MP_RSB3720A2_6G)
 #define PHYS_SDRAM_SIZE			0xC0000000	/* 3 GB */
 #define PHYS_SDRAM_2			0x100000000
-#ifdef CONFIG_TARGET_IMX8MP_DDR4_EVK
-#define PHYS_SDRAM_2_SIZE		0x40000000	/* 1 GB */
+#elif defined(CONFIG_TARGET_IMX8MP_RSB3720A2_2G)
+#define PHYS_SDRAM_SIZE			0x80000000      /* 2 GB */
+#elif defined(CONFIG_TARGET_IMX8MP_DDR4_EVK)
+#define PHYS_SDRAM_SIZE                 0xC0000000      /* 3 GB */
+#define PHYS_SDRAM_2                    0x100000000
+#define PHYS_SDRAM_2_SIZE               0x40000000      /* 1 GB */
 #else
+#define PHYS_SDRAM_SIZE                 0xC0000000      /* 3 GB */
+#define PHYS_SDRAM_2			0x100000000
 #define PHYS_SDRAM_2_SIZE		0xC0000000	/* 3 GB */
 #endif
 
