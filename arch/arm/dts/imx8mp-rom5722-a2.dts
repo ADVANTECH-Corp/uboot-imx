@@ -10,7 +10,7 @@
 #include "imx8mp.dtsi"
 
 / {
-	model = "NXP i.MX8MPlus LPDDR4 EVK board";
+	model = "NXP i.MX8MPlus ROM-5722-A2 board";
 	compatible = "fsl,imx8mp-evk", "fsl,imx8mp";
 
 	chosen {
@@ -393,6 +393,12 @@
 				regulator-always-on;
 			};
 		};
+	};
+
+	s35390a: s35390a@30 {
+		compatible = "sii,s35392a";
+		reg = <0x30>;
+		status = "okay";
 	};
 };
 
