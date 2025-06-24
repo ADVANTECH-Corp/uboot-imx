@@ -183,6 +183,11 @@ config TARGET_IMX8QXP_ROM3620A1_2G
         select BOARD_LATE_INIT
         select IMX8QXP
 
+config TARGET_IMX8QXP_ROM3620A1_4G
+        bool "Support i.MX8QXP ROM3620A1 4G"
+        select BOARD_LATE_INIT
+        select IMX8QXP
+
 endchoice
 
 source "board/freescale/imx8qm_mek/Kconfig"
