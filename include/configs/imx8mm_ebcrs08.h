@@ -113,7 +113,7 @@
 	"mmcpart=1\0" \
 	"mmcroot=/dev/mmcblk1p2 rootwait rw\0" \
 	"mmcautodetect=yes\0" \
-	"mmcargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} root=${mmcroot} usblan_addr=${eth1addr}\0 " \
+	"mmcargs=setenv bootargs ${jh_clk} ${mcore_clk} console=${console} root=${mmcroot}\0 " \
 	"loadbootscript=fatload mmc ${mmcdev}:${mmcpart} ${loadaddr} ${bsp_script};\0" \
 	"bootscript=echo Running bootscript from mmc ...; " \
 		"source\0" \
