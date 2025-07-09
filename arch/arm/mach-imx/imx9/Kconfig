@@ -120,6 +120,12 @@ config TARGET_IMX95_15X15_EVK
 	imply BOOTSTD_BOOTCOMMAND
 	imply BOOTSTD_FULL
 
+config TARGET_IMX95_AOM5521A2_8G
+	bool "Support i.MX95 AOM5521A2 8G"
+	select IMX95
+	imply BOOTSTD_BOOTCOMMAND
+	imply BOOTSTD_FULL
+
 config TARGET_IMX943_EVK
 	bool "imx943_evk"
 	select IMX94
@@ -128,6 +134,7 @@ config TARGET_IMX943_EVK
 
 endchoice
 
+source "board/advantech/imx95_aom5521a2/Kconfig"
 source "board/freescale/imx91_evk/Kconfig"
 source "board/freescale/imx91_qsb/Kconfig"
 source "board/freescale/imx93_evk/Kconfig"

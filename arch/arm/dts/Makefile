@@ -965,6 +965,7 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
 dtb-$(CONFIG_ARCH_IMX9) += \
 	imx95-15x15-evk.dtb \
 	imx95-19x19-verdin.dtb \
+	imx95-aom5521-a2.dtb \
 	imx943-evk.dtb \
 	imx91-9x9-qsb.dtb \
 	imx93-var-som-symphony.dtb \
