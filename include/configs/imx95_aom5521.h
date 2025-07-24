@@ -11,6 +11,7 @@
 #include <asm/arch/imx-regs.h>
 
 #define CFG_HAS_ETH1 1
+#define CFG_HAS_ETH2 1
 
 #define CFG_SYS_INIT_RAM_ADDR	0x90000000
 #define CFG_SYS_INIT_RAM_SIZE	0x200000
