@@ -115,10 +115,6 @@
 
 &flexspi1 {
 	bootph-pre-ram;
-
-	flash@0{
-		bootph-pre-ram;
-	};
 };
 
 &pinctrl_flexspi1 {
