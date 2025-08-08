@@ -68,6 +68,11 @@ config TARGET_IMX93_9X9_QSB
 	select IMX93
 	select IMX9_LPDDR4X
 
+config TARGET_IMX93_ROM2820A1
+        bool "Support i.MX93 ROM2820A1"
+        select OF_BOARD_FIXUP
+        select IMX93
+
 config TARGET_IMX93_AFEE420A1
 	bool "Support i.MX93 AFEE420A1"
 	select IMX93
@@ -88,6 +93,7 @@ endchoice
 
 source "board/freescale/imx91_evk/Kconfig"
 source "board/freescale/imx91_qsb/Kconfig"
+source "board/advantech/imx93_rom2820a1/Kconfig"
 source "board/advantech/imx93_afee420a1/Kconfig"
 source "board/freescale/imx93_evk/Kconfig"
 source "board/phytec/phycore_imx93/Kconfig"

@@ -1,0 +1,6 @@
+i.MX93 ROM2820A1 BOARD
+M:	Hank Hsueh <Hank.Hsueh@advantech.com.tw>
+S:	Maintained
+F:	board/advantech/imx93_rom2820a1/
+F:	include/configs/imx93_rom2820.h
+F:	configs/imx93_rom2820a1_defconfig
