@@ -55,6 +55,7 @@ int enable_i2c_clk(unsigned char enable, unsigned i2c_num)
 }
 
 static struct imx_int_pll_rate_table imx8mm_fracpll_tbl[] = {
+	PLL_1443X_RATE(1039500000U, 693, 4, 2, 0),
 	PLL_1443X_RATE(1000000000U, 250, 3, 1, 0),
 	PLL_1443X_RATE(933000000U, 311, 4, 1, 0),
 	PLL_1443X_RATE(900000000U, 300, 2, 2, 0),
@@ -307,7 +308,8 @@ int intpll_configure(enum pll_clocks pll, ulong freq)
 	return 0;
 }
 
-#define VIDEO_PLL_RATE 594000000U
+#define VIDEO_PLL_RATE 400000000U
+//#define VIDEO_PLL_RATE 1039500000U
 
 void mxs_set_lcdclk(uint32_t base_addr, uint32_t freq)
 {
@@ -335,7 +337,7 @@ find:
 	debug("mxs_set_lcdclk, pre = %d, post = %d\n", pre, post);
 
 #ifdef CONFIG_IMX8MP
-	clock_set_target_val(MEDIA_DISP1_PIX_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(pre - 1) | CLK_ROOT_POST_DIV(post - 1));
+	clock_set_target_val(MEDIA_DISP2_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(pre - 1) | CLK_ROOT_POST_DIV(post - 1));
 #elif defined(CONFIG_IMX8MN)
 	clock_set_target_val(DISPLAY_PIXEL_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(pre - 1) | CLK_ROOT_POST_DIV(post - 1));
 #else
@@ -350,17 +352,17 @@ void enable_display_clk(unsigned char enable)
 	if (enable) {
 		clock_enable(CCGR_DISPMIX, false);
 
-		/* Set Video PLL to 594Mhz, p = 1, m = 99,  k = 0, s = 2 */
+		/* Set Video PLL to 1039.5Mhz for LVDS, p = 4, m = 693,  k = 0, s = 2 */
 		fracpll_configure(ANATOP_VIDEO_PLL, VIDEO_PLL_RATE);
 
-		/* 400Mhz */
-		clock_set_target_val(MEDIA_AXI_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(2) | CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV2));
+		/* 500Mhz */
+		clock_set_target_val(MEDIA_AXI_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(1) | CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV2));
 
 		/* 200Mhz */
 		clock_set_target_val(MEDIA_APB_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(2) |CLK_ROOT_PRE_DIV(CLK_ROOT_PRE_DIV4));
 
-		/* 27Mhz MIPI DPHY PLL ref from video PLL */
-		clock_set_target_val(MEDIA_MIPI_PHY1_REF_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) |CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV22));
+		/* 519.75Mhz LVDS PLL ref from video PLL */
+		clock_set_target_val(MEDIA_LDB_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(7) |CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV2));
 		clock_enable(CCGR_DISPMIX, true);
 	} else {
 		clock_enable(CCGR_DISPMIX, false);
@@ -748,6 +750,14 @@ int set_clk_enet(enum enet_freq type)
 	return 0;
 }
 #endif
+
+int set_clk_pwm(void)
+{
+	clock_enable(CCGR_PWM2, 0);
+	clock_set_target_val(PWM2_CLK_ROOT, CLK_ROOT_ON | CLK_ROOT_SOURCE_SEL(0)| CLK_ROOT_POST_DIV(CLK_ROOT_POST_DIV1));
+	clock_enable(CCGR_PWM2, 1);
+	return 0;
+}
 
 static u32 decode_intpll(enum clk_root_src intpll)
 {

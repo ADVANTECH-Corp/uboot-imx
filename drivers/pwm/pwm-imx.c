@@ -14,6 +14,11 @@
 #include <asm/arch/imx-regs.h>
 #include <asm/io.h>
 #include <clk.h>
+#define CONFIG_IMX6_PWM_PER_CLK	66000000
+
+#ifndef CFG_IMX6_PWM_PER_CLK
+#define CFG_IMX6_PWM_PER_CLK    66000000
+#endif
 
 int pwm_config_internal(struct pwm_regs *pwm, unsigned long period_cycles,
 			unsigned long duty_cycles, unsigned long prescale)
