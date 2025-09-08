@@ -350,13 +350,13 @@ static int lcdifv3_video_probe(struct udevice *dev)
 		return ret;
 
 	lcdifv3_of_parse_thres(dev);
-
+#ifdef CONFIG_VIDEO_IMX8MP_LVDS
 	ret = display_enable(priv->disp_dev, NULL, NULL);
 	if (ret) {
 		debug("%s: Display enable error %d\n", __func__, ret);
 		return ret;
 	}
-
+#endif
 	mode.xres = timings.hactive.typ;
 	mode.yres = timings.vactive.typ;
 	mode.left_margin = timings.hback_porch.typ;
