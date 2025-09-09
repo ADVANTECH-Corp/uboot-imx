@@ -65,6 +65,7 @@ static struct imx_int_pll_rate_table imx8mm_fracpll_tbl[] = {
 	PLL_1443X_RATE(600000000U, 300, 3, 2, 0),
 	PLL_1443X_RATE(594000000U, 99, 1, 2, 0),
 	PLL_1443X_RATE(400000000U, 400, 3, 3, 0),
+	PLL_1443X_RATE(350000000U, 350, 3, 3, 0),
 	PLL_1443X_RATE(266000000U, 266, 3, 3, 0),
 	PLL_1443X_RATE(167000000U, 334, 3, 4, 0),
 	PLL_1443X_RATE(100000000U, 200, 3, 4, 0),
@@ -308,8 +309,11 @@ int intpll_configure(enum pll_clocks pll, ulong freq)
 	return 0;
 }
 
+#if defined(CONFIG_TARGET_IMX8MP_RSB3720A2_2G)
+#define VIDEO_PLL_RATE 350000000U
+#else
 #define VIDEO_PLL_RATE 400000000U
-//#define VIDEO_PLL_RATE 1039500000U
+#endif
 
 void mxs_set_lcdclk(uint32_t base_addr, uint32_t freq)
 {
