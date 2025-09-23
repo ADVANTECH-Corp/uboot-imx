@@ -14,6 +14,16 @@ obj-$(CONFIG_IMX8M_DDR4) += ddr4_timing.o
 endif
 endif
 
+ifdef CONFIG_TARGET_IMX8MP_RSB3720A2_4G
+obj-y += imx8mp_rsb3720a2.o
+
+ifdef CONFIG_SPL_BUILD
+obj-y += spl.o
+obj-$(CONFIG_IMX8M_LPDDR4) += lpddr4_timing_rsb3720a2_4G.o
+obj-$(CONFIG_IMX8M_DDR4) += ddr4_timing.o
+endif
+endif
+
 ifdef CONFIG_TARGET_IMX8MP_RSB3720A2_2G
 obj-y += imx8mp_rsb3720a2.o
 
