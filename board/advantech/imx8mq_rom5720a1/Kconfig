@@ -1,0 +1,14 @@
+if TARGET_IMX8MQ_ROM5720A1_2G
+
+config SYS_BOARD
+	default "imx8mq_rom5720a1"
+
+config SYS_VENDOR
+	default "advantech"
+
+config SYS_CONFIG_NAME
+	default "imx8mq_rom5720"
+
+source "board/advantech/common/Kconfig"
+
+endif

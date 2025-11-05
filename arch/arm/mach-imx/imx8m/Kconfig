@@ -94,6 +94,15 @@ config TARGET_IMX8MQ_REFORM2
 	select IMX8MQ
 	select IMX8M_LPDDR4
 
+config TARGET_IMX8MQ_ROM5720A1_2G
+	bool "imx8mq rom5720a1 2G"
+	select IMX8MQ
+	select IMX8M_LPDDR4
+	select FSL_CAAM
+	select FSL_BLOB
+	select ARCH_MISC_INIT
+	select SPL_CRYPTO if SPL
+
 config TARGET_IMX8MM_DATA_MODUL_EDM_SBC
 	bool "Data Modul eDM SBC i.MX8M Mini"
 	select IMX8MM
@@ -518,6 +527,7 @@ endchoice
 
 source "board/advantech/imx8mp_rsb3720a2/Kconfig"
 source "board/advantech/imx8mm_rom5721a1/Kconfig"
+source "board/advantech/imx8mq_rom5720a1/Kconfig"
 source "board/advantech/imx8mp_rom5722a2/Kconfig"
 source "board/advantech/imx8mm_rsb3730a2/Kconfig"
 source "board/beacon/imx8mm/Kconfig"
