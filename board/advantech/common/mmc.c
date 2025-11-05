@@ -1,8 +1,9 @@
-/* SPDX-License-Identifier: GPL-2.0+ */
+// SPDX-License-Identifier: GPL-2.0+
 /*
- * Copyright (C) 2016 Freescale Semiconductor, Inc.
- * Copyright 2018 NXP
+ * Copyright 2016 Freescale Semiconductor, Inc.
+ * Copyright 2018-2022 NXP
  */
+
 #include <common.h>
 #include <command.h>
 #include <asm/arch/sys_proto.h>
@@ -16,10 +17,8 @@ static int check_mmc_autodetect(void)
 {
 	char *autodetect_str = env_get("mmcautodetect");
 
-	if ((autodetect_str != NULL) &&
-		(strcmp(autodetect_str, "yes") == 0)) {
+	if (autodetect_str && !strcmp(autodetect_str, "yes"))
 		return 1;
-	}
 
 	return 0;
 }
@@ -42,8 +41,7 @@ void board_late_mmc_env_init(void)
 	env_set_ulong("mmcdev", dev_no);
 
 	/* Set mmcblk env */
-	sprintf(mmcblk, "/dev/mmcblk%dp2 rootwait rw",
-		mmc_map_to_kernel_blk(dev_no));
+	sprintf(mmcblk, "/dev/mmcblk%dp2 rootwait rw", mmc_map_to_kernel_blk(dev_no));
 	env_set("mmcroot", mmcblk);
 
 	sprintf(cmd, "mmc dev %d", dev_no);
