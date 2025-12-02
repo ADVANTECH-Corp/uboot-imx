@@ -165,7 +165,7 @@
 
 			pca9450,pmic-buck2-uses-i2c-dvs;
 			/* Run/Standby voltage */
-			pca9450,pmic-buck2-dvs-voltage = <950000>, <850000>;
+			pca9450,pmic-buck2-dvs-voltage = <1000000>, <950000>;
 
 			buck1_reg: regulator@0 {
 				reg = <0>;
