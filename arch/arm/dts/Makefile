@@ -960,6 +960,7 @@ dtb-$(CONFIG_ARCH_IMX8M) += \
 	imx8mp-msc-sm2s.dtb \
 	imx8mq-pico-pi.dtb \
 	imx8mq-kontron-pitx-imx8m.dtb \
+	imx8mm-ebcrs20-a1.dtb \
 	imx8mq-librem5-r4.dtb
 
 dtb-$(CONFIG_ARCH_IMX9) += \
