@@ -202,6 +202,12 @@ config TARGET_IMX95_19X19_EVK
 	imply BOOTSTD_BOOTCOMMAND
 	imply BOOTSTD_FULL
 
+config TARGET_IMX95_AOM5521A2_8G
+	bool "Support i.MX95 AOM5521A2 8G"
+	select IMX95
+	imply BOOTSTD_BOOTCOMMAND
+	imply BOOTSTD_FULL
+
 config TARGET_IMX952_EVK
 	bool "imx952_evk"
 	select IMX952
@@ -269,6 +275,7 @@ config TARGET_IMX943_ORANGEBOX
 
 endchoice
 
+source "board/advantech/imx95_aom5521a2/Kconfig"
 source "board/nxp/imx91_evk/Kconfig"
 source "board/nxp/imx91_frdm_imx91s/Kconfig"
 source "board/nxp/imx91_qsb/Kconfig"
