@@ -1459,6 +1459,12 @@ static int dwc3_gadget_pullup(struct usb_gadget *g, int is_on)
 	ret = dwc3_gadget_run_stop(dwc, is_on, false);
 	spin_unlock_irqrestore(&dwc->lock, flags);
 
+	/*
+	 * Let the controller settle before reporting connected; without
+	 * this the OTG port can fail to enumerate in device mode.
+	 */
+	udelay(6000);
+
 	return ret;
 }
 
