@@ -239,30 +239,30 @@ int board_late_init(void)
 		env_set("board_rev", "iMX8MM");
 	}
 
-	gpio_request(BOARD_ID3, "BOARD_ID3");
-	gpio_request(BOARD_ID2, "BOARD_ID2");
-	gpio_request(BOARD_ID1, "BOARD_ID1");
-	gpio_direction_input(BOARD_ID3);
-	gpio_direction_input(BOARD_ID2);
-	gpio_direction_input(BOARD_ID1);
-	id = gpio_get_value(BOARD_ID3);
-	id = (id<<1)|gpio_get_value(BOARD_ID2);
-	id = (id<<1)|gpio_get_value(BOARD_ID1);
-	printf("HW BOARD ID:%d\n",id);
-	display = env_get("fdtfile");
-	if(id == 0) {
-		if (!strstr(display, "-dsi2lvds-")) {
-			sprintf(fdt, "%s%s", CONFIG_OF_LIST, "-dsi2lvds-1920x1080.dtb");
-			env_set("fdtfile", fdt);
-		}
-	} else if(id == 1)
-		env_set("fdtfile", CONFIG_DEFAULT_FDT_FILE);
-	else if(id == 2) {
-		if (!strstr(display, "-dsi-")) {
-			sprintf(fdt, "%s%s", CONFIG_OF_LIST, "-dsi-auog101uan02.dtb");
-			env_set("fdtfile", fdt);
-		}
-	}
+	// gpio_request(BOARD_ID3, "BOARD_ID3");
+	// gpio_request(BOARD_ID2, "BOARD_ID2");
+	// gpio_request(BOARD_ID1, "BOARD_ID1");
+	// gpio_direction_input(BOARD_ID3);
+	// gpio_direction_input(BOARD_ID2);
+	// gpio_direction_input(BOARD_ID1);
+	// id = gpio_get_value(BOARD_ID3);
+	// id = (id<<1)|gpio_get_value(BOARD_ID2);
+	// id = (id<<1)|gpio_get_value(BOARD_ID1);
+	// printf("HW BOARD ID:%d\n",id);
+	// display = env_get("fdtfile");
+	// if(id == 0) {
+	// 	if (!strstr(display, "-dsi2lvds-")) {
+	// 		sprintf(fdt, "%s%s", CONFIG_OF_LIST, "-dsi2lvds-1920x1080.dtb");
+	// 		env_set("fdtfile", fdt);
+	// 	}
+	// } else if(id == 1)
+	// 	env_set("fdtfile", CONFIG_DEFAULT_FDT_FILE);
+	// else if(id == 2) {
+	// 	if (!strstr(display, "-dsi-")) {
+	// 		sprintf(fdt, "%s%s", CONFIG_OF_LIST, "-dsi-auog101uan02.dtb");
+	// 		env_set("fdtfile", fdt);
+	// 	}
+	// }
 
 	return 0;
 }
