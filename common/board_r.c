@@ -1195,10 +1195,10 @@ static init_fnc_t init_sequence_r[] = {
 #endif
 #if defined(CONFIG_CMD_NET)
 	INIT_FUNC_WATCHDOG_RESET
-	initr_net,
 #if defined(CONFIG_ADVANTECH_MX6) || defined(CONFIG_ADVANTECH_MX8) || defined(CONFIG_ADVANTECH_MX9)
 	boardcfg_get_mac,	/* Get MAC address from SPI */
 #endif
+	initr_net,
 #endif
 #ifdef CONFIG_POST
 	initr_post,
