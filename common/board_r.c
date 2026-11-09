@@ -1210,6 +1210,9 @@ static void initcall_run_r(void)
 #endif
 #if CONFIG_IS_ENABLED(NET) || CONFIG_IS_ENABLED(NET_LWIP)
 	WATCHDOG_RESET();
+#if defined(CONFIG_ADVANTECH_MX6) || defined(CONFIG_ADVANTECH_MX8) || defined(CONFIG_ADVANTECH_MX9)
+	boardcfg_get_mac,	/* Get MAC address from SPI */
+#endif
 	INITCALL(initr_net);
 #endif
 #if CONFIG_IS_ENABLED(POST)
