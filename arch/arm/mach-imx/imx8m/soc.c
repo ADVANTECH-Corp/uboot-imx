@@ -1684,7 +1684,9 @@ usb_modify_speed:
 		disable_cpu_nodes(blob, nodes_path, 2, 4);
 #endif
 
+#ifndef CONFIG_ADVANTECH_MX8
 	cleanup_nodes_for_efi(blob);
+#endif
 
 	if (fixup_thermal_trips(blob, "cpu-thermal"))
 		printf("Failed to update cpu-thermal trip(s)");

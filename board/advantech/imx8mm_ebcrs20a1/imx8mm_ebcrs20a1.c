@@ -65,6 +65,11 @@ int board_early_init_f(void)
 
 	init_uart_clk(1);
 
+#ifdef PWR_3V3_EN_GPIO
+	gpio_request(PWR_3V3_EN_GPIO, "3V3_EN_GPIO");
+	gpio_direction_output(PWR_3V3_EN_GPIO, 1);
+#endif
+
 	return 0;
 }
 

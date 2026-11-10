@@ -81,5 +81,6 @@
 #define LVDS_STBY_PAD IMX_GPIO_NR(4, 9)
 #define LVDS_RESET_PAD IMX_GPIO_NR(4, 19)
 
+#define PWR_3V3_EN_GPIO IMX_GPIO_NR(5, 8)
 
 #endif
