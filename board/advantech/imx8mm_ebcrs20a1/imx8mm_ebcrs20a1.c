@@ -133,16 +133,11 @@ int board_phy_config(struct phy_device *phydev)
 	if (phydev->drv->config)
 		phydev->drv->config(phydev);
 
-#ifndef CONFIG_DM_ETH
-	/* enable rgmii rxc skew and phy mode select to RGMII copper */
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x1d, 0x1f);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x1e, 0x8);
-
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x1d, 0x00);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x1e, 0x82ee);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x1d, 0x05);
-	phy_write(phydev, MDIO_DEVAD_NONE, 0x1e, 0x100);
-#endif
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x1f, 0x0d04);
+	/*PHY LED OK*/
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x10, 0x8910);
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x11, 0x0000);
+	phy_write(phydev, MDIO_DEVAD_NONE, 0x1f, 0x0000);
 
 	return 0;
 }
