@@ -249,6 +249,7 @@ int power_init_board(void)
 
 	/* increase VDD_SOC to typical value 0.85v before first DRAM access */
 	pmic_reg_write(p, BD718XX_BUCK1_VOLT_RUN, 0x0f);
+	pmic_reg_write(p, BD718XX_BUCK1_VOLT_IDLE, 0x0c);	//0.82V for idle
 
 	/* increase VDD_DRAM to 0.975v for 3Ghz DDR */
 	pmic_reg_write(p, BD718XX_1ST_NODVS_BUCK_VOLT, 0x83);
@@ -265,6 +266,20 @@ int power_init_board(void)
 }
 #endif
 #endif
+
+#define GPIO_PAD_CTRL  (PAD_CTL_DSE6 | PAD_CTL_PUE | PAD_CTL_PE)
+static iomux_v3_cfg_t const gpio_3v3en_pad =
+	IMX8MM_PAD_ECSPI1_MISO_GPIO5_IO8 | MUX_PAD_CTRL(GPIO_PAD_CTRL);
+#define GPIO_3V3EN	IMX_GPIO_NR(5, 8)
+
+void power_init_3v3(void)
+{
+	clock_enable(CCGR_GPIO5, 1);
+	imx_iomux_v3_setup_pad(gpio_3v3en_pad);
+	gpio_request(GPIO_3V3EN, "gpio 3v3en");
+	gpio_direction_output(GPIO_3V3EN,1);
+	printf("power init 3v3 down\n");
+}
 
 void spl_board_init(void)
 {
@@ -307,6 +322,8 @@ void board_init_f(ulong dummy)
 	}
 
 	enable_tzc380();
+
+	power_init_3v3();
 
 	/* Adjust pmic voltage to 1.0V for 800M */
 	setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c_pad_info1);
