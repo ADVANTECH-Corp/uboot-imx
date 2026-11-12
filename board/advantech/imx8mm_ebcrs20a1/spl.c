@@ -249,6 +249,7 @@ int power_init_board(void)
 
 	/* increase VDD_SOC to typical value 0.85v before first DRAM access */
 	pmic_reg_write(p, BD718XX_BUCK1_VOLT_RUN, 0x0f);
+	pmic_reg_write(p, BD718XX_BUCK1_VOLT_IDLE, 0x0c);	//0.82V for idle
 
 	/* increase VDD_DRAM to 0.975v for 3Ghz DDR */
 	pmic_reg_write(p, BD718XX_1ST_NODVS_BUCK_VOLT, 0x83);
