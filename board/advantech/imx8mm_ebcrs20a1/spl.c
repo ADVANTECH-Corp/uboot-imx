@@ -281,6 +281,18 @@ void power_init_3v3(void)
 	printf("power init 3v3 down\n");
 }
 
+static iomux_v3_cfg_t const gpio_coldrst_pad =
+	IMX8MM_PAD_SAI1_RXFS_GPIO4_IO0 | MUX_PAD_CTRL(GPIO_PAD_CTRL);
+#define GPIO_COLDRST	IMX_GPIO_NR(4, 0)
+
+void config_gpio_coldrst(void)
+{
+	clock_enable(CCGR_GPIO4, 1);
+	imx_iomux_v3_setup_pad(gpio_coldrst_pad);
+	gpio_request(GPIO_COLDRST, "gpio coldrst");
+	gpio_direction_output(GPIO_COLDRST,1);
+}
+
 void spl_board_init(void)
 {
 	if (IS_ENABLED(CONFIG_FSL_CAAM)) {
@@ -323,6 +335,7 @@ void board_init_f(ulong dummy)
 
 	enable_tzc380();
 
+	config_gpio_coldrst();
 	power_init_3v3();
 
 	/* Adjust pmic voltage to 1.0V for 800M */
