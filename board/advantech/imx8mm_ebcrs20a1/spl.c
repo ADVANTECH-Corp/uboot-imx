@@ -55,11 +55,6 @@ int spl_board_boot_device(enum boot_device boot_dev_spl)
 	}
 }
 
-void spl_dram_init(void)
-{
-	ddr_init(&dram_timing);
-}
-
 #define I2C_PAD_CTRL	(PAD_CTL_DSE6 | PAD_CTL_HYS | PAD_CTL_PUE | PAD_CTL_PE)
 #define PC MUX_PAD_CTRL(I2C_PAD_CTRL)
 struct i2c_pads_info i2c_pad_info1 = {
@@ -281,6 +276,38 @@ void power_init_3v3(void)
 	printf("power init 3v3 down\n");
 }
 
+static iomux_v3_cfg_t const gpio_coldrst_pad =
+	IMX8MM_PAD_SAI1_RXFS_GPIO4_IO0 | MUX_PAD_CTRL(GPIO_PAD_CTRL);
+#define GPIO_COLDRST	IMX_GPIO_NR(4, 0)
+
+void config_gpio_coldrst(void)
+{
+	clock_enable(CCGR_GPIO4, 1);
+	imx_iomux_v3_setup_pad(gpio_coldrst_pad);
+	gpio_request(GPIO_COLDRST, "gpio coldrst");
+	gpio_direction_output(GPIO_COLDRST,1);
+}
+
+#define BOARD_ID0	IMX_GPIO_NR(1, 5)
+void spl_dram_init(void)
+{
+	int val = 1;
+/*
+	clock_enable(CCGR_GPIO1, 1);
+	//imx_iomux_v3_setup_pad(gpio_3v3en_pad);
+	gpio_request(BOARD_ID0, "board id0");
+	gpio_direction_input(BOARD_ID0);
+	val = gpio_get_value(BOARD_ID0);
+	printf("Board ID:%d\n",val);
+*/
+	if(2 == val)
+		ddr_init(&dram_timing_8g_micron);
+	else if(1 == val)
+		ddr_init(&dram_timing_4g_cx);
+	else
+		ddr_init(&dram_timing_4g_micron);
+}
+
 void spl_board_init(void)
 {
 	if (IS_ENABLED(CONFIG_FSL_CAAM)) {
@@ -323,6 +350,7 @@ void board_init_f(ulong dummy)
 
 	enable_tzc380();
 
+	config_gpio_coldrst();
 	power_init_3v3();
 
 	/* Adjust pmic voltage to 1.0V for 800M */
