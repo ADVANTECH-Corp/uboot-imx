@@ -273,7 +273,8 @@ void power_init_3v3(void)
 	imx_iomux_v3_setup_pad(gpio_3v3en_pad);
 	gpio_request(GPIO_3V3EN, "gpio 3v3en");
 	gpio_direction_output(GPIO_3V3EN,1);
-	printf("power init 3v3 down\n");
+	//printf("power init 3v3 down\n");
+	udelay(10000);
 }
 
 static iomux_v3_cfg_t const gpio_coldrst_pad =
@@ -343,6 +344,9 @@ void board_init_f(ulong dummy)
 
 	timer_init();
 
+	config_gpio_coldrst();
+	power_init_3v3();
+
 	preloader_console_init();
 
 	ret = spl_init();
@@ -352,9 +356,6 @@ void board_init_f(ulong dummy)
 	}
 
 	enable_tzc380();
-
-	config_gpio_coldrst();
-	power_init_3v3();
 
 	/* Adjust pmic voltage to 1.0V for 800M */
 	setup_i2c(0, CONFIG_SYS_I2C_SPEED, 0x7f, &i2c_pad_info1);
