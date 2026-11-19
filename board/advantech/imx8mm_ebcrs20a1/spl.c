@@ -262,7 +262,7 @@ int power_init_board(void)
 #endif
 #endif
 
-#define GPIO_PAD_CTRL  (PAD_CTL_DSE6 | PAD_CTL_PUE | PAD_CTL_PE)
+#define GPIO_PAD_CTRL  (PAD_CTL_DSE6 | PAD_CTL_PE)
 static iomux_v3_cfg_t const gpio_3v3en_pad =
 	IMX8MM_PAD_ECSPI1_MISO_GPIO5_IO8 | MUX_PAD_CTRL(GPIO_PAD_CTRL);
 #define GPIO_3V3EN	IMX_GPIO_NR(5, 8)
@@ -288,24 +288,27 @@ void config_gpio_coldrst(void)
 	gpio_direction_output(GPIO_COLDRST,1);
 }
 
-#define BOARD_ID0	IMX_GPIO_NR(1, 5)
+static iomux_v3_cfg_t const board_id_pads[] = {
+	IMX8MM_PAD_SAI5_RXD1_GPIO3_IO22 | MUX_PAD_CTRL(GPIO_PAD_CTRL),
+};
+#define BOARD_ID0	IMX_GPIO_NR(3, 22)
 void spl_dram_init(void)
 {
-	int val = 1;
-/*
-	clock_enable(CCGR_GPIO1, 1);
-	//imx_iomux_v3_setup_pad(gpio_3v3en_pad);
+	int val = 0;
+
+	clock_enable(CCGR_GPIO3, 1);
+	imx_iomux_v3_setup_multiple_pads(board_id_pads, ARRAY_SIZE(board_id_pads));
 	gpio_request(BOARD_ID0, "board id0");
 	gpio_direction_input(BOARD_ID0);
 	val = gpio_get_value(BOARD_ID0);
 	printf("Board ID:%d\n",val);
-*/
+
 	if(2 == val)
 		ddr_init(&dram_timing_8g_micron);
 	else if(1 == val)
-		ddr_init(&dram_timing_4g_cx);
-	else
 		ddr_init(&dram_timing_4g_micron);
+	else
+		ddr_init(&dram_timing_4g_cx);
 }
 
 void spl_board_init(void)
