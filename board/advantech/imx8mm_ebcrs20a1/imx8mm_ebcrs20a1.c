@@ -68,6 +68,7 @@ int board_early_init_f(void)
 	return 0;
 }
 
+#if 0
 static iomux_v3_cfg_t const lvds_pads[] = {
 	IMX8MM_PAD_SAI3_RXFS_GPIO4_IO28 | MUX_PAD_CTRL(NO_PAD_CTRL),
 	IMX8MM_PAD_SD1_STROBE_GPIO2_IO11 | MUX_PAD_CTRL(NO_PAD_CTRL),
@@ -91,13 +92,14 @@ static void setup_iomux_lvds(void)
 #ifdef LVDS_STBY_PAD
 	gpio_request(LVDS_STBY_PAD, "LVDS_STBY");
 	gpio_direction_output(LVDS_STBY_PAD, 1);
-	udelay(100);	//for lvds bridge init sequence
+	udelay(10000);	//for lvds bridge init sequence
 #endif
 #ifdef LVDS_RESET_PAD
 	gpio_request(LVDS_RESET_PAD, "LVDS_RESET");
 	gpio_direction_output(LVDS_RESET_PAD, 1);
 #endif
 }
+#endif
 
 static void setup_iomux_wdt(void)
 {
@@ -177,7 +179,7 @@ int board_init(void)
 	if (IS_ENABLED(CONFIG_FEC_MXC))
 		setup_fec();
 
-	setup_iomux_lvds();
+//	setup_iomux_lvds();
 	setup_iomux_wdt();	
 	return 0;
 }
